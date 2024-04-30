@@ -2,7 +2,7 @@
 
 
 import bcrypt from "bcryptjs"
-import { IBcrypt } from "../interfaces/IBcrypt";
+import { IBcrypt } from "../Interfaces/IBcrypt";
 
 
 export class Bcrypt implements IBcrypt {

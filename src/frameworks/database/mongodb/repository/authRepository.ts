@@ -1,6 +1,6 @@
 import { Console } from "console";
 import { User  } from "../../../../Entities/Users";
-import IAuthRepository from "../../../../interfaces/IAuthRepository";
+import IAuthRepository from "../../../../Interfaces/IAuthRepository";
 import { ERROR } from "../../../webserver/common/error";
 
 import UserTempModel from "../models/tempUser";

@@ -1,7 +1,7 @@
 
-import { trusted } from "mongoose";
+
 import config from "../config";
-import { IMailer } from "../interfaces/IMailer";
+import { IMailer } from "../Interfaces/IMailer";
 import nodemailer from 'nodemailer'
 
 export class Mailer implements IMailer{
@@ -14,7 +14,7 @@ export class Mailer implements IMailer{
         auth: {
       
           user:config.EMAIL_NODEMAILER,
-          pass:"xuuv kkhf iegi sikf",
+          pass:config.PASSWORD_NODEMAILER,
         },
       });
 

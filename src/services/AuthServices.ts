@@ -2,11 +2,12 @@
 import { User } from "../Entities/Users";
 
 import { ERROR } from "../frameworks/webserver/common/error";
-import IAuthRepository from "../interfaces/IAuthRepository";
-import IAuthUserService from "../interfaces/IAuthService";
-import { IBcrypt } from "../interfaces/IBcrypt";
-import { IMailer } from "../interfaces/IMailer";
-import { IGenerateOtp } from "../interfaces/IGenerateOtp";
+import IAuthRepository from "../Interfaces/IAuthRepository";
+import IAuthUserService from "../Interfaces/IAuthService";
+import { IBcrypt } from "../Interfaces/IBcrypt";
+import { IMailer } from "../Interfaces/IMailer";
+import { IGenerateOtp } from "../Interfaces/IGenerateOtp";
+
 
 
 
@@ -22,13 +23,19 @@ export  class AuthServices implements IAuthUserService {
      private generateOtp:IGenerateOtp
 
 
-       constructor (authRepository:IAuthRepository,bcrypt:IBcrypt,mailer:IMailer,generateOtp:IGenerateOtp){
+
+       constructor (authRepository:IAuthRepository,bcrypt:IBcrypt,mailer:IMailer,generateOtp:IGenerateOtp,
+       
+       ){
         this.authRepository=authRepository,
         this.bcrypt=bcrypt
         this.mailer=mailer
         this.generateOtp=generateOtp
+       
 
        }
+
+     
   async loginUserService(email: string, password: string): Promise<User | null> {
      
       const isUserExist=await this.authRepository.findByEmail(email)
@@ -88,6 +95,7 @@ return savingNewUser
      
   }  
    async tempRegisterAndSendOtp(data: User): Promise<User> {
+ 
 
       const isUserExisting=await this.authRepository.findByEmail(data.email)
 
@@ -117,6 +125,9 @@ return savingNewUser
        return newTempUser
          
     }
+
+
+
 
 
    
