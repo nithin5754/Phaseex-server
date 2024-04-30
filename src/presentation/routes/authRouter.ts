@@ -2,9 +2,9 @@ import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/userController";
 import { AuthServices } from "../../Services/AuthServices";
 import { AuthRepository } from "../../frameworks/database/mongodb/repository/authRepository";
-import { Bcrypt } from "../../External-Libaries/bcrypt";
-import { Mailer } from "../../External-Libaries/mailer";
-import { GenerateOtp } from "../../External-Libaries/generateOtp";
+import { Bcrypt } from "../../External- Libraries/bcrypt";
+import { Mailer } from "../../External- Libraries/mailer";
+import { GenerateOtp } from "../../External- Libraries/generateOtp";
 import { Validation } from "../utils/validation";
 
 
