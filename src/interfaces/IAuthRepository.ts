@@ -10,6 +10,7 @@ export interface IAuthRepository {
     findByEmailFromTemp(email:string):Promise<User|null>
     verifyOtp(otp:string,email:string):Promise<boolean>
     createUser(userData:User):Promise<User>
+    findById(id:string):Promise<User|null>
     
 }
 

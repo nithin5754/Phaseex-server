@@ -10,7 +10,12 @@ const config = {
   },
   EMAIL_NODEMAILER:process.env.EMAIL_NODEMAIL as string,
  
-  PASSWORD_NODEMAILER:process.env.PASSWORD_NODEMAIL as string
+  PASSWORD_NODEMAILER:process.env.PASSWORD_NODEMAIL as string,
+  jwt:{
+    JWT_SECRET:process.env.JWT_SECRET,
+    JWT_REFRESH_TOKEN:process.env.JWT_REFRESH_TOKEN
+  },
+  nodeEnvironment: process.env.NODEENVIRONMENT as string,
 
 };
 

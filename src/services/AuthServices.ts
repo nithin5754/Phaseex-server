@@ -1,27 +1,48 @@
 import { User } from "../Entities/Users";
-
+import { v4 as uuidv4 } from "uuid";
 import { ERROR } from "../frameworks/webserver/common/error";
 import IAuthRepository from "../Interfaces/IAuthRepository";
 import IAuthUserService from "../Interfaces/IAuthService";
 import { IBcrypt } from "../Interfaces/IBcrypt";
 import { IMailer } from "../Interfaces/IMailer";
 import { IGenerateOtp } from "../Interfaces/IGenerateOtp";
+import { IToken } from "../Interfaces/IToken";
+
 
 export class AuthServices implements IAuthUserService {
   private authRepository: IAuthRepository;
   private bcrypt: IBcrypt;
   private mailer: IMailer;
   private generateOtp: IGenerateOtp;
+  private token:IToken
+
 
   constructor(
     authRepository: IAuthRepository,
     bcrypt: IBcrypt,
     mailer: IMailer,
-    generateOtp: IGenerateOtp
+    generateOtp: IGenerateOtp,
+    token:IToken
+   
   ) {
     (this.authRepository = authRepository), (this.bcrypt = bcrypt);
     this.mailer = mailer;
     this.generateOtp = generateOtp;
+    this.token=token
+ 
+  }
+  generateAccessToken(userId: string): string {
+    return this.token.accessTokenGenerator(userId)
+  }
+  verifyRefreshToken(token: string) {
+     return this.token.verifyRefreshToken(token)
+  }
+
+  generateToken(foundUser:string):{
+    accessToken:string;
+    refreshToken:string
+  }{
+    return this.token.generateTokens(foundUser)
   }
 
   async loginUserService(
@@ -65,6 +86,10 @@ export class AuthServices implements IAuthUserService {
     const { profile_image, email, password, roles, userName } =
       isTempUserExisting;
 
+      const token=uuidv4()
+      console.log(token,"token")
+      
+
     const userData: User = {
       profile_image,
       email,
@@ -72,6 +97,7 @@ export class AuthServices implements IAuthUserService {
       roles,
       userName,
       verified: true,
+      verify_token:token
     };
 
     const savingNewUser = await this.authRepository.createUser(userData);

@@ -1,7 +1,7 @@
 {
   "name": "phaseex-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "project management tool website ,on app for may purpose",
   "main": "./src/index.ts",
   "scripts": {
     "start": "node dist/index.js",
@@ -21,6 +21,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.7",
     "@types/nodemailer": "^6.4.14",
+    "@types/uuid": "^9.0.8",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
@@ -36,11 +37,13 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-mongo-sanitize": "^2.2.0",
+    "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.2",
     "morgan": "^1.10.0",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "uuid": "^9.0.1"
   }
 }

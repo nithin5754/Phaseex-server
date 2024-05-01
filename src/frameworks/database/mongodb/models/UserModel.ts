@@ -9,6 +9,7 @@ export interface UserDocument extends Document {
     profile_image: string;
     roles:string;
     password: string;
+    verify_token:string
     createdAt: Date;
     updatedAt: Date;
 }
@@ -32,6 +33,9 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
     password: {
         type: String,
         
+    },
+    verify_token:{
+        type:String
     },
     roles: {
         type:String,

@@ -3,6 +3,8 @@ import IAuthUserService from "../../Interfaces/IAuthService";
 import { ERROR } from "../../frameworks/webserver/common/error";
 import { IValidation } from "../../Interfaces/IValidation";
 
+
+
 export class UserController {
   private authService: IAuthUserService;
   private validation: IValidation;
@@ -15,21 +17,6 @@ export class UserController {
     const body = req.body;
 
     try {
-      if (
-        !this.validation.isPassWordMatch(
-          req.body.password,
-          req.body.confirmPassword
-        )
-      ) {
-        throw new ERROR.PasswordMismatchError("password not matching");
-      }
-
-      if (!this.validation.checkEmail(req.body.email)) {
-        throw new ERROR.InvalidInputError("Invalid email format");
-      }
-      if (!this.validation.checkPassword(req.body.password)) {
-        throw new ERROR.InvalidInputError("Invalid password format");
-      }
 
       const newUser = await this.authService.tempRegisterAndSendOtp(body);
       return res
@@ -76,12 +63,90 @@ export class UserController {
 
       const response = await this.authService.loginUserService(email, password);
 
-      return res.status(200).json({
-        message: "user login sucessfully",
-        data: response,
+
+
+        if(response?._id){
+
+        
+
+      const {accessToken,refreshToken}=this.authService.generateToken(response._id )
+
+      console.log(accessToken)
+
+
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7*24 * 60 * 60 * 1000,
+        sameSite:'none'
       });
+
+      return     res.status(200).json({
+        message: "user login successfully",
+        data: response,
+        accessToken:accessToken
+      });
+
+        }else{
+          return res.status(401).json({ error: "Invalid credentials" });
+
+        }
+
+  
     } catch (error) {
       next(error);
     }
   };
+
+
+   refresh=async(req:Request,res:Response,next:NextFunction)=>{
+
+   try {
+    const cookies=req.cookies
+
+    if(!cookies?.jwt)return res.status(401).json({message:'Unauthorized'})
+
+      const refreshToken=cookies.jwt
+
+      const decodedToken = this.authService.verifyRefreshToken(refreshToken)
+      if (!decodedToken) {
+        return res.status(403).json({ message: 'Invalid refresh token' });
+      }
+
+      const userId = decodedToken.userId;
+
+      const accessToken=this.authService.generateAccessToken(userId)
+
+      return res.status(200).json({accessToken:accessToken})
+
+  
+   } catch (error) {
+    next(error)  
+   }
+     
+
+   }
+
+   logOut=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+    const cookies=req.cookies
+    if(!cookies?.jwt)return res.sendStatus(204)
+      res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
+
+     return res.status(200).json({message:"cookie cleared"})
+    } catch (error) {
+     next(error)
+    }
+}
+
+
+   home=async(req:Request,res:Response,next:NextFunction)=>{
+       try {
+        console.log("welcome home")
+
+        return res.status(200).json({message:"welcome home"})
+       } catch (error) {
+        next(error)
+       }
+   }
 }

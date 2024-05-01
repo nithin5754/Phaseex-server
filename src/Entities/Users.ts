@@ -2,6 +2,7 @@
 
 
 export interface User {
+     _id?:string,
      userName:string,
      email:string,
      password:string,
@@ -9,4 +10,5 @@ export interface User {
      roles:string,
      verified?:boolean,
      otp?:string
+     verify_token?: string; 
 }

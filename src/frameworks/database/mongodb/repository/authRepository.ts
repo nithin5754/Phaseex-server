@@ -10,7 +10,16 @@ import UserModel from '../models/UserModel'
 
 
 
+
 export class AuthRepository implements IAuthRepository {
+ async findById(id: string): Promise<User|null> {
+  let found= await UserModel.findById(id)
+   if(!found){
+    return null
+   }else{
+    return found
+   }
+  }
 
 async  createUser(data: User): Promise<User> {
     
