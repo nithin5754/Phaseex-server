@@ -1,7 +1,6 @@
-import { Console } from "console";
+
 import { User  } from "../../../../Entities/Users";
 import IAuthRepository from "../../../../Interfaces/IAuthRepository";
-import { ERROR } from "../../../webserver/common/error";
 
 import UserTempModel from "../models/tempUser";
 
@@ -12,6 +11,53 @@ import UserModel from '../models/UserModel'
 
 
 export class AuthRepository implements IAuthRepository {
+  async resendToOtp (otp: string, email: string): Promise<boolean> {
+
+console.log("otp",otp,"///email",email);
+
+let response=  await UserTempModel.updateOne(
+      {email },
+      { $set: { otp } },
+    );
+
+ if(!response) false
+
+  return true
+
+  }
+ async findEmailAndChangePassword(email: string, hashedNewPassword: string): Promise<boolean> {
+    const result = await UserModel.updateOne(
+      { email },
+      { $set: { password:hashedNewPassword } } 
+    );
+
+    return result.modifiedCount > 0;
+  }
+
+
+
+ async forgotPassWordVerified(userData: User): Promise<boolean> {
+     
+  const result = await UserTempModel.updateOne(
+    { email: userData.email },
+    { $set: { forgotPassWord_verified: true } } 
+  );
+  console.log(result,"is upadted");
+  
+  return result.modifiedCount > 0;
+       
+  }
+
+
+  
+ async deleteTempUser(email: string): Promise<boolean> {
+    let isDeleted=await UserTempModel.findOneAndDelete({email})
+    if(!isDeleted){
+      return false
+    }
+    return true
+  }
+
  async findById(id: string): Promise<User|null> {
   let found= await UserModel.findById(id)
    if(!found){
@@ -19,6 +65,12 @@ export class AuthRepository implements IAuthRepository {
    }else{
     return found
    }
+  }
+
+
+  async  findEmailFromTokenId(tokenId: string): Promise<User | null> {
+    const isTempUserExisting=await UserTempModel.findOne( {verify_token:tokenId})
+    return isTempUserExisting
   }
 
 async  createUser(data: User): Promise<User> {
@@ -64,6 +116,8 @@ async  findByEmail(email: string): Promise<User|null> {
       if(!isUserExisting){
         return false
       }
+
+
 
        if(isUserExisting.otp===otp){
     return true

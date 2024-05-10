@@ -12,6 +12,9 @@ export interface UserDocument extends Document {
     otp:string;
     createdAt: Date;
     updatedAt: Date;
+    expires:Date;
+    verify_token:string,
+    forgotPassWord_verified?:boolean
 }
 
 const TempUserSchema: Schema<UserDocument> = new mongoose.Schema({
@@ -20,10 +23,20 @@ const TempUserSchema: Schema<UserDocument> = new mongoose.Schema({
         default:false
         
     },
+    forgotPassWord_verified: {
+        type: Boolean,
+        default:false
+        
+    },
+
     otp: {
         type: String,
       
         
+    },
+    userName: {
+        type: String,
+      
     },
     email: {
         type: String,
@@ -38,15 +51,25 @@ const TempUserSchema: Schema<UserDocument> = new mongoose.Schema({
         type: String,
       
     },
+    verify_token: {
+        type: String,
+      
+    },
     roles: {
         type:String,
         default:'developer'
     },
+    expires: {
+        type: Date,
+        expires: 86400000,
+    },
+    
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 90, 
-    }
+        
+    },
+
 
 });
 

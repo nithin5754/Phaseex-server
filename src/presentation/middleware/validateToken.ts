@@ -16,7 +16,7 @@ const tokenClass=new Token()
 
 export const verifyJWT=(req:Request,res:Response,next:NextFunction)=>{
 
-  const authHeader=req.headers.authorization||req.headers.authorization
+  const authHeader=req.headers.authorization
 
 
   if(!authHeader?.startsWith('Bearer ')){

@@ -5,10 +5,17 @@ import mongoSanitize from 'express-mongo-sanitize'
 import helmet from "helmet";
 import cookieParser from 'cookie-parser'
 import { ConfigType } from "../../config";
+import cors from 'cors'
 
 
 
 export default function expressConfig(app:Application,config:ConfigType){
+  app.use(cors({
+    origin: ['http://localhost:3000','http://localhost:5173'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
+}))
+
   app.use(morgan('dev'))
   app.use(express.json());
   app.use(cookieParser());

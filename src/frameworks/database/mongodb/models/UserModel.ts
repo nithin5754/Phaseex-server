@@ -25,6 +25,11 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
         required: true,
       
     },
+    userName: {
+        type: String,
+        required: true,
+      
+    },
     profile_image: {
         type: String,
         default:

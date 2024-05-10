@@ -5,7 +5,7 @@ import { AuthRepository } from "../../frameworks/database/mongodb/repository/aut
 import { Bcrypt } from "../../External- Libraries/bcrypt";
 import { Mailer } from "../../External- Libraries/mailer";
 import { GenerateOtp } from "../../External- Libraries/generateOtp";
-import { Validation } from "../utils/validation";
+
 import { Token } from "../../External- Libraries/token";
 import { verifyJWT } from "../middleware/validateToken";
 import { validateLoginUser, validateRegisterUser } from "../validators/authValidator";
@@ -19,26 +19,27 @@ const generateOtp=new GenerateOtp
 const token=new Token()
 
 const services = new AuthServices(repository,bcrypt,mailer,generateOtp,token);
-const validation=new Validation()
-const controller = new UserController(services,validation);
+
+const controller = new UserController(services);
 
 const authRouter = (router: Router) => {
 
  router.route('/register').post(validateRegisterUser,controller.onRegisterUser);
+ router.route('/verify').post(controller.OnVeryOtpAndRegister.bind(controller))
+ router.route('/login').post(validateLoginUser,controller.OnLoginUser.bind(controller))
+ router.route('/refresh').get(controller.onRefresh.bind(controller))
+ router.route('/logout').post(controller.onLogOut.bind(controller))
+ router.route('/forgotPasswordSendOtp').post(controller.forgotPasswordSendOtp.bind(controller))
+ router.route('/forgotPasswordVerifyOtp').post(controller.onVerifyForgotOtp.bind(controller))
+ router.route('/change-forgot-password-change').post(controller.changePasswordAfterVerification.bind(controller))
 
+ router.route('/resendOtp').post(controller.resendOtp.bind(controller))
 
- router.route('/verify').post(controller.OnVeryOtpAndRegister)
-
- router.route('/login').post(validateLoginUser,controller.OnLoginUser)
-
- router.route('/refresh').get(controller.refresh)
- router.route('/logout').get(controller.logOut)
-
-
- router.route('/home').get(verifyJWT,controller.home)
-
-
-
+ 
+ 
+ router.route('/verifyToken').post(controller.verifyToken.bind(controller))
+ 
+ router.route('/test').get(verifyJWT,controller.home.bind(controller))
 
  return router;
 }
