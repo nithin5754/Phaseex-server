@@ -1,5 +1,8 @@
 
 
+
+
+
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface UserDocument extends Document {
@@ -12,12 +15,12 @@ export interface UserDocument extends Document {
     otp:string;
     createdAt: Date;
     updatedAt: Date;
-    expires:Date;
+
     verify_token:string,
     forgotPassWord_verified?:boolean
 }
 
-const TempUserSchema: Schema<UserDocument> = new mongoose.Schema({
+const TempUserSchemaModal: Schema<UserDocument> = new mongoose.Schema({
    verified: {
         type: Boolean,
         default:false
@@ -59,33 +62,34 @@ const TempUserSchema: Schema<UserDocument> = new mongoose.Schema({
         type:String,
         default:'developer'
     },
-    expires: {
-        type: Date,
-        expires: 86400000,
-    },
-    
-    createdAt: {
+
+   createdAt: {
         type: Date,
         default: Date.now,
-        
     },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
 
 
 });
 
 
-TempUserSchema.pre('save', function (next) {
+TempUserSchemaModal.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
 });
 
-TempUserSchema.set('toJSON', {
+
+
+TempUserSchemaModal.set('toJSON', {
     transform: function (doc, ret) {
         delete ret.password;
         delete ret.__v;
     },
 });
 
-const TempUser = mongoose.model<UserDocument>('TempUser', TempUserSchema);
+const TempUserModal = mongoose.model<UserDocument>('TempUserModal', TempUserSchemaModal);
 
-export default TempUser;
+export default TempUserModal;

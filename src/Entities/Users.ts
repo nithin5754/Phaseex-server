@@ -13,6 +13,8 @@ export interface User {
      verify_token?: string;
      expires?:Date ,
      forgotPassWord_verified?:boolean
+     createdAt?:Date,
+     updatedAt?:Date
      
 }
 

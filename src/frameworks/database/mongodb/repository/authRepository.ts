@@ -2,7 +2,7 @@
 import { User  } from "../../../../Entities/Users";
 import IAuthRepository from "../../../../Interfaces/IAuthRepository";
 
-import UserTempModel from "../models/tempUser";
+import UserTempModel from '../models/TempUserModel'
 
 import UserModel from '../models/UserModel'
 
@@ -11,18 +11,21 @@ import UserModel from '../models/UserModel'
 
 
 export class AuthRepository implements IAuthRepository {
-  async resendToOtp (otp: string, email: string): Promise<boolean> {
 
-console.log("otp",otp,"///email",email);
+
+
+  async resendToOtp (otp: string, email: string): Promise<boolean> {
 
 let response=  await UserTempModel.updateOne(
       {email },
-      { $set: { otp } },
+      { $set: { otp ,updatedAt:Date.now()} },
     );
 
- if(!response) false
-
-  return true
+    if (response.modifiedCount > 0) {
+      return true;
+    } else {
+      return false;
+    }
 
   }
  async findEmailAndChangePassword(email: string, hashedNewPassword: string): Promise<boolean> {
@@ -51,11 +54,13 @@ let response=  await UserTempModel.updateOne(
 
   
  async deleteTempUser(email: string): Promise<boolean> {
-    let isDeleted=await UserTempModel.findOneAndDelete({email})
-    if(!isDeleted){
-      return false
-    }
-    return true
+  let isDeleted = await UserTempModel.deleteMany({ email});
+  console.log(`Deleted ${isDeleted.deletedCount} documents`);
+  
+  if (isDeleted.deletedCount === 0) {
+    return false;
+  }
+  return true;
   }
 
  async findById(id: string): Promise<User|null> {

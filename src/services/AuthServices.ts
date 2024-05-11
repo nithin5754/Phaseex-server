@@ -203,6 +203,12 @@ export class AuthServices implements IAuthUserService {
   }
   async tempRegisterAndSendOtp(data: User): Promise<User> {
 
+    const isTempUserAlreadyExist=await this.authRepository.deleteTempUser(data.email)
+    if(isTempUserAlreadyExist){
+      console.log(isTempUserAlreadyExist,"is temp user");
+      
+    }
+
     const passwordToHash = await this.bcrypt.Encrypt(data.password);
 
     const createOtp = await this.generateOtp.createOtp(6);

@@ -32,6 +32,7 @@ const authRouter = (router: Router) => {
  router.route('/forgotPasswordSendOtp').post(controller.forgotPasswordSendOtp.bind(controller))
  router.route('/forgotPasswordVerifyOtp').post(controller.onVerifyForgotOtp.bind(controller))
  router.route('/change-forgot-password-change').post(controller.changePasswordAfterVerification.bind(controller))
+ router.route('/get-timer-date').post(controller.onUpdateDateTempUser.bind(controller))
 
  router.route('/resendOtp').post(controller.resendOtp.bind(controller))
 

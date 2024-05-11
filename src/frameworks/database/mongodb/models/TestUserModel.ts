@@ -29,7 +29,8 @@ roles: [{
 active: {
     type: Boolean,
     default: true
-}
+},
+
 });
 
 

@@ -18,9 +18,12 @@ export const verifyJWT=(req:Request,res:Response,next:NextFunction)=>{
 
   const authHeader=req.headers.authorization
 
+  console.log(authHeader,"unauthorized");
+  
+
 
   if(!authHeader?.startsWith('Bearer ')){
-     return res.status(401).json({message:'unauthorized'})
+     return res.status(401).json({message:'unauthorized token'})
   }
 
   const token=authHeader.split(' ')[1]

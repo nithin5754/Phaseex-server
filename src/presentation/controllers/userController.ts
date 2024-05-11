@@ -323,10 +323,43 @@ resendOtp=async (
        return res.status(404).json({message:"credentials not found! please try again later"})
       }
 
-      return res.status(200).json({message:"resend otp successfully created"})
+      let isEmailExistAfterOtp=await this.authService.isTempTokenIDcheck(tokenId)
+
+      if(!isEmailExistAfterOtp){
+        return res.status(404).json({message:"credentials not found! please try again later"})
+      }
+
+      
+
+      return res.status(200).json({message:"resend otp successfully created",updateDate:isEmailExistAfterOtp?.updatedAt,authId:isEmailExist?.verify_token})
 
     } catch (error) {
       next(error)
     }
+  }
+
+  onUpdateDateTempUser=async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+      const tokenId=req.body.tokenId
+    
+      try {
+        const isUpdateDateExist=await this.authService.isTempTokenIDcheck(tokenId)
+
+      if(!isUpdateDateExist){
+        return res.status(404).json({message:"timer is not found"})
+      }
+
+      let updateTempUserDate=isUpdateDateExist?.updatedAt
+      console.log(updateTempUserDate,"time fdate get from backend ");
+      
+
+      return res.status(200).json({message:"successfully ",updateDate:updateTempUserDate})
+      } catch (error) {
+        next(error)
+      }
+    
   }
 }
