@@ -3,7 +3,7 @@
 
 export interface IToken {
 
-  generateTokens(userId:string):{
+  generateTokens(userId:string,roles:string[]):{
     accessToken:string;
     refreshToken:string
   };
@@ -11,3 +11,10 @@ export interface IToken {
   verifyRefreshToken(token:string):any
   accessTokenGenerator(userId:string):string
 }
+
+
+
+// roles: {
+//   type: [String],
+//   default: ["Employee"]
+// },

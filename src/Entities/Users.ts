@@ -20,14 +20,3 @@ export interface User {
 
 
 
-// export interface TempUserType   {
-//      verified?:boolean
-//      userName?: string;
-//       email: string;
-//       profile_image?: string;
-//       roles?:string;
-//       password?: string;
-//       otp:string;
-//       expires?:Date;
-//       verify_token:string
-// }

@@ -9,7 +9,7 @@ interface IAuthUserService {
 
   isEmailChangePassword(email:string,password:string):Promise<boolean>
 
-   generateToken(userId: string): {
+   generateToken(userId: string,roles:string[]): {
     accessToken: string;
     refreshToken: string;
   };

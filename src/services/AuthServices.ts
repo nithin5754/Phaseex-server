@@ -120,11 +120,11 @@ export class AuthServices implements IAuthUserService {
      return this.token.verifyRefreshToken(token)
   }
 
-  generateToken(foundUser:string):{
+  generateToken(foundUser:string,roles:string[]):{
     accessToken:string;
     refreshToken:string
   }{
-    return this.token.generateTokens(foundUser)
+    return this.token.generateTokens(foundUser,roles)
   }
 
  async isEmailExist(email: string): Promise<User|null> {
