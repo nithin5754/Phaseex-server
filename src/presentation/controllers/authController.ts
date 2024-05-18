@@ -42,12 +42,10 @@ export class AuthController {
           message: "wrong credentials,try again ",
         });
       }
-     let roles:string[]=[...isUserExist.roles]
+    //  let roles:string[]=[...isUserExist.roles]
       if (isUserExist?._id) {
-        const { accessToken, refreshToken } = this.authService.generateToken(
-          isUserExist._id,
-          roles
-        );
+        let userId=isUserExist._id
+        const { accessToken, refreshToken } = this.authService.generateToken(userId);
 
         console.log(accessToken);
 
@@ -75,7 +73,7 @@ export class AuthController {
 
   //@login
 
-  onRefresh = async (req: Request, res: Response, next: NextFunction) => {
+   onRefresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cookies = req.cookies;
 
@@ -91,9 +89,20 @@ export class AuthController {
 
       const userId = decodedToken.userId;
 
-      const accessToken = this.authService.generateAccessToken(userId);
+      const foundUser=await  this.authService.findUserById(userId)
 
-      return res.status(200).json({ accessToken: accessToken });
+      if(!foundUser){
+        return res.status(403).json({ message: "Invalid refresh token" });
+      }
+
+      
+
+     if(foundUser._id){
+      let userId=foundUser._id
+      const accessToken = this.authService.generateAccessToken(userId);
+      return res.status(200).json({ accessToken: accessToken,data:foundUser });
+     }
+     return res.status(403).json({ message: "Invalid refresh token" });
     } catch (error) {
       next(error);
     }
@@ -144,8 +153,10 @@ export class AuthController {
         return res.status(401).json({ message: "Invalid token" });
       }
     } catch (error) {
+      console.log("HEY NITHIN JOIJI");
+      
       console.error("Error verifying token:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(403).json({ message: "Internal server error" });
     }
   };
 
@@ -156,11 +167,7 @@ export class AuthController {
       console.log("welcome home");
 
       return res
-        .status(200)
-        .json({
-          message: "welcome home",
-          result: ["nithin", "nivin", "joji", "nelvin", "sindu"],
-        });
+        .status(200).json({ message: "sucessfully" ,data:"hell welcome to my world"});
     } catch (error) {
       next(error);
     }
@@ -184,8 +191,9 @@ export class AuthController {
           .status(400)
           .json({ message: "error occurred please try again" });
       }
-      return res.status(200).json({ isSend });
+      return res.status(200).json(isSend);
     } catch (error) {
+      console.log("HEY NITHIN JOIJI THIS MY HOMe");
       next(error);
     }
   };
@@ -242,6 +250,10 @@ export class AuthController {
         }
 
        const isPasswordChanged:boolean=await this.authService.isEmailChangePassword(isEmailExist.email,password)
+
+       if(!isPasswordChanged){
+        return  res.status(404).json({message:"something went wrong please try after sometime.."})
+       }
 
        return  res
        .status(200)

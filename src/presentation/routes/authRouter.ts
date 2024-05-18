@@ -14,6 +14,8 @@ import {
 } from "../validators/authValidator";
 import { AuthController } from "../controllers/authController";
 
+import rateLimitMiddleware from "../utils/rateLimiter";
+
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
 const mailer = new Mailer();

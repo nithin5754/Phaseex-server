@@ -1,4 +1,5 @@
 import { User } from "../Entities/Users";
+import { TokenGenerateProps } from "../External- Libraries/token";
 
 interface IAuthUserService {
   tempRegisterAndSendOtp(data: User): Promise<User>;
@@ -9,7 +10,7 @@ interface IAuthUserService {
 
   isEmailChangePassword(email:string,password:string):Promise<boolean>
 
-   generateToken(userId: string,roles:string[]): {
+   generateToken(userId:string): {
     accessToken: string;
     refreshToken: string;
   };
@@ -17,7 +18,7 @@ interface IAuthUserService {
   generateAccessToken(userId:string):string
 
   isEmailExist(email:string):Promise<User|null>
-
+  findUserById(_id:string):Promise<User|null>
   isTokenVerified(token:string):Promise<boolean>
   
   createAndSendOtpForgot(userData:User):Promise<User|null>

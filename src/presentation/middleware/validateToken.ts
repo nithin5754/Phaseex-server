@@ -18,7 +18,7 @@ export const verifyJWT=(req:Request,res:Response,next:NextFunction)=>{
 
   const authHeader=req.headers.authorization
 
-  console.log(authHeader,"unauthorized");
+  console.log(authHeader,"unauthorized king");
   
 
 
@@ -34,10 +34,11 @@ export const verifyJWT=(req:Request,res:Response,next:NextFunction)=>{
 
     if (typeof decodedToken !== 'string' && decodedToken.userId) {
       req.userId = decodedToken.userId;
-   
-      next();
+       console.log("is verified");
+       
+      next();  
     } else {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+      return res.status(403).json({ message: 'Forbidden' });
     }
   
 

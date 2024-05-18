@@ -7,6 +7,7 @@ import { IBcrypt } from "../Interfaces/IBcrypt";
 import { IMailer } from "../Interfaces/IMailer";
 import { IGenerateOtp } from "../Interfaces/IGenerateOtp";
 import { IToken } from "../Interfaces/IToken";
+import { TokenGenerateProps } from "../External- Libraries/token";
 
 
 export class AuthServices implements IAuthUserService {
@@ -30,6 +31,10 @@ export class AuthServices implements IAuthUserService {
     this.generateOtp = generateOtp;
     this.token=token
  
+  }
+  async findUserById(_id: string): Promise<User | null> {
+    let found=await this.authRepository.findById(_id)
+    return found
   }
   async verifyResendOtp( email: string):Promise<boolean>{
      
@@ -113,18 +118,19 @@ export class AuthServices implements IAuthUserService {
   }
 
 
-  generateAccessToken(userId: string): string {
+  generateAccessToken(userId:string): string {
     return this.token.accessTokenGenerator(userId)
   }
   verifyRefreshToken(token: string) {
      return this.token.verifyRefreshToken(token)
   }
 
-  generateToken(foundUser:string,roles:string[]):{
+
+  generateToken(userId:string):{
     accessToken:string;
     refreshToken:string
   }{
-    return this.token.generateTokens(foundUser,roles)
+    return this.token.generateTokens(userId)
   }
 
  async isEmailExist(email: string): Promise<User|null> {

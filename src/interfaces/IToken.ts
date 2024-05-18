@@ -1,9 +1,10 @@
+// import { TokenGenerateProps } from "../External- Libraries/token";
 
 
 
 export interface IToken {
 
-  generateTokens(userId:string,roles:string[]):{
+  generateTokens(userId:string):{
     accessToken:string;
     refreshToken:string
   };

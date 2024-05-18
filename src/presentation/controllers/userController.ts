@@ -51,11 +51,13 @@ export class UserController {
       const { otp, tokenId } = req.body;
       let verify_token: string = tokenId;
       const response = await this.authService.verifyNewUser(otp, verify_token);
+      if(!response){
+        return res
+        .status(404)
+        .json({ message: "error occur please try again ,later" });
+      }
 
-      res.status(200).json({
-        data: response?.userName,
-        message: "User Created and signed in  Successfully",
-      });
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -119,12 +121,14 @@ export class UserController {
       let updateTempUserDate=isUpdateDateExist?.updatedAt
       console.log(updateTempUserDate,"time fdate get from backend ");
       
-
-      return res.status(200).json({message:"successfully ",updateDate:updateTempUserDate})
+           
+      return res.status(200).json({updateDate:updateTempUserDate})
       } catch (error) {
         next(error)
       }
     
   }
+
+
 
 }

@@ -11,7 +11,7 @@ import cors from 'cors'
 
 export default function expressConfig(app:Application,config:ConfigType){
   app.use(cors({
-    origin: ['http://localhost:3000','http://localhost:5173'],
+    origin: ['http://localhost:3000','http://localhost:5173','http://localhost:5174'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }))

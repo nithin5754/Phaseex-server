@@ -1,74 +1,60 @@
 
 
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
-interface Owner {
-  _id: Types.ObjectId;
- 
-}
-interface Collaborator  {
-  assignee:Types.ObjectId; 
-  role: string;
- 
-}
+const WorkspaceSchema = new Schema(
+  {
+    workspaceOwner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
 
-export interface WorkSpaceDocument extends Document {
-    workspace_name:string;
-    workspace_description:string
-    workSpace_owner:Owner;
-    workspace_collaborators:Collaborator[];
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-const WorkSpaceSchema: Schema<WorkSpaceDocument> = new mongoose.Schema({
-  workspace_name: {
-    type: String,
-  
-  },
-  workspace_description: {
-    type: String,
-
-  },
-  workSpace_owner: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref: 'User',
- 
-  },
-  workspace_collaborators: [{
-    assignee: {
-      type:mongoose.Schema.Types.ObjectId,
-      ref: 'User' 
     },
-    role: {
+    title: { type: String, required: true },
+    workspace_description:{ type: String, required: true },
+    collaborators: [{
+      assignee: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      },
+      role: {
+        type: String
+      }
+    }],
+    workspaceType: {
       type: String,
-      required: true
-    }
-  }],
-    createdAt: {
-        type: Date,
-        default: Date.now,
+      enum: ["private", "shared"],
+      default: "private",
+    
     },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
+    createdAt: {
+              type: Date,
+              default: Date.now,
+          },
+          updatedAt: {
+              type: Date,
+              default: Date.now
+          }
+  },
+  { timestamps: true }
+);
 
-});
 
 
-WorkSpaceSchema.pre('save', function (next) {
+
+
+WorkspaceSchema.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
 });
 
-WorkSpaceSchema.set('toJSON', {
+WorkspaceSchema.set('toJSON', {
     transform: function (doc, ret) {
         delete ret.password;
         delete ret.__v;
     },
 });
 
-const WorkSpace = mongoose.model<WorkSpaceDocument>('WorkSpace', WorkSpaceSchema);
 
-export default WorkSpace;
+
+
+export const Workspace =mongoose.model("Workspace", WorkspaceSchema);
