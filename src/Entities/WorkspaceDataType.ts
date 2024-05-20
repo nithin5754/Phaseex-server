@@ -12,6 +12,7 @@ export interface WorkspaceDataType {
   workspace_description:string
   collaborators:CollaboratorType[]; 
   workspaceType: string;
+  active:boolean;
   createdAt:Date,
   updatedAt:Date
 }

@@ -1,5 +1,3 @@
-
-
 import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
@@ -12,7 +10,6 @@ import { GenerateOtp } from "../../External- Libraries/generateOtp";
 import { Token } from "../../External- Libraries/token";
 import { SpaceService } from "../../Services/spaceService";
 import { workSpaceRepository } from "../../frameworks/database/mongodb/repository/workspaceRepository";
-
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -28,24 +25,32 @@ const services = new AuthServices(
   token
 );
 
-const spaceRepository=new workSpaceRepository()
+const spaceRepository = new workSpaceRepository();
 
-const spaceService=new SpaceService(spaceRepository)
+const spaceService = new SpaceService(spaceRepository);
 
-const controller=new WorkSpaceController(services,spaceService)
+const controller = new WorkSpaceController(services, spaceService);
 
 const spaceRoutes = (router: Router) => {
+  router.use(verifyJWT);
+  router
+    .route("/workspace")
+    .get(controller.onGetAllWorkSpaceByUser.bind(controller))
+    .post(controller.onCreateNewSpace.bind(controller));
 
- router.use(verifyJWT)
- router.route('/workspace')
- .get(controller.onGetAllWorkSpaceByUser.bind(controller))
- .post(controller.onCreateNewSpace.bind(controller))
+  router
+    .route("/workspace-visiblity")
+    .post(controller.onChangeVisibility.bind(controller));
 
+  router
+    .route("/ongoing-workspace")
+    .get(controller.onGoingWorkSpace.bind(controller));
 
+    router
+    .route('/allInactive-workspace')
+    .get(controller.onInActiveCount.bind(controller))
 
-  return router
-
-}
-
+  return router;
+};
 
 export default spaceRoutes;

@@ -11,9 +11,23 @@ export class SpaceService implements ISpaceService {
     this.spaceRepository=spaceRepository
 
   }
-  getAllSpaceByUser(workspaceOwner: string): Promise<WorkspaceDataType[] | null> {
+  async getCountInActive(workspaceOwner: string): Promise<number> {
+    let response=await this.spaceRepository.findAllByUserLength(workspaceOwner) 
+    return response
+   
+
+  }
+ async getAllOnGoingSpace(workspaceOwner: string): Promise<WorkspaceDataType[] | null> {
+
+  return this.spaceRepository.findAllOnGoing(workspaceOwner)
+         
+  }
+  changeVisible(id: string, workspaceOwner: string):Promise<boolean>  {
+      return this.spaceRepository.changeVisibility(id,workspaceOwner)
+  }
+  getAllSpaceByUser(workspaceOwner: string,pageId:number,limit:number): Promise<WorkspaceDataType[] | null> {
      
-    return this.spaceRepository.findAllByUser(workspaceOwner)
+    return this.spaceRepository.findAllByUser(workspaceOwner,pageId,limit)
   }
 
   async createSpace(data: Partial<WorkspaceDataType>): Promise<WorkspaceDataType> {

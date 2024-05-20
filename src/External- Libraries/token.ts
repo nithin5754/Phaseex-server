@@ -19,7 +19,7 @@ export class Token implements IToken{
 
   accessTokenGenerator(userId:string): string {
     const accessToken = jwt.sign( {userId},this.jwt_key, {
-      expiresIn:'10s' 
+      expiresIn:'1m' 
   });
 
   return accessToken;
@@ -28,7 +28,7 @@ export class Token implements IToken{
   generateTokens(userId:string): { accessToken: string; refreshToken: string; } {
 
     const accessToken=jwt.sign({userId},this.jwt_key,{
-      expiresIn:'10s'
+      expiresIn:'1m'
     })
     const refreshToken=jwt.sign({userId},this.refresh_secret,{
       expiresIn:'1d'
