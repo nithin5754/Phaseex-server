@@ -1,20 +1,24 @@
 import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
 
+interface ISpaceService {
+  createSpace(data: Partial<WorkspaceDataType>): Promise<WorkspaceDataType>;
 
+  getAllSpaceByUser(
+    workspaceOwner: string,
+    pageId: number,
+    limit: number
+  ): Promise<WorkspaceDataType[] | null>;
 
-interface ISpaceService{
-    createSpace(data:Partial<WorkspaceDataType>):Promise<WorkspaceDataType>
+  getAllOnGoingSpace(
+    workspaceOwner: string
+  ): Promise<WorkspaceDataType[] | null>;
+  changeVisible(id: string, workspaceOwner: string): Promise<boolean>;
 
-    getAllSpaceByUser(workspaceOwner:string,pageId:number,limit:number): Promise<WorkspaceDataType[] | null>
+  getCountInActive(workspaceOwner: string): Promise<number>;
 
-    getAllOnGoingSpace(workspaceOwner:string): Promise<WorkspaceDataType[] | null>
-    changeVisible(id:string,workspaceOwner: string):Promise<boolean>
-
-    getCountInActive(workspaceOwner: string): Promise<number>
-
-    getSingleWorkSpace(workspace_id:string):Promise<WorkspaceDataType|null>
-    
+  getSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null>;
+  getWorkSpaceByName(title: string): Promise<boolean>;
+ 
 }
 
-
-export default ISpaceService
+export default ISpaceService;

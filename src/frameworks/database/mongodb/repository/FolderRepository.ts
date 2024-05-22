@@ -15,6 +15,38 @@ import moment from "moment";
 //   updatedAt:Date
 // }
 export class FolderRepository implements IFolderRepository {
+ async updateFolder(data: Partial<FolderDataType>, folderId: string): Promise<FolderDataType | null> {
+    const response = await FolderModal.findByIdAndUpdate({_id:folderId}, data, { new: true });
+    console.log(response,"is updated");
+
+    
+    if (response) {
+      let responseData: FolderDataType = {
+        id: response._id.toString() as string,
+        folder_title: response.folder_title,
+        workspaceId: response.workspaceId?.toString() as string,
+        folder_description: response.folder_description,
+        createdAt:moment(response.createdAt).format('MMMM D, YYYY - h:mm A'),
+        updatedAt:moment(response.updatedAt).format('MMMM D, YYYY - h:mm A'),
+      };
+      return responseData;
+    } else {
+      return null;
+    }
+    
+  }
+
+
+
+
+ async  findDuplicateFolder(folder_title: string, workspaceId: string): Promise<boolean> {
+  const response=await FolderModal.find({folder_title,workspaceId})
+  console.log(response,"is yest db")
+  if(response.length>0){
+     return true
+  }
+ return false
+  }
  async getAllFolder(workspaceId: string): Promise<FolderDataType[] | null> {
        
           let response=await FolderModal.find({workspaceId}).sort({ createdAt: -1 })
@@ -56,7 +88,21 @@ export class FolderRepository implements IFolderRepository {
       return null;
     }
   }
-  findByIdFolder(id: string): Promise<FolderDataType> {
-    throw new Error("Method not implemented.");
+ async findByIdFolder(spaceId: string,folderId:string): Promise<FolderDataType|null> {
+     
+    let response=await FolderModal.findOne({_id:folderId,workspaceId:spaceId})
+
+    if(response){
+      let responseData: FolderDataType = {
+        id: response._id.toString() as string,
+        folder_title: response.folder_title,
+        workspaceId: response.workspaceId?.toString() as string,
+        folder_description: response.folder_description,
+        createdAt:moment(response.createdAt).format('MMMM D, YYYY - h:mm A'),
+        updatedAt:moment(response.updatedAt).format('MMMM D, YYYY - h:mm A'),
+      }
+      return responseData
+    }
+    return null
   }
 }

@@ -3,6 +3,15 @@ import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 
 export class workSpaceRepository implements ISpaceRepository {
+  async findWorkSpaceByName(title: string): Promise<boolean> {
+      
+    const response=await workspaceModal.find({title})
+    console.log(response,"is yest db")
+    if(response.length>0){
+       return true
+    }
+   return false
+  }
  async findSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null> {
    const workspace=await workspaceModal.findById(workspace_id) 
    if(workspace){

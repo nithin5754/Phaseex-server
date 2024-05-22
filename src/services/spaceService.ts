@@ -11,6 +11,13 @@ export class SpaceService implements ISpaceService {
     this.spaceRepository=spaceRepository
 
   }
+  async getWorkSpaceByName(title: string): Promise<boolean> {
+      const response=await this.spaceRepository.findWorkSpaceByName(title)
+      if(response){
+        return true
+      }
+      return false
+  }
   async getSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null> {
        let response=await this.spaceRepository.findSingleWorkSpace(workspace_id)
        if(response){

@@ -9,8 +9,11 @@ export interface IFolderRepository {
    
 createFolder(data:Partial<FolderDataType>):Promise<FolderDataType|null>
 getAllFolder(workspaceId:string):Promise<FolderDataType[]|null>
-findByIdFolder(id:string):Promise<FolderDataType>
-  
+findByIdFolder(spaceId: string,folderId:string):Promise<FolderDataType|null>
+findDuplicateFolder(folder_title:string,workspaceId:string):Promise<boolean>
+
+updateFolder(data:Partial<FolderDataType>,folderId:string):Promise<FolderDataType|null>
+
 }
 
 

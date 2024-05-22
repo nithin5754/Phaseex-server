@@ -16,14 +16,26 @@ export class WorkSpaceController {
     next: NextFunction
   ) => {
 try {
-      // const {creator_id,workSpace_name,workspace_description,workspace_type}=req.body
+    const userId=req.userId
+  const {title}=req.body
+  const spaceData = { ...req.body, workspaceOwner: req.userId };
+  
+    if(!req.body){
+      return res.status(400).json({message:"something went wrong please try again!"})
+    }
 
-    //  let foundCreator=await this.authService.findUserById(creator_id)
-    //  if(!foundCreator){
-    //  return res.status(404).json({message:"something went wrong please try again later..."})
-    //  }
+     let foundCreator=await this.authService.findUserById(userId)
+     if(!foundCreator){
+     return res.status(404).json({message:"something went wrong please try again later..."})
+     }
 
-    const spaceData = { ...req.body, workspaceOwner: req.userId };
+    const isWorkSpaceExist=await this.spaceService.getWorkSpaceByName(title)
+    
+    if(isWorkSpaceExist){
+      console.log(isWorkSpaceExist,"yes exist dsfsdjhgfhsdjfnmsbfshjgfsbdfj");
+      return res.status(404).json({message:"space already exist"})
+    }
+
 
     const response = await this.spaceService.createSpace(spaceData);
 
