@@ -3,6 +3,32 @@ import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 
 export class workSpaceRepository implements ISpaceRepository {
+ async findSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null> {
+   const workspace=await workspaceModal.findById(workspace_id) 
+   if(workspace){
+    let singleWorkSpace:WorkspaceDataType={
+      collaborators: workspace.collaborators.map((collaborator:any) => ({
+        assigneeId: collaborator.assignee.toString(),
+        role: collaborator.role,
+      })),
+      id: workspace._id.toString() as string,
+      workspaceOwner: workspace.workspaceOwner?.toString() as string,
+      title: workspace.title,
+      workspace_description: workspace.workspace_description,
+      workspaceType: workspace.workspaceType,
+      active:workspace.active,
+      createdAt: workspace.createdAt,
+      updatedAt: workspace.updatedAt,
+    }
+    return singleWorkSpace
+   }
+
+   return null
+   
+  }
+
+
+
   async findAllByUserLength(workspaceOwner: string): Promise<number> {
        
       let response=await workspaceModal.find({workspaceOwner,active:false}).countDocuments()

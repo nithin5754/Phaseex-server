@@ -1,10 +1,5 @@
-
-
-
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../Interfaces/IAuthService";
-
-
 
 export class AuthController {
   private authService: IAuthUserService;
@@ -42,10 +37,11 @@ export class AuthController {
           message: "wrong credentials,try again ",
         });
       }
-    //  let roles:string[]=[...isUserExist.roles]
+      //  let roles:string[]=[...isUserExist.roles]
       if (isUserExist?._id) {
-        let userId=isUserExist._id
-        const { accessToken, refreshToken } = this.authService.generateToken(userId);
+        let userId = isUserExist._id;
+        const { accessToken, refreshToken } =
+          this.authService.generateToken(userId);
 
         console.log(accessToken);
 
@@ -73,7 +69,7 @@ export class AuthController {
 
   //@login
 
-   onRefresh = async (req: Request, res: Response, next: NextFunction) => {
+  onRefresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cookies = req.cookies;
 
@@ -89,20 +85,20 @@ export class AuthController {
 
       const userId = decodedToken.userId;
 
-      const foundUser=await  this.authService.findUserById(userId)
+      const foundUser = await this.authService.findUserById(userId);
 
-      if(!foundUser){
+      if (!foundUser) {
         return res.status(403).json({ message: "Invalid refresh token" });
       }
 
-      
-
-     if(foundUser._id){
-      let userId=foundUser._id
-      const accessToken = this.authService.generateAccessToken(userId);
-      return res.status(200).json({ accessToken: accessToken,data:foundUser });
-     }
-     return res.status(403).json({ message: "Invalid refresh token" });
+      if (foundUser._id) {
+        let userId = foundUser._id;
+        const accessToken = this.authService.generateAccessToken(userId);
+        return res
+          .status(200)
+          .json({ accessToken: accessToken, data: foundUser });
+      }
+      return res.status(403).json({ message: "Invalid refresh token" });
     } catch (error) {
       next(error);
     }
@@ -143,18 +139,16 @@ export class AuthController {
 
       const isAuthenticated = await this.authService.isTokenVerified(token);
       if (isAuthenticated) {
-        return res
-          .status(200)
-          .json({
-            message: "Token is valid",
-            isAuthenticated: isAuthenticated,
-          });
+        return res.status(200).json({
+          message: "Token is valid",
+          isAuthenticated: isAuthenticated,
+        });
       } else {
         return res.status(401).json({ message: "Invalid token" });
       }
     } catch (error) {
       console.log("HEY NITHIN JOIJI");
-      
+
       console.error("Error verifying token:", error);
       return res.status(403).json({ message: "Internal server error" });
     }
@@ -167,7 +161,8 @@ export class AuthController {
       console.log("welcome home");
 
       return res
-        .status(200).json({ message: "sucessfully" ,data:"hell welcome to my world"});
+        .status(200)
+        .json({ message: "sucessfully", data: "hell welcome to my world" });
     } catch (error) {
       next(error);
     }
@@ -216,52 +211,51 @@ export class AuthController {
       const verifyTheForgotPasswordCheck =
         this.authService.update_Verified_forgotPassWord(response);
 
-        if(!verifyTheForgotPasswordCheck){
-          return res
+      if (!verifyTheForgotPasswordCheck) {
+        return res
           .status(400)
           .json({ message: "error in verifying credentials please try later" });
-        }
+      }
 
       return res
         .status(200)
-        .json({ message: "successfully verified forgot otp" ,tokenId});
+        .json({ message: "successfully verified forgot otp", tokenId });
     } catch (error) {
       next(error);
     }
   };
 
-
-  changePasswordAfterVerification=async (
+  changePasswordAfterVerification = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-       const {password,tokenId}=req.body
+    const { password, tokenId } = req.body;
 
-       const isEmailExist=await this.authService.isTempTokenIDcheck(tokenId)
+    const isEmailExist = await this.authService.isTempTokenIDcheck(tokenId);
 
+    if (!isEmailExist) {
+      return res.status(404).json({ message: "user not found" });
+    }
 
-       if(!isEmailExist){
-       return  res.status(404).json({message:"user not found"})
-       }
-  
-       if(isEmailExist.forgotPassWord_verified!==true){
-        return  res.status(404).json({message:"please try later"})
-        }
+    if (isEmailExist.forgotPassWord_verified !== true) {
+      return res.status(404).json({ message: "please try later" });
+    }
 
-       const isPasswordChanged:boolean=await this.authService.isEmailChangePassword(isEmailExist.email,password)
+    const isPasswordChanged: boolean =
+      await this.authService.isEmailChangePassword(
+        isEmailExist.email,
+        password
+      );
 
-       if(!isPasswordChanged){
-        return  res.status(404).json({message:"something went wrong please try after sometime.."})
-       }
+    if (!isPasswordChanged) {
+      return res
+        .status(404)
+        .json({ message: "something went wrong please try after sometime.." });
+    }
 
-       return  res
-       .status(200)
-       .json({ message: "password successfully changed" ,isPasswordChanged});
-       
-
-
-  }
-
-
+    return res
+      .status(200)
+      .json({ message: "password successfully changed", isPasswordChanged });
+  };
 }

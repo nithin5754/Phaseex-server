@@ -38,6 +38,9 @@ const spaceRoutes = (router: Router) => {
     .get(controller.onGetAllWorkSpaceByUser.bind(controller))
     .post(controller.onCreateNewSpace.bind(controller));
 
+    router.route('/workspacedetails/:id')
+    .get(controller.onGetSingleWorkSpace.bind(controller))
+
   router
     .route("/workspace-visiblity")
     .post(controller.onChangeVisibility.bind(controller));

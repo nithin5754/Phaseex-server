@@ -15,7 +15,8 @@ export class WorkSpaceController {
     res: Response,
     next: NextFunction
   ) => {
-    // const {creator_id,workSpace_name,workspace_description,workspace_type}=req.body
+try {
+      // const {creator_id,workSpace_name,workspace_description,workspace_type}=req.body
 
     //  let foundCreator=await this.authService.findUserById(creator_id)
     //  if(!foundCreator){
@@ -26,9 +27,10 @@ export class WorkSpaceController {
 
     const response = await this.spaceService.createSpace(spaceData);
 
-
-
     return res.status(200).json(response);
+} catch (error) {
+  next(error)
+}
   };
 
   onGetAllWorkSpaceByUser = async (
@@ -39,17 +41,21 @@ export class WorkSpaceController {
     // const spaceOwner:string=req.body.spaceOwner
 
     const { pageId = 1 } = req.query;
-    let limit=6
+    let limit = 6;
 
     let spaceOwner = req.userId;
 
     try {
-      const response = await this.spaceService.getAllSpaceByUser(spaceOwner,Number(pageId),limit);
-   
+      const response = await this.spaceService.getAllSpaceByUser(
+        spaceOwner,
+        Number(pageId),
+        limit
+      );
+
       if (!response) {
         return res.status(404).json({ message: "response not found" });
       }
-      
+
       return res.status(200).json(response);
     } catch (error) {
       next(error);
@@ -62,7 +68,6 @@ export class WorkSpaceController {
     next: NextFunction
   ) => {
     let spaceOwner = req.userId;
-
 
     try {
       const response = await this.spaceService.getAllOnGoingSpace(spaceOwner);
@@ -81,37 +86,65 @@ export class WorkSpaceController {
     next: NextFunction
   ) => {
     const { id } = req.body;
-      try {
-        let workspaceOwner = req.userId;
+    try {
+      let workspaceOwner = req.userId;
 
-    
-    
-        const response = await this.spaceService.changeVisible(id, workspaceOwner);
-        if (!response) {
-          return res.status(404).json({ message: "error in changing visiblity" });
-        }
-        return res.status(200).json(response);
-      } catch (error) {
-        next(error)
+      const response = await this.spaceService.changeVisible(
+        id,
+        workspaceOwner
+      );
+      if (!response) {
+        return res.status(404).json({ message: "error in changing visiblity" });
       }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
   };
 
-  onInActiveCount = async (
+  onInActiveCount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let workspaceOwner: string = req.userId;
+      let allCount = await this.spaceService.getCountInActive(workspaceOwner);
+      if (!allCount) {
+        return res.status(404).json({ message: "something went wrong" });
+      }
+
+      return res.status(200).json({ count: allCount });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onGetSingleWorkSpace = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      let workspaceOwner:string=req.userId
-      let allCount=await this.spaceService.getCountInActive(workspaceOwner)    
-      if(!allCount){
+      let workspaceOwner: string = req.userId;
+      const workspaceId: string = req.params.id;
+      console.log(workspaceId, "single workspace id");
 
-        return res.status(404).json({ message: "something went wrong" });
+      if (!workspaceId) {
+        return res.status(404).json({ message: "credentials missing" });
       }
-      
-      return res.status(200).json({count:allCount});
+
+      let isOwnerExist = await this.authService.findUserById(workspaceOwner);
+      if (!isOwnerExist) {
+        return res.status(404).json({ message: "user not found" });
+      }
+
+      let singleWorkSpace = await this.spaceService.getSingleWorkSpace(
+        workspaceId
+      );
+      if (!singleWorkSpace) {
+        return res.status(404).json({ message: "workspace not found" });
+      }
+
+      return res.status(200).json(singleWorkSpace);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
 }

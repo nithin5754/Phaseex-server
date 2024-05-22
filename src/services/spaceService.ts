@@ -11,6 +11,13 @@ export class SpaceService implements ISpaceService {
     this.spaceRepository=spaceRepository
 
   }
+  async getSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null> {
+       let response=await this.spaceRepository.findSingleWorkSpace(workspace_id)
+       if(response){
+        return response
+       }
+       return null
+  }
   async getCountInActive(workspaceOwner: string): Promise<number> {
     let response=await this.spaceRepository.findAllByUserLength(workspaceOwner) 
     return response

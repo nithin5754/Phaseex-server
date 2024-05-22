@@ -11,6 +11,8 @@ interface ISpaceService{
     changeVisible(id:string,workspaceOwner: string):Promise<boolean>
 
     getCountInActive(workspaceOwner: string): Promise<number>
+
+    getSingleWorkSpace(workspace_id:string):Promise<WorkspaceDataType|null>
     
 }
 

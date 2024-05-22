@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../Interfaces/IAuthService";
 import { AuthServices } from "../../Services/AuthServices";
 
-
 export class UserController {
   private authService: IAuthUserService;
 
@@ -51,10 +50,10 @@ export class UserController {
       const { otp, tokenId } = req.body;
       let verify_token: string = tokenId;
       const response = await this.authService.verifyNewUser(otp, verify_token);
-      if(!response){
+      if (!response) {
         return res
-        .status(404)
-        .json({ message: "error occur please try again ,later" });
+          .status(404)
+          .json({ message: "error occur please try again ,later" });
       }
 
       res.status(200).json(response);
@@ -63,72 +62,88 @@ export class UserController {
     }
   };
 
-
-
-
-  resendOtp=async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  resendOtp = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tokenId: string = req.body.tokenId
+      const tokenId: string = req.body.tokenId;
 
-      console.log(tokenId,"token verified");
-      
+      console.log(tokenId, "token verified");
 
-      let isEmailExist=await this.authService.isTempTokenIDcheck(tokenId)
+      let isEmailExist = await this.authService.isTempTokenIDcheck(tokenId);
 
-      if(!isEmailExist){
-       return res.status(404).json({message:"credentials not found! please try again later"})
+      if (!isEmailExist) {
+        return res
+          .status(404)
+          .json({ message: "credentials not found! please try again later" });
       }
-      let email:string=isEmailExist?.email as string
- 
-      let isOtpChanged=this.authService.verifyResendOtp(email)
-      if(!isOtpChanged){
-       return res.status(404).json({message:"credentials not found! please try again later"})
-      }
+      let email: string = isEmailExist?.email as string;
 
-      let isEmailExistAfterOtp=await this.authService.isTempTokenIDcheck(tokenId)
-
-      if(!isEmailExistAfterOtp){
-        return res.status(404).json({message:"credentials not found! please try again later"})
+      let isOtpChanged = this.authService.verifyResendOtp(email);
+      if (!isOtpChanged) {
+        return res
+          .status(404)
+          .json({ message: "credentials not found! please try again later" });
       }
 
-      
+      let isEmailExistAfterOtp = await this.authService.isTempTokenIDcheck(
+        tokenId
+      );
 
-      return res.status(200).json({message:"resend otp successfully created",updateDate:isEmailExistAfterOtp?.updatedAt,authId:isEmailExist?.verify_token})
+      if (!isEmailExistAfterOtp) {
+        return res
+          .status(404)
+          .json({ message: "credentials not found! please try again later" });
+      }
 
+      return res
+        .status(200)
+        .json({
+          message: "resend otp successfully created",
+          updateDate: isEmailExistAfterOtp?.updatedAt,
+          authId: isEmailExist?.verify_token,
+        });
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
 
-  onUpdateDateTempUser=async (
+  onUpdateDateTempUser = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-      const tokenId=req.body.tokenId
-    
-      try {
-        const isUpdateDateExist=await this.authService.isTempTokenIDcheck(tokenId)
+    const tokenId = req.body.tokenId;
 
-      if(!isUpdateDateExist){
-        return res.status(404).json({message:"timer is not found"})
+    try {
+      const isUpdateDateExist = await this.authService.isTempTokenIDcheck(
+        tokenId
+      );
+
+      if (!isUpdateDateExist) {
+        return res.status(404).json({ message: "timer is not found" });
       }
 
-      let updateTempUserDate=isUpdateDateExist?.updatedAt
-      console.log(updateTempUserDate,"time fdate get from backend ");
-      
-           
-      return res.status(200).json({updateDate:updateTempUserDate})
-      } catch (error) {
-        next(error)
+      let updateTempUserDate = isUpdateDateExist?.updatedAt;
+      console.log(updateTempUserDate, "time fdate get from backend ");
+
+      return res.status(200).json({ updateDate: updateTempUserDate });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onfindLoginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let userID: string = req.userId;
+
+      const getName = await this.authService.findUserById(userID);
+      if (!getName) {
+        return res.status(404).json({ message: "not found" });
       }
-    
-  }
+      console.log(getName, "owner name");
 
-
-
+      return res.status(200).json(getName);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

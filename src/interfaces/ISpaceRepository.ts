@@ -11,6 +11,7 @@ import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
   findAllByUserLength(workspaceOwner:string):Promise<number>
   findAllOnGoing(workspaceOwner:string): Promise<WorkspaceDataType[] | null>
   changeVisibility(id:string,workspaceOwner: string): Promise<boolean>
+  findSingleWorkSpace(workspace_id:string):Promise<WorkspaceDataType|null>
 }
 
 

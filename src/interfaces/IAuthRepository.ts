@@ -9,7 +9,7 @@ export interface IAuthRepository {
     findByEmail(email:string):Promise<User|null>
     findByEmailFromTemp(email:string):Promise<User|null>
     findEmailFromTokenId(tokenId:string):Promise<User|null>
-
+    
     findEmailAndChangePassword(email:string,hashedNewPassword:string):Promise<boolean>
     resendToOtp(otp:string,email:string):Promise<boolean>
 

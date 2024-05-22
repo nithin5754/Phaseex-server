@@ -1,6 +1,3 @@
-
-
-
 import { Request, Response, Router } from "express";
 import { AuthRepository } from "../../frameworks/database/mongodb/repository/authRepository";
 import { Bcrypt } from "../../External- Libraries/bcrypt";
@@ -11,32 +8,35 @@ import { AuthServices } from "../../Services/AuthServices";
 import { UserController } from "../controllers/userController";
 import { validateRegisterUser } from "../validators/authValidator";
 
+const repository = new AuthRepository();
+const bcrypt = new Bcrypt();
+const mailer = new Mailer();
+const generateOtp = new GenerateOtp();
+const token = new Token();
 
-
-
-
-const repository=new AuthRepository()
-const bcrypt=new Bcrypt()
-const mailer=new Mailer()
-const generateOtp=new GenerateOtp()
-const token=new Token()
-
-
-const services = new AuthServices(repository,bcrypt,mailer,generateOtp,token);
-
+const services = new AuthServices(
+  repository,
+  bcrypt,
+  mailer,
+  generateOtp,
+  token
+);
 
 const controller = new UserController(services);
 
 const userRouter = (router: Router) => {
-  router.route('/register').post(validateRegisterUser,controller.onRegisterUser.bind(controller));
-  router.route('/verify').post(controller.OnVeryOtpAndRegister.bind(controller))
-  router.route('/get-timer-date').post(controller.onUpdateDateTempUser.bind(controller))
-  router.route('/resendOtp').post(controller.resendOtp.bind(controller))
+  router
+    .route("/register")
+    .post(validateRegisterUser, controller.onRegisterUser.bind(controller));
+  router
+    .route("/verify")
+    .post(controller.OnVeryOtpAndRegister.bind(controller));
+  router
+    .route("/get-timer-date")
+    .post(controller.onUpdateDateTempUser.bind(controller));
+  router.route("/resendOtp").post(controller.resendOtp.bind(controller));
+  router.route("/getUserName").get(controller.onfindLoginUser.bind(controller));
   return router;
-}
+};
 
-
-
-
-export default userRouter
-
+export default userRouter;
