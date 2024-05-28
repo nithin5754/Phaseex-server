@@ -4,16 +4,10 @@ import { Folder as FolderModal } from "../models/FolderModal";
 import moment from "moment";
 
 
+    
 
 
-// export interface FolderDataType {
-//   id:string
-//   folder_title:string,
-//   folder_description:string,
-//   workspaceId:string,
-//   createdAt:Date,
-//   updatedAt:Date
-// }
+
 export class FolderRepository implements IFolderRepository {
  async updateFolder(data: Partial<FolderDataType>, folderId: string): Promise<FolderDataType | null> {
     const response = await FolderModal.findByIdAndUpdate({_id:folderId}, data, { new: true });

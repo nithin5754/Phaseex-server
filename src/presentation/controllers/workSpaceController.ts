@@ -17,7 +17,10 @@ export class WorkSpaceController {
   ) => {
 try {
     const userId=req.userId
-  const {title}=req.body
+  const title:string=req.body.title.toLowerCase()
+  console.log(title);
+  
+ 
   const spaceData = { ...req.body, workspaceOwner: req.userId };
   
     if(!req.body){

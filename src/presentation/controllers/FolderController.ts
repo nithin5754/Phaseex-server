@@ -51,7 +51,7 @@ export class FolderController {
       let data = await this.folderService.getAllFolderByWorkSpaceId(
         workspaceId
       );
-      console.log(data, "folder all");
+ 
 
       if (!data) {
         return res.status(404).json({ message: "not found" });
@@ -65,7 +65,7 @@ export class FolderController {
   onGetFolderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { spaceId, folderId } = req.query;
-      console.log(spaceId, folderId, "hey got it");
+   
 
       if (!spaceId && !folderId) {
         return res.status(404).json({ message: "something went wrong" });

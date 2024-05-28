@@ -40,8 +40,8 @@ export class workSpaceRepository implements ISpaceRepository {
 
   async findAllByUserLength(workspaceOwner: string): Promise<number> {
        
-      let response=await workspaceModal.find({workspaceOwner,active:false}).countDocuments()
-      console.log(response,typeof response,"count");
+      let response=await workspaceModal.countDocuments({workspaceOwner,active:false})
+
     
         return response
     
@@ -96,6 +96,9 @@ return false
   }
   async findAllByUser(workspaceOwner: string,pageId:number,limit:number): Promise<WorkspaceDataType[] | null> {
     const skip = (pageId - 1) * limit;
+    const total=await workspaceModal.countDocuments({active:false})
+    console.log(total,"count of the document");
+    
     let response=await workspaceModal.find({workspaceOwner,active:false })
     .sort({ createdAt: -1 }).skip(skip).limit(limit)
 
