@@ -20,6 +20,9 @@ const listRoutes = (router: Router) => {
     .route("/update-date-list/:listId")
     .patch(controller.onUpdateListDate.bind(controller));
 
+    router.route('/get-single-list')
+    .get(controller.onGetSingleList.bind(controller))
+
   return router;
 };
 

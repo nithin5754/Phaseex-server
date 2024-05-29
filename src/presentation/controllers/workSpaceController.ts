@@ -27,6 +27,10 @@ try {
       return res.status(400).json({message:"something went wrong please try again!"})
     }
 
+    if (!title.trim() ||!req.body.workspace_description.trim()) {
+      return res.status(404).json({ message: "full space invalid" });
+    }
+
      let foundCreator=await this.authService.findUserById(userId)
      if(!foundCreator){
      return res.status(404).json({message:"something went wrong please try again later..."})

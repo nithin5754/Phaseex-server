@@ -10,6 +10,15 @@ export class ListService implements IListService {
   constructor(listRepository: IListRepository) {
     this.listRepository = listRepository;
   }
+ async getSingleList(workspaceId: string, folderId: string, listId: string): Promise<ListDataType | null> {
+     let response=await this.listRepository.singleList(workspaceId,folderId,listId)
+
+     if(response){
+      return response
+     }
+
+     return null
+  }
  async getUpdateListDate(
     workspaceId: string,
     folderId: string,

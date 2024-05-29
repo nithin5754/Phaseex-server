@@ -15,4 +15,5 @@ export interface IListService {
   getUpdatePriority(workspaceId:string,folderId:string,listId:string,priority:string):Promise<boolean>
 
   getUpdateListDate(workspaceId:string,folderId:string,listId:string,list_start_date:string,list_due_date:string):Promise<boolean>
+  getSingleList(workspaceId:string,folderId:string,listId:string):Promise<ListDataType|null>
 }

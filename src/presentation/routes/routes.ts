@@ -5,6 +5,7 @@ import userRouter from "./userRoutes";
 import spaceRoutes from "./spaceRoutes";
 import folderRoutes from "./folderRoutes";
 import listRoutes from "./listRoutes";
+import taskRoutes from "./taskRoutes";
 
 
 
@@ -15,6 +16,7 @@ export const routes = (app: Application, router: Router) => {
   app.use("/api/v1/space", spaceRoutes(router));
   app.use("/api/v1/folder", folderRoutes(router));
   app.use('/api/v1/list',listRoutes(router))
+  app.use('/api/v1/task',taskRoutes(router))
 };
 
 export default routes;

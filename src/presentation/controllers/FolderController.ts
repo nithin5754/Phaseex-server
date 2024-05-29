@@ -19,6 +19,10 @@ export class FolderController {
     let spaceOwner = req.userId;
     const { folder_title, workspaceId } = req.body;
 
+    if (!folder_title.trim() ||!req.body.folder_description.trim()) {
+      return res.status(404).json({ message: "full space invalid" });
+    }
+
     try {
       let isFolderExist = await this.folderService.getDuplicateFolder(
         folder_title,
@@ -90,6 +94,11 @@ export class FolderController {
       const { folderData, folderId } = req.body;
 
       console.log(folderData, folderId, "my folders");
+
+      
+    if (!folderData.folder_title.trim() ||!folderData.folder_description.trim()) {
+      return res.status(404).json({ message: "full space invalid" });
+    }
 
       let spaceId = folderData.workspaceId;
 

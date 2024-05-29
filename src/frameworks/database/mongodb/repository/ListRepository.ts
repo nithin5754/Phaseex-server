@@ -8,6 +8,43 @@ import { List as ListModal } from "../models/ListModal";
 import moment from "moment";
 
 export class ListRepository implements IListRepository {
+ async listExistById(workspaceId: string, folderId: string, listId: string): Promise<Boolean> {
+    let response = await ListModal.findOne({
+      workspaceId,
+      folderId,
+      _id:listId,
+    });
+
+    if (response && response._id) {
+      return true;
+    }
+
+    return false;
+  }
+  async singleList(workspaceId: string, folderId: string, listId: string): Promise<ListDataType | null> {
+   
+const response=await ListModal.findOne({workspaceId,folderId,_id:listId})
+
+if(response){
+  let responseData:ListDataType={
+    id: response._id.toString() as string,
+    workspaceId: response.workspaceId?.toString() as string,
+    list_description: response.list_description!,
+    list_title: response.list_title!,
+    createdAt: moment(response.createdAt).format("MMMM D, YYYY - h:mm A"),
+    updatedAt: moment(response.updatedAt).format("MMMM D, YYYY - h:mm A"),
+    priority_list: response.priority_list,
+    folderId: response.folderId?.toString() as string,
+    list_start_date: response.list_start_date!,
+    list_due_date: response.list_due_date!,
+  }
+  return responseData
+}
+
+return null
+
+      
+  }
 async  updateListDate(
     workspaceId: string,
     folderId: string,
