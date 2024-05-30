@@ -15,10 +15,6 @@ export class ListController {
         return res.status(404).json({ message: "full space invalid" });
       }
 
-      if (!req.body.task_title.trim() || !req.body.task_description.trim()) {
-        return res.status(404).json({message:"full space invalid "})
-      }
-
       let isDuplicateList = await this.listService.isListExist(
         workspaceId,
         folderId,
