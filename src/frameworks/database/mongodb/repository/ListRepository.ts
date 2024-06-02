@@ -1,13 +1,22 @@
 import { ListDataType } from "../../../../Entities/List";
 import {
   IListRepository,
-  ListDataTypePage,
+
 } from "../../../../Interfaces/IListRepository";
 
 import { List as ListModal } from "../models/ListModal";
 import moment from "moment";
 
 export class ListRepository implements IListRepository {
+ async updateProgressTask(workspaceId: string, folderId: string, listId: string,percentage:number): Promise<boolean> {
+    
+      let updateProgress=await ListModal.findOneAndUpdate(
+        { workspaceId, folderId, _id: listId },
+        { $set: { progressTask: percentage} },
+        { new: true }
+      );
+   return !!updateProgress
+  }
  async listExistById(workspaceId: string, folderId: string, listId: string): Promise<Boolean> {
     let response = await ListModal.findOne({
       workspaceId,
@@ -31,6 +40,7 @@ if(response){
     workspaceId: response.workspaceId?.toString() as string,
     list_description: response.list_description!,
     list_title: response.list_title!,
+    progressTask:response.progressTask,
     createdAt: moment(response.createdAt).format("MMMM D, YYYY - h:mm A"),
     updatedAt: moment(response.updatedAt).format("MMMM D, YYYY - h:mm A"),
     priority_list: response.priority_list,
@@ -106,6 +116,7 @@ async  updateListDate(
         workspaceId: list.workspaceId?.toString() as string,
         list_description: list.list_description!,
         list_title: list.list_title!,
+        progressTask:list.progressTask,
         createdAt: moment(list.createdAt).format("MMMM D, YYYY - h:mm A"),
         updatedAt: moment(list.updatedAt).format("MMMM D, YYYY - h:mm A"),
         priority_list: list.priority_list,
@@ -132,6 +143,7 @@ async  updateListDate(
         workspaceId: list.workspaceId?.toString() as string,
         list_description: list.list_description!,
         list_title: list.list_title!,
+        progressTask:list.progressTask,
         createdAt: moment(list.createdAt).format("MMMM D, YYYY - h:mm A"),
         updatedAt: moment(list.updatedAt).format("MMMM D, YYYY - h:mm A"),
         priority_list: list.priority_list,
@@ -183,6 +195,7 @@ async  updateListDate(
         workspaceId: newList.workspaceId?.toString() as string,
         list_description: newList.list_description!,
         list_title: newList.list_title!,
+        progressTask:newList.progressTask,
         createdAt: moment(newList.createdAt).format("MMMM D, YYYY - h:mm A"),
         updatedAt: moment(newList.updatedAt).format("MMMM D, YYYY - h:mm A"),
         priority_list: newList.priority_list,

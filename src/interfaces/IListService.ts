@@ -16,4 +16,7 @@ export interface IListService {
 
   getUpdateListDate(workspaceId:string,folderId:string,listId:string,list_start_date:string,list_due_date:string):Promise<boolean>
   getSingleList(workspaceId:string,folderId:string,listId:string):Promise<ListDataType|null>
+
+
+
 }

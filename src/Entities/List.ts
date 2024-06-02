@@ -5,6 +5,7 @@ export interface ListDataType {
   list_title:string,
   list_description:string,
   workspaceId:string,
+  progressTask:number
   priority_list:string
   list_start_date:string,
   list_due_date:string,

@@ -24,6 +24,7 @@ const ListSchema = new Schema(
     
     },
     list_start_date: { type: String  },
+   progressTask: { type: Number,default:0  },
     list_due_date: { type: String  },
     list_title: { type: String  },
     list_description:{ type: String },

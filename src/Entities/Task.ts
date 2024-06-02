@@ -19,10 +19,8 @@ export interface TaskType {
   listId:string;
   priority_task:string;
   status_task:string;
-  task_start_date:string;
-  task_due_date:string;
   task_description:string;
-  task_due:number;
+
   task_activity:Array<string>;
   task_attachment:TaskAttachmentType[];
   task_collaborators:TaskCollaboratorType[];

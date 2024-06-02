@@ -27,4 +27,6 @@ export interface IListRepository {
 
   singleList(workspaceId:string,folderId:string,listId:string):Promise<ListDataType|null>
 
+  updateProgressTask(workspaceId:string,folderId:string,listId:string,percentage:number):Promise<boolean>
+
 }

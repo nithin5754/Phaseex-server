@@ -24,11 +24,10 @@ const TaskSchema = new Schema(
       enum: ["to-do", "in progress", "complete"],
       default: "to-do",
     },
-    task_start_date: { type: String },
-    task_due_date: { type: String },
+
     task_title: { type: String, required: true },
     task_description: { type: String, required: true },
-    task_due: { type: Number, default: 0 },
+  
     task_activity: [{ type: String }],
     task_attachment: [{
       file_name:{ type: String },

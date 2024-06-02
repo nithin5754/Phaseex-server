@@ -20,3 +20,19 @@ export interface User {
 
 
 
+
+export interface UserType {
+     id:string,
+     userName:string,
+     email:string,
+     profile_image?:string,
+     roles:string,
+     verified:boolean,
+     createdAt:Date,
+     updatedAt:Date
+     
+}
+
+
+
+

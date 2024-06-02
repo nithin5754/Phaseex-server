@@ -2,6 +2,7 @@ import { ListDataType } from "../Entities/List";
 import { TaskType } from "../Entities/Task";
 import { IDueDate } from "../Interfaces/IDueDate";
 import { IListRepository } from "../Interfaces/IListRepository";
+import { IProgressBar } from "../Interfaces/IProgressBar";
 import { ITaskRepository } from "../Interfaces/ITaskRepository";
 import { ITaskService } from "../Interfaces/ITaskService";
 
@@ -11,31 +12,55 @@ import { ITaskService } from "../Interfaces/ITaskService";
 
     private taskRepository:ITaskRepository
     private listRepository: IListRepository
-    private dueDate:IDueDate
-    constructor( taskRepository:ITaskRepository,listRepository: IListRepository,dueDate:IDueDate) {
+    private dueDate:IDueDate;
+    private progressBar:IProgressBar
+    constructor( taskRepository:ITaskRepository,listRepository: IListRepository,dueDate:IDueDate,progressBar:IProgressBar) {
        this.taskRepository=taskRepository
        this.listRepository=listRepository
        this.dueDate=dueDate
+       this.progressBar=progressBar
 
     }
-    async getUpdateTaskDate(
-      workspaceId: string,
-      folderId: string,
-      listId: string,
-      taskId:string,
-      task_start_date: string,
-      task_due_date: string
-    ): Promise<boolean> {
-      let response=await this.taskRepository.updateTaskDate(workspaceId,folderId,listId,taskId,task_start_date,task_due_date)
+    async getTaskStatusWiseCount(workspaceId: string, folderId: string, listId: string): Promise<{ "to-do": number; in_progress: number; complete: number; }> {
+       
+   let response=await this.taskRepository.TaskStatusWiseCount(workspaceId,folderId,listId)
 
-      let due:number=this.dueDate.useTimeDue(task_start_date,task_due_date)
+      return response
+         
+     }
+    async getAllTaskCount(workspaceId: string, folderId: string, listId: string): Promise<number> {
+         let allTaskCount=await this.taskRepository.AllTaskCount(workspaceId, folderId, listId)
 
-        let updateResponse=await this.taskRepository.updateTaskDue(workspaceId,folderId,listId,taskId,due)
+         return allTaskCount
+     }
+
+    async getAllCompleteTask(workspaceId: string, folderId: string, listId: string): Promise<number> {
+         let allCompleteTask:number=await this.taskRepository.AllCompleteTask(workspaceId, folderId, listId)
+         console.log(allCompleteTask,"all complete task")
+         
+      
+         return allCompleteTask
+          
+     }
+   async  getUpdateProgressTask(workspaceId: string, folderId: string, listId: string,getAllCompleteTask:number,allTaskCount:number): Promise<boolean> {
+      let percentage=this.progressBar.calculateProgressBar(getAllCompleteTask,allTaskCount)
+     
+      if(percentage<1)percentage=0
+    
+      let updateTaskWithProgress=await this.listRepository.updateProgressTask(workspaceId,folderId,listId,percentage)
+   
 
 
-  
-      return !!updateResponse&&!!response
-    }
+
+      return !!updateTaskWithProgress
+     }
+     async getUpdateStatus(workspaceId: string, folderId: string, listId: string, taskId: string, status: string): Promise<boolean> {
+        
+      let response=await this.taskRepository.updateStatus(workspaceId,folderId,listId,taskId,status)
+      
+      return response
+     }
+
     async getUpdatePriority(
       workspaceId: string,
       folderId: string,
@@ -85,16 +110,9 @@ import { ITaskService } from "../Interfaces/ITaskService";
         
      }
     async  createTask(taskData: Partial<TaskType>): Promise<TaskType | null> {
-       if(typeof taskData.task_due_date !=='string'||typeof taskData.task_start_date !=='string'){
-        return null
-       }
-      let due=this.dueDate.useTimeDue(taskData.task_start_date,taskData.task_due_date)
-      console.log(due,"due date for this task");
-      
 
-      let updateTaskData={...taskData, task_due:due>0?due:0}
 
-      let response=await this.taskRepository.createTask(updateTaskData)
+      let response=await this.taskRepository.createTask(taskData)
 
       if(!response){
         return null

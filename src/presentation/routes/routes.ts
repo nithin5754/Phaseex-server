@@ -6,6 +6,7 @@ import spaceRoutes from "./spaceRoutes";
 import folderRoutes from "./folderRoutes";
 import listRoutes from "./listRoutes";
 import taskRoutes from "./taskRoutes";
+import searchRouter from "./searchRoutes";
 
 
 
@@ -17,6 +18,7 @@ export const routes = (app: Application, router: Router) => {
   app.use("/api/v1/folder", folderRoutes(router));
   app.use('/api/v1/list',listRoutes(router))
   app.use('/api/v1/task',taskRoutes(router))
+  app.use('/api/v1/search',searchRouter(router))
 };
 
 export default routes;
