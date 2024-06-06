@@ -13,6 +13,7 @@ import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
   changeVisibility(id:string,workspaceOwner: string): Promise<boolean>;
   findSingleWorkSpace(workspace_id:string):Promise<WorkspaceDataType|null>;
   findWorkSpaceByName(title:string):Promise<boolean>;
+  findAllSpaceByOwner(workspaceOwner:string):Promise<WorkspaceDataType[]|null>
 
   
 

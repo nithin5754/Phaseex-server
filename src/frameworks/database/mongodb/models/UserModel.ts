@@ -44,6 +44,7 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema({
     },
     roles: {
         type:String,
+        enum: ["superAdmin", "developer",],
         default:'developer'
     },
     createdAt: {

@@ -15,6 +15,8 @@ import {
 import { AuthController } from "../controllers/authController";
 
 import rateLimitMiddleware from "../utils/rateLimiter";
+import { SpaceService } from "../../Services/spaceService";
+import { workSpaceRepository } from "../../frameworks/database/mongodb/repository/workspaceRepository";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -30,7 +32,11 @@ const services = new AuthServices(
   token
 );
 
-const controller = new AuthController(services);
+const spaceRepository = new workSpaceRepository();
+
+const spaceService=new SpaceService(spaceRepository)
+
+const controller = new AuthController(services,spaceService);
 
 const authRouter = (router: Router) => {
   router

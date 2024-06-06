@@ -1,4 +1,4 @@
-import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
+import { WorkspaceDataType, workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 import ISpaceRepository from "../Interfaces/ISpaceRepository";
 import ISpaceService from "../Interfaces/ISpaceService";
 
@@ -10,6 +10,25 @@ export class SpaceService implements ISpaceService {
   constructor(spaceRepository:ISpaceRepository){
     this.spaceRepository=spaceRepository
 
+  }
+  
+  async getAllSpaceByOwner(workspaceOwner: string): Promise<workspaceSpaceJwtType[] | null> {
+
+    let response=await this.spaceRepository.findAllSpaceByOwner(workspaceOwner)
+
+    if(response&&response.length>0){
+      let responseData:workspaceSpaceJwtType[]=response.map(workspace=>(
+        
+        {
+          id:workspace.id,
+          role:"owner"
+          }
+        
+      ))
+      return responseData
+    }
+    return null
+   
   }
   async getWorkSpaceByName(title: string): Promise<boolean> {
       const response=await this.spaceRepository.findWorkSpaceByName(title)

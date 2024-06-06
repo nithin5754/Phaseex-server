@@ -1,0 +1,69 @@
+
+import { response } from "express";
+import { NotificationType } from "../Entities/notification";
+import { INotificationRepository } from "../Interfaces/INotificationRepository";
+import { INotificationService, NotifTotalType } from "../Interfaces/INotificationService";
+
+
+
+
+export class NotoficationService implements INotificationService {
+  private notificationRepo:INotificationRepository
+  constructor(notificationRepo:INotificationRepository) {
+    this.notificationRepo=notificationRepo
+  }
+ async getAllNotificationUnReadOnly(userId: string): Promise<NotificationType[]|[]> {
+    let response=await this.notificationRepo.allNotificationUnRead(userId)
+
+    if(!response){
+      return []
+    }
+
+    return response
+  }
+  async getCreateNotification(userId: string, notificationData: Partial<NotificationType>): Promise<boolean> {
+   let response=await this.notificationRepo.createNotification(userId,notificationData)
+   return response
+  }
+ async getAllNotificationUnReadLength(userId: string): Promise<number> {
+    let total:number=await this.notificationRepo.allNotificationUnReadLength(userId)
+
+    return total
+  }
+  async getAllNotificationUnRead(userId: string): Promise<NotifTotalType> {
+    let response=await this.notificationRepo.allNotificationUnRead(userId)
+ 
+    let total:number=await this.notificationRepo.totalNotification(userId)
+
+       
+      let  notificationData:NotifTotalType={
+        notificationList:response&&response.length>0?response:[],
+        total:total
+      }
+
+
+      return notificationData
+
+
+       
+    
+  }
+  async getAllNotification(userId: string): Promise<NotifTotalType> {
+    let response=await this.notificationRepo.allNotification(userId)
+ 
+    let total:number=await this.notificationRepo.totalNotification(userId)
+
+       
+      let  notificationData:NotifTotalType={
+        notificationList:response&&response.length>0?response:[],
+        total:total
+      }
+
+
+      return notificationData
+
+    }
+
+     
+
+  }

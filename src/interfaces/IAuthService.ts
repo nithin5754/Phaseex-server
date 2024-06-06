@@ -1,4 +1,5 @@
 import { User } from "../Entities/Users";
+import { workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 import { TokenGenerateProps } from "../External- Libraries/token";
 
 interface IAuthUserService {
@@ -10,12 +11,12 @@ interface IAuthUserService {
 
   isEmailChangePassword(email:string,password:string):Promise<boolean>
 
-   generateToken(userId:string): {
+   generateToken(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null): {
     accessToken: string;
     refreshToken: string;
   };
   verifyRefreshToken(token:string):any
-  generateAccessToken(userId:string):string
+  generateAccessToken(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null):string
 
   isEmailExist(email:string):Promise<User|null>
   findUserById(_id:string):Promise<User|null>

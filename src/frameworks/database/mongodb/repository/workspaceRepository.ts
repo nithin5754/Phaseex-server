@@ -3,6 +3,35 @@ import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 
 export class workSpaceRepository implements ISpaceRepository {
+  async findAllSpaceByOwner(workspaceOwner: string): Promise<WorkspaceDataType[] | null> {
+      
+    let response=await workspaceModal.find({workspaceOwner}).sort({ createdAt: -1 })
+
+    if(response&&response.length>0){
+      let responseData:WorkspaceDataType[]=response.map(workspace=>(
+        
+        {
+            collaborators: workspace.collaborators.map((collaborator:any) => ({
+              assigneeId: collaborator.assignee.toString(),
+              role: collaborator.role,
+            })),
+            id: workspace._id.toString() as string,
+            workspaceOwner: workspace.workspaceOwner?.toString() as string,
+            title: workspace.title,
+            workspace_description: workspace.workspace_description,
+            workspaceType: workspace.workspaceType,
+            active:workspace.active,
+            createdAt: workspace.createdAt,
+            updatedAt: workspace.updatedAt,
+          }
+        
+      ))
+      return responseData
+    }
+
+    return null
+
+  }
   async findWorkSpaceByName(title: string): Promise<boolean> {
       
     const response=await workspaceModal.find({title})

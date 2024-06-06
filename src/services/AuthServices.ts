@@ -8,6 +8,7 @@ import { IMailer } from "../Interfaces/IMailer";
 import { IGenerateOtp } from "../Interfaces/IGenerateOtp";
 import { IToken } from "../Interfaces/IToken";
 import { TokenGenerateProps } from "../External- Libraries/token";
+import { workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 
 
 export class AuthServices implements IAuthUserService {
@@ -118,19 +119,19 @@ export class AuthServices implements IAuthUserService {
   }
 
 
-  generateAccessToken(userId:string): string {
-    return this.token.accessTokenGenerator(userId)
+  generateAccessToken(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null): string {
+    return this.token.accessTokenGenerator(userId,roles,spaces)
   }
   verifyRefreshToken(token: string) {
      return this.token.verifyRefreshToken(token)
   }
 
 
-  generateToken(userId:string):{
+  generateToken(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null):{
     accessToken:string;
     refreshToken:string
   }{
-    return this.token.generateTokens(userId)
+    return this.token.generateTokens(userId,roles,spaces)
   }
 
  async isEmailExist(email: string): Promise<User|null> {

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 import {  IToken} from "../Interfaces/IToken";
 import config from '../config';
+import { workspaceSpaceJwtType } from '../Entities/WorkspaceDataType';
 
 
 export interface TokenGenerateProps {
@@ -17,18 +18,41 @@ export class Token implements IToken{
   private readonly refresh_secret:string=config.jwt.JWT_REFRESH_TOKEN||''
 
 
-  accessTokenGenerator(userId:string): string {
-    const accessToken = jwt.sign( {userId},this.jwt_key, {
+  accessTokenGenerator(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null): string {
+    
+    if(!spaces){
+      const accessToken = jwt.sign( {userId,roles},this.jwt_key, {
+        expiresIn:'1m' 
+    });
+  
+    return accessToken;
+    }
+
+    const accessToken = jwt.sign( {userId,roles,spaces},this.jwt_key, {
       expiresIn:'1m' 
   });
 
   return accessToken;
+     
+
   }
 
-  generateTokens(userId:string): { accessToken: string; refreshToken: string; } {
+  generateTokens(userId:string,roles:string,spaces:workspaceSpaceJwtType[]|null): { accessToken: string; refreshToken: string; } {
 
-    const accessToken=jwt.sign({userId},this.jwt_key,{
-      expiresIn:'1m'
+    if(!spaces){
+      const accessToken=jwt.sign({userId,roles},this.jwt_key,{
+        expiresIn:'15m'
+      })
+      const refreshToken=jwt.sign({userId},this.refresh_secret,{
+        expiresIn:'1d'
+      })
+  
+      return{
+        accessToken,refreshToken
+      }
+    }
+    const accessToken=jwt.sign({userId,roles,spaces},this.jwt_key,{
+      expiresIn:'15m'
     })
     const refreshToken=jwt.sign({userId},this.refresh_secret,{
       expiresIn:'1d'

@@ -16,3 +16,11 @@ export interface WorkspaceDataType {
   createdAt:Date,
   updatedAt:Date
 }
+
+
+
+
+export interface workspaceSpaceJwtType{
+  id:string
+  role:"member"|"owner"|"listManager"
+}

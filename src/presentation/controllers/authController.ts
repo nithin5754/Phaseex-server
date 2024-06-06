@@ -1,11 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../Interfaces/IAuthService";
+import ISpaceService from "../../Interfaces/ISpaceService";
+import { workspaceSpaceJwtType } from "../../Entities/WorkspaceDataType";
 
 export class AuthController {
   private authService: IAuthUserService;
+  private spaceService:ISpaceService;
 
-  constructor(authService: IAuthUserService) {
+  constructor(authService: IAuthUserService,spaceService:ISpaceService) {
     this.authService = authService;
+    this.spaceService=spaceService
   }
   //@login
   OnLoginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,11 +41,20 @@ export class AuthController {
           message: "wrong credentials,try again ",
         });
       }
+
+  
+
+
+  
+
       //  let roles:string[]=[...isUserExist.roles]
-      if (isUserExist?._id) {
-        let userId = isUserExist._id;
+      if (isUserExist?._id,isUserExist.roles) {
+        let spaces=await this.spaceService.getAllSpaceByOwner(isUserExist._id!)
+        
+        let userId = isUserExist._id as string;
+        let roles=isUserExist.roles
         const { accessToken, refreshToken } =
-          this.authService.generateToken(userId);
+          this.authService.generateToken(userId,roles,spaces);
 
         console.log(accessToken);
 
@@ -91,9 +104,11 @@ export class AuthController {
         return res.status(403).json({ message: "Invalid refresh token" });
       }
 
-      if (foundUser._id) {
+      if (foundUser._id&&foundUser.roles) {
+        let spaces=await this.spaceService.getAllSpaceByOwner(foundUser._id!)
         let userId = foundUser._id;
-        const accessToken = this.authService.generateAccessToken(userId);
+        let roles=foundUser.roles
+        const accessToken = this.authService.generateAccessToken(userId,roles,spaces);
         return res
           .status(200)
           .json({ accessToken: accessToken, data: foundUser });

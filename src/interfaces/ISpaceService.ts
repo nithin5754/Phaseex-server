@@ -1,4 +1,4 @@
-import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
+import { WorkspaceDataType, workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 
 
 
@@ -21,6 +21,7 @@ interface ISpaceService {
 
   getSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null>;
   getWorkSpaceByName(title: string): Promise<boolean>;
+  getAllSpaceByOwner(workspaceOwner:string):Promise<workspaceSpaceJwtType[]|null>
  
 }
 
