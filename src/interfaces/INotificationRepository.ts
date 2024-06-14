@@ -9,6 +9,8 @@ export interface INotificationRepository {
   allNotificationUnReadLength(userId:string):Promise<number>
 
    createNotification(userId:string,notificationData:Partial<NotificationType>):Promise<boolean>
+   updateReadNotification(notificationId:string):Promise<boolean>
+   deleteNotification(notificationId:string):Promise<boolean>
 }
 
 

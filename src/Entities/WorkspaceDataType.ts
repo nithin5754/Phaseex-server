@@ -2,6 +2,16 @@
 export interface CollaboratorType {
   assignee: string; 
   role: string;
+  verified:boolean
+}
+
+
+
+export interface getCollaboratorType {
+  assignee: string; 
+  role: string;
+  id:string;
+verified:boolean
 }
 
 

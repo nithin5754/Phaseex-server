@@ -250,7 +250,10 @@ export class WorkSpaceController {
 
       let allCollabMembers=await this.spaceService.getAllCollaboratorInSpace(workspaceId)
 
-      if(!allCollabMembers){
+      console.log(allCollabMembers,"hello ,delete,update");
+      
+
+      if(!allCollabMembers||allCollabMembers.length<0){
         return res.status(404).json({message:"not found"})
       }
 
@@ -264,5 +267,60 @@ export class WorkSpaceController {
     } catch (error) {
       next(error)
     }
+  };
+
+
+  onDeleteCollabrators= async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+try {
+
+  const {workspaceId,collaboratorId}=req.body
+
+  if(!workspaceId||!collaboratorId){
+    return res.status(404).json({message:"credentials missing"})
   }
+
+  const response=await this.spaceService.getDeleteCollaboratorsToSpace(workspaceId,collaboratorId)
+
+  if(!response){
+    return res.status(404).json({message:"something went wrong"})
+  }
+return res.status(200).json(response)
+  
+} catch (error) {
+  next(error)
+}
+
+  }
+
+
+onVerifyCollaborator= async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+   
+  try {
+    const {workspaceId,collaboratorId}=req.body
+
+    if(!workspaceId||!collaboratorId){
+      return res.status(404).json({message:"credentials missing"})
+    }
+
+    let response=await this.spaceService.getUpdateCollaboratorsVerified(workspaceId,collaboratorId)
+
+    if(!response){
+      return res.status(404).json({message:"error occur please try again later"})
+    }
+    return res.status(200).json(response)
+  } catch (error) {
+    next(error)
+  }
+   
+}
+
+
 }

@@ -1,9 +1,10 @@
 import {
   CollaboratorType,
   WorkspaceDataType,
+  getCollaboratorType,
   workspaceSpaceJwtType,
 } from "../Entities/WorkspaceDataType";
-import IAuthUserService from "../Interfaces/IAuthService";
+
 import ISpaceRepository from "../Interfaces/ISpaceRepository";
 import ISpaceService from "../Interfaces/ISpaceService";
 
@@ -15,7 +16,16 @@ export class SpaceService implements ISpaceService {
     this.spaceRepository = spaceRepository;
    
   }
-  async getAllCollaboratorInSpace(workspaceId: string): Promise<CollaboratorType[] | null> {
+async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: string): Promise<boolean> {
+    let response = await this.spaceRepository.updateCollaboratorsVerified(workspaceId,collaboratorId);
+    return response
+
+  }
+  async getDeleteCollaboratorsToSpace(workspaceId: string, collaboratorId: string): Promise<boolean> {
+    let response = await this.spaceRepository.deleteCollaboratorsToSpace(workspaceId,collaboratorId);
+    return response
+  }
+  async getAllCollaboratorInSpace(workspaceId: string): Promise<getCollaboratorType[] | null> {
     let response = await this.spaceRepository.allCollaboratorInSpace(workspaceId);
     if (response) {
   
@@ -24,6 +34,8 @@ export class SpaceService implements ISpaceService {
         return {
           assignee: assigneeDetail,
           role: collaborator.role,
+          id:collaborator.assignee,
+          verified:collaborator.verified
         };
       });
   

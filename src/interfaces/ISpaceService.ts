@@ -24,6 +24,8 @@ interface ISpaceService {
   getAllSpaceByOwner(workspaceOwner:string):Promise<workspaceSpaceJwtType[]|null>
   getAddCollaboratorsToSpace(workspaceId:string,collaboratorId:string):Promise<boolean>
   getAllCollaboratorInSpace(workspaceId:string):Promise<CollaboratorType[]|null>
+  getDeleteCollaboratorsToSpace(workspaceId:string,collaboratorId:string):Promise<boolean>
+  getUpdateCollaboratorsVerified(workspaceId:string,collaboratorId:string):Promise<boolean>
 
 
  

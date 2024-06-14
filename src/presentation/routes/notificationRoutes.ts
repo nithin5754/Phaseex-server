@@ -16,9 +16,9 @@ const notificationRoutes = (router: Router) => {
   router.use(verifyJWT);
   router.route("/get-all-notification").
   get(controller.onGetAllNotification.bind(controller))
-
-  
   router.route('/get-all-unread-notification').get(controller.onGetAllNotificationUnRead.bind(controller))
+  router.route('/update-notification-unread/:notificationId').patch(controller.onUpdateReadNotification.bind(controller))
+  router.route('/single-delete-notification/:notificationId').delete(controller.onDeleteNotificationById.bind(controller))
 
   return router;
 

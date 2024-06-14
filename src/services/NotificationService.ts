@@ -12,6 +12,14 @@ export class NotoficationService implements INotificationService {
   constructor(notificationRepo:INotificationRepository) {
     this.notificationRepo=notificationRepo
   }
+  async getDeleteNotification(notificationId: string): Promise<boolean> {
+   let response=await this.notificationRepo.deleteNotification(notificationId)
+   return response
+  }
+  async getUpdateReadNotification(notificationId: string): Promise<boolean> {
+  let response=await this.notificationRepo.updateReadNotification(notificationId)
+  return response
+  }
  async getAllNotificationUnReadOnly(userId: string): Promise<NotificationType[]|[]> {
     let response=await this.notificationRepo.allNotificationUnRead(userId)
 
@@ -48,22 +56,18 @@ export class NotoficationService implements INotificationService {
        
     
   }
-  async getAllNotification(userId: string): Promise<NotifTotalType> {
+  async getAllNotification(userId: string): Promise<NotificationType[]|[]> {
     let response=await this.notificationRepo.allNotification(userId)
- 
-    let total:number=await this.notificationRepo.totalNotification(userId)
 
-       
-      let  notificationData:NotifTotalType={
-        notificationList:response&&response.length>0?response:[],
-        total:total
-      }
-
-
-      return notificationData
-
+    if(!response){
+      return []
     }
+
+    return response
 
      
 
   }
+
+
+}

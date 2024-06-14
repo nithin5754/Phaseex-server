@@ -117,16 +117,13 @@ if(receiver){
  } 
   
  if(!receiver){
-
-
-    //  await this.NotificationService.getCreateNotification(receiverName,notificationData)
-    console.log("offline")
+  await this.NotificationService.getCreateNotification(receiverName,notificationData) 
      
  }
  
 if(receiver){
-  await this.NotificationService.getCreateNotification(receiverName,notificationData) 
 
+  await this.NotificationService.getCreateNotification(receiverName,notificationData) 
 
   
   socket.to(receiver.socketId).emit("getNotification",notificationData)

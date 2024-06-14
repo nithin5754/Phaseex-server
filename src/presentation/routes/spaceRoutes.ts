@@ -27,8 +27,6 @@ const services = new AuthServices(
 
 const spaceRepository = new workSpaceRepository();
 
-
-
 const spaceService = new SpaceService(spaceRepository);
 
 const controller = new WorkSpaceController(services, spaceService);
@@ -40,8 +38,9 @@ const spaceRoutes = (router: Router) => {
     .get(controller.onGetAllWorkSpaceByUser.bind(controller))
     .post(controller.onCreateNewSpace.bind(controller));
 
-    router.route('/workspacedetails/:id')
-    .get(controller.onGetSingleWorkSpace.bind(controller))
+  router
+    .route("/workspacedetails/:id")
+    .get(controller.onGetSingleWorkSpace.bind(controller));
 
   router
     .route("/workspace-visiblity")
@@ -51,16 +50,25 @@ const spaceRoutes = (router: Router) => {
     .route("/ongoing-workspace")
     .get(controller.onGoingWorkSpace.bind(controller));
 
-    router
-    .route('/allInactive-workspace')
-    .get(controller.onInActiveCount.bind(controller))
+  router
+    .route("/allInactive-workspace")
+    .get(controller.onInActiveCount.bind(controller));
 
-    router
-    .route('/add-new-collaborators')
-    .post(controller.onAddCollaboratorsToSpace.bind(controller))
+  router
+    .route("/add-new-collaborators")
+    .post(controller.onAddCollaboratorsToSpace.bind(controller));
 
-    router
-    .route('/get-all-collab/:workspaceId').get(controller.OnGetAllCollaboratorsInSpace.bind(controller))
+  router
+    .route("/get-all-collab/:workspaceId")
+    .get(controller.OnGetAllCollaboratorsInSpace.bind(controller));
+
+  router
+    .route("/delete-collaborator")
+    .delete(controller.onDeleteCollabrators.bind(controller));
+
+  router
+    .route("/verify-collaborator")
+    .patch(controller.onVerifyCollaborator.bind(controller));
 
   return router;
 };

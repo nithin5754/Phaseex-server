@@ -19,6 +19,11 @@ import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
   findByIdForName(id:string):Promise<string|null>
 
 
+  deleteCollaboratorsToSpace(workspaceId:string,collaboratorId:string):Promise<boolean>
+
+  updateCollaboratorsVerified(workspaceId:string,collaboratorId:string):Promise<boolean>
+
+
   
 
 }
