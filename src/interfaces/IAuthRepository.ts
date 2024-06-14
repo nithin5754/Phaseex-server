@@ -16,8 +16,10 @@ export interface IAuthRepository {
     verifyOtp(otp:string,email:string):Promise<boolean>
     createUser(userData:User):Promise<User>
     findById(id:string):Promise<User|null>
+
     deleteTempUser(email:string):Promise<boolean>
     forgotPassWordVerified(userData:User):Promise<boolean>
+
     
 }
 

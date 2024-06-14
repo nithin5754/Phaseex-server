@@ -17,7 +17,6 @@ export class NotificationRepository implements INotificationRepository {
   }
  async allNotificationUnRead(userId: string):Promise<NotificationType[] | null> {
     const response = await NotificationModal.find({ownerId:userId,read:false }).sort({createdAt:-1});
-console.log("heyuuuhfghsdgfsdhf");
 
     if (response && response.length > 0) {
       let responseData:NotificationType[] = response.map((notification) => {
@@ -27,6 +26,10 @@ console.log("heyuuuhfghsdgfsdhf");
           senderId: notification.senderId?.toString() as string,
           link: notification.link?notification.link:'',
           priority: notification.priority? notification.priority : '',
+          messageSendBy:notification.messageSendBy?notification.messageSendBy:' ',
+          Description:notification.Description?notification.Description:' ',
+          workspaceName:notification.workspaceName?notification.workspaceName:'',
+          messageReceiver:notification.messageReceiver?notification.messageReceiver:'',
           title: notification.title?notification.title:'',
           type: notification.type?notification.type:'',
           read: notification.read?notification.read:false,
@@ -60,6 +63,10 @@ console.log("heyuuuhfghsdgfsdhf");
           senderId: notification.senderId?.toString() as string,
           link: notification.link?notification.link:'',
           priority: notification.priority? notification.priority : '',
+          messageSendBy:notification.messageSendBy?notification.messageSendBy:' ',
+          workspaceName:notification.workspaceName?notification.workspaceName:'',
+          messageReceiver:notification.messageReceiver?notification.messageReceiver:'',
+          Description:notification.Description?notification.Description:' ',
           title: notification.title?notification.title:'',
           type: notification.type?notification.type:'',
           read: notification.read?notification.read:false,

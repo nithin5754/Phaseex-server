@@ -44,8 +44,6 @@ export class TaskController {
         return res.status(404).json({ message: "error in creating new task" });
       }
 
-
-
       let getAllCompleteTask = await this.taskService.getAllCompleteTask(
         req.body.workspaceId,
         req.body.folderId,
@@ -77,7 +75,6 @@ export class TaskController {
       if (!updateProgressBar) {
         return res.status(409).json({ message: "something went wrong!" });
       }
-
 
       return res.status(200).json(response);
     } catch (error) {
@@ -243,8 +240,8 @@ export class TaskController {
 
       let getAllTaskCountWise: {
         "to-do": number;
-        "in_progress": number;
-        "complete": number;
+        in_progress: number;
+        complete: number;
       } = await this.taskService.getTaskStatusWiseCount(
         workspaceId,
         folderId,
@@ -262,4 +259,82 @@ export class TaskController {
       next(error);
     }
   };
+
+  onSingleList = async (req: Request, res: Response, next: NextFunction) => {
+    const { workspaceId, folderId, listId, taskId } = req.query;
+
+    if (!workspaceId || !folderId || !listId || !taskId) {
+      return res
+        .status(404)
+        .json({ message: "credentials missing please try again " });
+    }
+
+    if (
+      typeof workspaceId !== "string" ||
+      typeof folderId !== "string" ||
+      typeof listId !== "string" ||
+      typeof taskId !== "string"
+    ) {
+      return res
+        .status(404)
+        .json({ message: "something went wrong please try after sometimes" });
+    }
+    try {
+      const response = await this.taskService.getSingleTask(
+        workspaceId,
+        folderId,
+        listId,
+        taskId
+      );
+
+      if (!response) {
+        return res.status(404).json({ message: "task not found" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
+  onUpdateDescriptionTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let taskId = req.params.taskId;
+      let { folderId, workspaceId, listId, task_description } = req.body;
+
+      if (!listId || !folderId || !workspaceId || !task_description) {
+        return res.status(400).json({
+          message: "credentials missing  please try again after some times",
+        });
+      }
+
+      let response = await this.taskService.getUpdateDescription(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        task_description
+      );
+
+      if (!response) {
+        return res.status(404).json({
+          message: "error in updating description task",
+        });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
+
 }

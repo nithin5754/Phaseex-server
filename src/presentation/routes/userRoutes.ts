@@ -7,6 +7,7 @@ import { Token } from "../../External- Libraries/token";
 import { AuthServices } from "../../Services/AuthServices";
 import { UserController } from "../controllers/userController";
 import { validateRegisterUser } from "../validators/authValidator";
+import { verifyJWT } from "../middleware/validateToken";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -36,6 +37,8 @@ const userRouter = (router: Router) => {
     .post(controller.onUpdateDateTempUser.bind(controller));
   router.route("/resendOtp").post(controller.resendOtp.bind(controller));
   router.route("/getUserName").get(controller.onfindLoginUser.bind(controller));
+
+  router.route('/getUserById').get(verifyJWT,controller.onGetUserById.bind(controller))
   return router;
 };
 

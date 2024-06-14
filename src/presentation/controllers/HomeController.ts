@@ -5,7 +5,7 @@ export class HomeController {
 
   testing = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("welcome home");
+ 
 
       return res
         .status(200)

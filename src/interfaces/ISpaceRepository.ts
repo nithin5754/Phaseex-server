@@ -1,5 +1,5 @@
 
-
+// `/invite?workspace=${getSingleWorkSpace.id}&username=${userId}&notificationId=12345&senderId`;
 
 import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
 
@@ -14,6 +14,10 @@ import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
   findSingleWorkSpace(workspace_id:string):Promise<WorkspaceDataType|null>;
   findWorkSpaceByName(title:string):Promise<boolean>;
   findAllSpaceByOwner(workspaceOwner:string):Promise<WorkspaceDataType[]|null>
+  addCollaboratorsToSpace(workspaceId:string,collaboratorId:string):Promise<boolean>
+  allCollaboratorInSpace(workspaceId:string):Promise<WorkspaceDataType|null>
+  findByIdForName(id:string):Promise<string|null>
+
 
   
 

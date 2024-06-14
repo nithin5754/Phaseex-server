@@ -1,8 +1,65 @@
 import { WorkspaceDataType } from "../../../../Entities/WorkspaceDataType";
 import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
+import  UserModel from "../models/UserModel";
 
 export class workSpaceRepository implements ISpaceRepository {
+
+  async findByIdForName(id: string): Promise<string | null> {
+    let found = await UserModel.findById(id);
+
+    if (!found) {
+      return null;
+    } else {
+      return found.userName;
+    }
+  }
+
+
+
+  async allCollaboratorInSpace(workspaceId: string): Promise<WorkspaceDataType|null> {
+    const workspace=await workspaceModal.findById(workspaceId) 
+   if(workspace){
+    let singleWorkSpace:WorkspaceDataType={
+      collaborators: workspace.collaborators.map((collaborator:any) => ({
+        assignee: collaborator.assignee.toString(),
+        role: collaborator.role,
+      })),
+      id: workspace._id.toString() as string,
+      workspaceOwner: workspace.workspaceOwner?.toString() as string,
+      title: workspace.title,
+      workspace_description: workspace.workspace_description,
+      workspaceType: workspace.workspaceType,
+      active:workspace.active,
+      createdAt: workspace.createdAt,
+      updatedAt: workspace.updatedAt,
+    }
+    return singleWorkSpace
+   }
+
+   return null
+  }
+ async addCollaboratorsToSpace(workspaceId: string, collaboratorId: string): Promise<boolean> {
+    const workspace = await workspaceModal.findById(workspaceId);
+   
+    if(workspace){
+      workspace.collaborators.push({assignee:collaboratorId})
+      let response= await workspace.save()
+
+      
+      return !!response
+    }
+
+
+    return false
+
+
+
+
+
+    
+       
+  }
   async findAllSpaceByOwner(workspaceOwner: string): Promise<WorkspaceDataType[] | null> {
       
     let response=await workspaceModal.find({workspaceOwner}).sort({ createdAt: -1 })
@@ -12,7 +69,7 @@ export class workSpaceRepository implements ISpaceRepository {
         
         {
             collaborators: workspace.collaborators.map((collaborator:any) => ({
-              assigneeId: collaborator.assignee.toString(),
+              assignee: collaborator.assignee.toString(),
               role: collaborator.role,
             })),
             id: workspace._id.toString() as string,
@@ -35,18 +92,30 @@ export class workSpaceRepository implements ISpaceRepository {
   async findWorkSpaceByName(title: string): Promise<boolean> {
       
     const response=await workspaceModal.find({title})
-    console.log(response,"is yest db")
+
     if(response.length>0){
        return true
     }
    return false
   }
+
+
+
+
+ 
+
+
+ 
+  
+
+
+
  async findSingleWorkSpace(workspace_id: string): Promise<WorkspaceDataType | null> {
    const workspace=await workspaceModal.findById(workspace_id) 
    if(workspace){
     let singleWorkSpace:WorkspaceDataType={
       collaborators: workspace.collaborators.map((collaborator:any) => ({
-        assigneeId: collaborator.assignee.toString(),
+        assignee: collaborator.assignee.toString(),
         role: collaborator.role,
       })),
       id: workspace._id.toString() as string,
@@ -88,7 +157,7 @@ export class workSpaceRepository implements ISpaceRepository {
         
         {
             collaborators: workspace.collaborators.map((collaborator:any) => ({
-              assigneeId: collaborator.assignee.toString(),
+              assignee: collaborator.assignee.toString(),
               role: collaborator.role,
             })),
             id: workspace._id.toString() as string,
@@ -126,7 +195,7 @@ return false
   async findAllByUser(workspaceOwner: string,pageId:number,limit:number): Promise<WorkspaceDataType[] | null> {
     const skip = (pageId - 1) * limit;
     const total=await workspaceModal.countDocuments({active:false})
-    console.log(total,"count of the document");
+ 
     
     let response=await workspaceModal.find({workspaceOwner,active:false })
     .sort({ createdAt: -1 }).skip(skip).limit(limit)
@@ -139,7 +208,7 @@ return false
         
         {
             collaborators: workspace.collaborators.map((collaborator:any) => ({
-              assigneeId: collaborator.assignee.toString(),
+              assignee: collaborator.assignee.toString(),
               role: collaborator.role,
             })),
             id: workspace._id.toString() as string,
@@ -167,7 +236,7 @@ return false
     if (newSpace) {
       let responseData: WorkspaceDataType = {
         collaborators: newSpace.collaborators.map((collaborator: any) => ({
-          assigneeId: collaborator.assignee.toString() as string,
+          assignee: collaborator.assignee.toString() as string,
           role: collaborator.role,
         })),
         id: newSpace._id.toString() as string,

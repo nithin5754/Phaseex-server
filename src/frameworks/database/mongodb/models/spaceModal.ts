@@ -17,7 +17,12 @@ const WorkspaceSchema = new Schema(
         ref: "User"
       },
       role: {
-        type: String
+        type: String,
+        default:'developer'
+      },
+      verified:{
+        type:Boolean,
+        default:false
       }
     }],
     workspaceType: {

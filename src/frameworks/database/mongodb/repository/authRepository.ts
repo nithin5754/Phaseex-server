@@ -6,6 +6,7 @@ import UserTempModel from "../models/TempUserModel";
 import UserModel from "../models/UserModel";
 
 export class AuthRepository implements IAuthRepository {
+
   async resendToOtp(otp: string, email: string): Promise<boolean> {
     let response = await UserTempModel.updateOne(
       { email },
@@ -35,14 +36,14 @@ export class AuthRepository implements IAuthRepository {
       { email: userData.email },
       { $set: { forgotPassWord_verified: true } }
     );
-    console.log(result, "is upadted");
+
 
     return result.modifiedCount > 0;
   }
 
   async deleteTempUser(email: string): Promise<boolean> {
     let isDeleted = await UserTempModel.deleteMany({ email });
-    console.log(`Deleted ${isDeleted.deletedCount} documents`);
+ 
 
     if (isDeleted.deletedCount === 0) {
       return false;
@@ -93,7 +94,6 @@ export class AuthRepository implements IAuthRepository {
 
   async verifyOtp(otp: string, email: string): Promise<boolean> {
     const isUserExisting = await this.findByEmailFromTemp(email);
-    console.log(isUserExisting, "otp-verify");
 
     if (!isUserExisting) {
       return false;

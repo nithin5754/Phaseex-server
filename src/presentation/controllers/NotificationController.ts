@@ -41,7 +41,7 @@ export class NotificationController {
 
   onGetAllNotificationUnRead = async (req: Request, res: Response, next: NextFunction) => {
 
-console.log("hey");
+
 
 
 const userId=req.userId

@@ -5,6 +5,55 @@ import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
+ async updateDescription(workspaceId: string, folderId: string, listId: string, taskId: string, task_description: string): Promise<boolean> {
+
+    const updateList = await TaskModal.findOneAndUpdate(
+      { workspaceId, folderId, listId: listId, _id: taskId },
+      { $set: { task_description } },
+      { new: true }
+    );
+
+    return !!updateList
+    
+  }
+ async singleTask(workspaceId: string, folderId: string, listId: string, taskId: string): Promise<TaskType | null> {
+      
+     const task=await TaskModal.findOne({workspaceId,folderId,listId,_id:taskId})
+
+
+     
+      
+     if(task){
+      let responseData={
+        id: task._id.toString() as string,
+        workspaceId: task.workspaceId?.toString() as string,
+        folderId: task.folderId?.toString() as string,
+        listId: task.listId?.toString() as string,
+        priority_task: task.priority_task,
+        status_task: task.status_task,
+
+        task_description: task.task_description,
+
+        task_activity: task.task_activity.map((activity: string) => activity),
+        task_attachment: task.task_attachment.map((attachment: any) => ({
+          attachment: attachment.attachment,
+          file_name: attachment.file_name,
+        })),
+        task_collaborators: task.task_collaborators.map(
+          (collaborator: any) => ({
+            assigneeId: collaborator.assigneeId.toString(),
+            role: collaborator.role,
+          })
+        ),
+        createdAt: moment(task.createdAt).format("MMMM D, YYYY - h:mm A"),
+        updatedAt: moment(task.updatedAt).format("MMMM D, YYYY - h:mm A"),
+        task_title: task.task_title,
+      };
+
+      return responseData
+     }
+     return null
+  }
  async TaskStatusWiseCount(workspaceId: string, folderId: string, listId: string): Promise<{ "to-do": number , "in_progress": number ,"complete": number }> {
     const response = await TaskModal.aggregate([
       {
@@ -57,7 +106,7 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
  async AllCompleteTask(workspaceId: string, folderId: string, listId: string): Promise<number> {
     const response:number = await TaskModal.countDocuments({ workspaceId, folderId, listId,status_task:'complete' });
 
-    console.log(response,"allcomplete task");
+ 
     
 
 
@@ -89,7 +138,7 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
       { $set: { priority_task: priority } },
       { new: true }
     );
-    console.log(updateList, "hey huiii");
+
 
     return !!updateList;
   }
@@ -144,7 +193,7 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
       listId,
       task_title: task_name,
     });
-    console.log(response, "hello mollu");
+
 
     return !!response;
   }
@@ -185,4 +234,7 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
 
     return null;
   }
+
+
+  
 }

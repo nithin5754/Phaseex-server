@@ -90,6 +90,11 @@ if(receiver){
       senderName,
       receiverName,
       name,
+      messageSendBy,
+      link,
+      messageReceiver,
+      workspaceName,
+      Description,
       type,
       message,
       
@@ -100,8 +105,12 @@ if(receiver){
  let notificationData={
   ownerId:receiverName,
   senderId:senderName,
-  link:"wwww",
+  link,
+  Description,
+  messageReceiver,
+  workspaceName,
   title:message,
+  messageSendBy,
   type:type,
   read:false,
 

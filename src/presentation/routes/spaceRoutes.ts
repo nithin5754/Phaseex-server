@@ -27,6 +27,8 @@ const services = new AuthServices(
 
 const spaceRepository = new workSpaceRepository();
 
+
+
 const spaceService = new SpaceService(spaceRepository);
 
 const controller = new WorkSpaceController(services, spaceService);
@@ -52,6 +54,13 @@ const spaceRoutes = (router: Router) => {
     router
     .route('/allInactive-workspace')
     .get(controller.onInActiveCount.bind(controller))
+
+    router
+    .route('/add-new-collaborators')
+    .post(controller.onAddCollaboratorsToSpace.bind(controller))
+
+    router
+    .route('/get-all-collab/:workspaceId').get(controller.OnGetAllCollaboratorsInSpace.bind(controller))
 
   return router;
 };

@@ -12,7 +12,7 @@ export class UserController {
   //@register
   onRegisterUser = async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body;
-    console.log(req.body, "hello body");
+
 
     try {
       const isUserEmailExist = await this.authService.isEmailExist(body.email);
@@ -46,7 +46,7 @@ export class UserController {
     next: NextFunction
   ) => {
     try {
-      console.log(req.body);
+
       const { otp, tokenId } = req.body;
       let verify_token: string = tokenId;
       const response = await this.authService.verifyNewUser(otp, verify_token);
@@ -123,7 +123,7 @@ export class UserController {
       }
 
       let updateTempUserDate = isUpdateDateExist?.updatedAt;
-      console.log(updateTempUserDate, "time fdate get from backend ");
+
 
       return res.status(200).json({ updateDate: updateTempUserDate });
     } catch (error) {
@@ -139,11 +139,31 @@ export class UserController {
       if (!getName) {
         return res.status(404).json({ message: "not found" });
       }
-      console.log(getName, "owner name");
+
 
       return res.status(200).json(getName);
     } catch (error) {
       next(error);
     }
   };
+
+  onGetUserById =async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    let userId=req.userId 
+
+   
+    
+
+     let response=await this.authService.findUserById(userId)
+   
+     if(!response){
+      return res.status(404).json({message:"not found please try again!"})
+     }
+
+     return res.status(200).json(response)
+
+  }
 }

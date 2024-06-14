@@ -13,6 +13,8 @@ getAllTask(workspaceId:string,folderId:string,listId:string):Promise<TaskType[]|
 getAllCompleteTask(workspaceId:string,folderId:string,listId:string):Promise<number>
 
 getUpdatePriority(workspaceId:string,folderId:string,listId:string,taskId:string,priority:string):Promise<boolean>
+getUpdateDescription(workspaceId:string,folderId:string,listId:string,taskId:string,task_description:string):Promise<boolean>
+
 
 getUpdateStatus(workspaceId:string,folderId:string,listId:string,taskId:string,status:string):Promise<boolean>
 
@@ -21,6 +23,9 @@ getUpdateProgressTask(workspaceId:string,folderId:string,listId:string,getAllCom
 getAllTaskCount(workspaceId:string,folderId:string,listId:string):Promise<number>
 
 getTaskStatusWiseCount(workspaceId:string,folderId:string,listId:string):Promise<{"to-do":number,"in_progress":number,"complete":number}>
+
+
+getSingleTask(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskType|null>
 
 
 

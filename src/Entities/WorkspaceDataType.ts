@@ -1,6 +1,6 @@
 
 export interface CollaboratorType {
-  assigneeId: string; 
+  assignee: string; 
   role: string;
 }
 

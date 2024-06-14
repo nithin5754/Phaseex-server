@@ -23,6 +23,10 @@ const NotificationSchema = new Schema(
       enum: ["high", "medium", "low"],
       default:"low"
      },
+     messageSendBy:{ type:String},
+     messageReceiver:{ type:String},
+     workspaceName:{ type:String}, 
+     Description:{ type:String}, 
     link: { type:String}, 
     title: { type: String, require: true },
     type: { type: String },

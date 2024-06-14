@@ -23,7 +23,9 @@ const taskRoutes = (router: Router) => {
   router.route('/get-all-task').get(controller.onGetAllTheTask.bind(controller))
   router.route('/update-priority/:taskId').patch(controller.onUpdatePriorityTask.bind(controller))
   router.route('/update-task/:taskId').patch(controller.onUpdateStatus.bind(controller))
+  router.route('/update-task-description/:taskId').patch(controller.onUpdateDescriptionTask.bind(controller))
   router.route('/get-all-task-count-wise').get(controller.onGetAllTaskWiseCount.bind(controller))
+  router.route('/get-single-task').get(controller.onSingleList.bind(controller))
  
 
   return router;

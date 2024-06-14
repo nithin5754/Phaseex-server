@@ -33,7 +33,7 @@ export class FolderController {
       }
 
       let isCreate = await this.folderService.createNewFolder(req.body);
-      console.log(isCreate, "controller create folder");
+  
 
       if (!isCreate) {
         return res.status(404).json({ message: "something went wrong" });
@@ -47,7 +47,7 @@ export class FolderController {
   onGetAllFolder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const workspaceId: string = req.params.id;
-      console.log(workspaceId, "hello");
+
 
       if (!workspaceId) {
         return res.status(404).json({ message: "something went wrong" });
@@ -93,7 +93,7 @@ export class FolderController {
     try {
       const { folderData, folderId } = req.body;
 
-      console.log(folderData, folderId, "my folders");
+    
 
       
     if (!folderData.folder_title.trim() ||!folderData.folder_description.trim()) {

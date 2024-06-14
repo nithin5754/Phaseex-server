@@ -21,6 +21,18 @@ import { ITaskService } from "../Interfaces/ITaskService";
        this.progressBar=progressBar
 
     }
+     async getUpdateDescription(workspaceId: string, folderId: string, listId: string, taskId: string, task_description: string): Promise<boolean> {
+      let response=await this.taskRepository.updateDescription(workspaceId,folderId,listId,taskId,task_description)
+      
+      return response
+     }
+    async getSingleTask(workspaceId: string, folderId: string, listId: string, taskId: string): Promise<TaskType | null> {
+       let response=await this.taskRepository.singleTask(workspaceId,folderId,listId,taskId)
+       if(response){
+        return response
+       }
+       return null
+     }
     async getTaskStatusWiseCount(workspaceId: string, folderId: string, listId: string): Promise<{ "to-do": number; in_progress: number; complete: number; }> {
        
    let response=await this.taskRepository.TaskStatusWiseCount(workspaceId,folderId,listId)
@@ -36,7 +48,7 @@ import { ITaskService } from "../Interfaces/ITaskService";
 
     async getAllCompleteTask(workspaceId: string, folderId: string, listId: string): Promise<number> {
          let allCompleteTask:number=await this.taskRepository.AllCompleteTask(workspaceId, folderId, listId)
-         console.log(allCompleteTask,"all complete task")
+         
          
       
          return allCompleteTask

@@ -20,7 +20,7 @@ export class ListController {
         folderId,
         listData.list_title
       );
-      console.log(isDuplicateList, "duplicate list");
+
 
       if (isDuplicateList) {
         return res.status(404).json({ message: "already exist" });
@@ -37,7 +37,7 @@ export class ListController {
           .json({ message: "error creating new List please try again.." });
       }
 
-      console.log(createNewList, "new list");
+
 
       return res.status(200).json(createNewList);
     } catch (error) {
@@ -101,7 +101,7 @@ export class ListController {
     try {
       let listId = req.params.listId;
       let { folderId, workspaceId, priority } = req.body;
-      console.log(req.body, "hey");
+   
 
       if (!listId || !folderId || !workspaceId || !priority) {
         return res

@@ -14,6 +14,7 @@ const controller = new SearchController(searchService)
 const searchRouter = (router: Router) => {
 
   router.route('/user/:searchKey').post(controller.onSearchUsers.bind(controller))
+  router.route('/todo').post(controller.onSearchTodo.bind(controller))
 
   return router;
 };
