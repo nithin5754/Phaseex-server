@@ -20,7 +20,6 @@ export interface TaskType {
   priority_task:string;
   status_task:string;
   task_description:string;
-
   task_activity:Array<string>;
   task_attachment:TaskAttachmentType[];
   task_collaborators:TaskCollaboratorType[];
@@ -28,3 +27,14 @@ export interface TaskType {
   updatedAt:string
 
 }
+
+
+export interface TaskCollaboratorDetailType {
+  id:string;
+  fullName: string; 
+  email:string;
+  imageUrl:string;
+  role:string;
+}
+
+

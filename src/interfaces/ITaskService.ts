@@ -1,5 +1,5 @@
 import { ListDataType } from "../Entities/List";
-import { TaskType } from "../Entities/Task";
+import { TaskCollaboratorDetailType, TaskType } from "../Entities/Task";
 
 
 
@@ -26,6 +26,19 @@ getTaskStatusWiseCount(workspaceId:string,folderId:string,listId:string):Promise
 
 
 getSingleTask(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskType|null>
+
+getAddCollabToTask(workspaceId:string,folderId:string,listId:string,taskId:string,collabId:string):Promise<boolean>
+
+getTaskCollabByListId(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskCollaboratorDetailType[]|null>
+
+getDeleteTaskCollabByTaskId(workspaceId:string,folderId:string,listId:string,taskId:string,collabId:string,):Promise<boolean>
+
+isCollabExistInListAsViewer(workspaceId:string,folderId:string,listId:string,collabId:string,):Promise<boolean>
+
+
+
+
+
 
 
 

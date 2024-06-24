@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ITaskService } from "../../Interfaces/ITaskService";
 import { IProgressBar } from "../../Interfaces/IProgressBar";
+import { TaskCollaboratorType } from "../../Entities/Task";
 
 export class TaskController {
   private taskService: ITaskService;
@@ -297,8 +298,6 @@ export class TaskController {
     }
   };
 
-
-
   onUpdateDescriptionTask = async (
     req: Request,
     res: Response,
@@ -334,7 +333,172 @@ export class TaskController {
     }
   };
 
+  onAddCollaboratorsToTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { taskId } = req.params;
 
+      const { workspaceId, folderId, listId, collabId } = req.body;
 
+      if (!workspaceId || !folderId || !listId || !collabId || !taskId) {
+        return res.status(404).json({ message: "missing credential" });
+      }
 
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof collabId !== "string" ||
+        typeof taskId !== "string"
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+      let isCollabExistAsViewer =
+        await this.taskService.isCollabExistInListAsViewer(
+          workspaceId,
+          folderId,
+          listId,
+          collabId
+        );
+
+      if (isCollabExistAsViewer) {
+        return res
+          .status(400)
+          .json({ message: "cannot add : this user is viewer as role " });
+      }
+
+      let isExist = await this.taskService.getSingleTask(
+        workspaceId,
+        folderId,
+        listId,
+        taskId
+      );
+
+      if (!isExist) {
+        return res
+          .status(400)
+          .json({ message: "workspace not found please try again" });
+      }
+
+      const existingCollaborator = isExist.task_collaborators.find(
+        (collab: TaskCollaboratorType) => collab.assigneeId === collabId
+      );
+
+      if (existingCollaborator) {
+        return res.status(404).json({ message: "already exist " });
+      }
+
+      const response = await this.taskService.getAddCollabToTask(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        collabId
+      );
+
+      if (!response) {
+        return res
+          .json(404)
+          .json({ message: "something error occur please try later" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onGetCollabByTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId, taskId } = req.query;
+
+      if (!workspaceId || !folderId || !listId || !taskId) {
+        return res.status(404).json({ message: "missing credential" });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof taskId !== "string"
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+      let response = await this.taskService.getTaskCollabByListId(
+        workspaceId,
+        folderId,
+        listId,
+        taskId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again later" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onDeleteCollabIdTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId, taskId } = req.body;
+
+      const collabId = req.params.collabId;
+
+      if (!workspaceId || !folderId || !listId || !taskId || !collabId) {
+        return res.status(404).json({ message: "missing credential" });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof collabId !== "string" ||
+        typeof taskId !== "string"
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+      let response = await this.taskService.getDeleteTaskCollabByTaskId(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        collabId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

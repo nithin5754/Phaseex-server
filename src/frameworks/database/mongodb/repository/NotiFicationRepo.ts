@@ -5,6 +5,12 @@ import moment from "moment";
 
 export class NotificationRepository implements INotificationRepository {
   constructor() {}
+  async deleteInviteLinkNoti(notificationId: string): Promise<boolean> {
+    let response=await NotificationModal.findOneAndUpdate({_id:notificationId},{link:" "},{ new: true })
+console.log(response,"invite link-delete");
+
+    return !!response
+  }
   async deleteNotification(notificationId: string): Promise<boolean> {
     let response=await NotificationModal.findByIdAndDelete(notificationId)
 

@@ -7,6 +7,16 @@ import { Todo as TodoModal } from "../models/TodoModal";
 
 
 export class TodoRepository implements ITodoRepository {
+async addCollabToTodo(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string,collabId:string): Promise<boolean> {
+  const updateList = await TodoModal.findOneAndUpdate(
+    { workspaceId, folderId, listId,taskId , _id:todoId},
+    { $set: { assignee:collabId} },
+    { new: true }
+  );
+ 
+
+  return !!updateList;
+}
 async deleteTodoTask(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string): Promise<boolean> {
   
     const response=await TodoModal.findOneAndDelete({ workspaceId, folderId, listId,taskId , _id:todoId})

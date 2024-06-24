@@ -1,34 +1,134 @@
-import { ListDataType } from "../Entities/List";
+import { response } from "express";
+import {
+  ListCollaboratorDetailType,
+  ListDataType,
+  listCollabRole,
+} from "../Entities/List";
 import {
   IListRepository,
   ListDataTypePage,
 } from "../Interfaces/IListRepository";
 import { IListService } from "../Interfaces/IListService";
+import { ITaskRepository } from "../Interfaces/ITaskRepository";
+import { TaskType } from "../Entities/Task";
 
 export class ListService implements IListService {
   private listRepository: IListRepository;
-  constructor(listRepository: IListRepository) {
+  private taskRepository:ITaskRepository
+  constructor(listRepository: IListRepository,taskRepository:ITaskRepository) {
     this.listRepository = listRepository;
+     this.taskRepository=taskRepository
   }
- async getSingleList(workspaceId: string, folderId: string, listId: string): Promise<ListDataType | null> {
-     let response=await this.listRepository.singleList(workspaceId,folderId,listId)
+  async checkCollabIsExistInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
+     
+    let response=await this.taskRepository.checkCollaboratorInTasks(workspaceId,folderId,listId,collaboratorId)
 
-     if(response){
-      return response
-     }
-
-     return null
+    return response
   }
- async getUpdateListDate(
+
+  async getDeleteListCollabByListId(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
+
+    let response=await this.listRepository.deleteListCollabByListId(workspaceId,folderId,listId,collabId)
+  return response
+  }
+  async getUpdateListCollabByListId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collabId: string,
+    role: listCollabRole
+  ): Promise<boolean> {
+    let response = await this.listRepository.updateListCollabByListId(
+      workspaceId,
+      folderId,
+      listId,
+      collabId,
+      role
+    );
+
+    return !!response;
+  }
+  async getListCollabByListId(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<ListCollaboratorDetailType[] | null> {
+    const userRoles: {
+      [index: string]: "listManager" | "spaceOwner" | "viewer";
+    } = {};
+    let response = await this.listRepository.listCollabByListId(
+      workspaceId,
+      folderId,
+      listId
+    );
+    let singleList = await this.listRepository.singleList(
+      workspaceId,
+      folderId,
+      listId
+    );
+
+    if (response && singleList) {
+      singleList.list_collaborators.forEach((user) => {
+        userRoles[user.assignee] = user.role;
+      });
+
+      response.forEach((user) => {
+        user.role = userRoles[user.id];
+      });
+
+      return response;
+    }
+
+    return null;
+  }
+  async getAddCollabToList(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collabId: string
+  ): Promise<boolean> {
+    let response = await this.listRepository.addCollabToList(
+      workspaceId,
+      folderId,
+      listId,
+      collabId
+    );
+
+    return response;
+  }
+  async getSingleList(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<ListDataType | null> {
+    let response = await this.listRepository.singleList(
+      workspaceId,
+      folderId,
+      listId
+    );
+
+    if (response) {
+      return response;
+    }
+
+    return null;
+  }
+  async getUpdateListDate(
     workspaceId: string,
     folderId: string,
     listId: string,
     list_start_date: string,
     list_due_date: string
   ): Promise<boolean> {
-    let response=await this.listRepository.updateListDate(workspaceId,folderId,listId,list_start_date,list_due_date)
+    let response = await this.listRepository.updateListDate(
+      workspaceId,
+      folderId,
+      listId,
+      list_start_date,
+      list_due_date
+    );
 
-    return response
+    return response;
   }
   async getUpdatePriority(
     workspaceId: string,

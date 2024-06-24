@@ -17,6 +17,7 @@ export interface INotificationService {
   getCreateNotification(userId:string,notificationData:Partial<NotificationType>):Promise<boolean>
   getUpdateReadNotification(notificationId:string):Promise<boolean>
   getDeleteNotification(notificationId:string):Promise<boolean>
+  getDeleteInviteLinkNoti(notificationId:string):Promise<boolean>
   
   
 }

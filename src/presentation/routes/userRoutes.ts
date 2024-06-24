@@ -38,7 +38,9 @@ const userRouter = (router: Router) => {
   router.route("/resendOtp").post(controller.resendOtp.bind(controller));
   router.route("/getUserName").get(controller.onfindLoginUser.bind(controller));
 
-  router.route('/getUserById').get(verifyJWT,controller.onGetUserById.bind(controller))
+  router
+    .route("/getUserById")
+    .get(verifyJWT, controller.onGetUserById.bind(controller));
   return router;
 };
 

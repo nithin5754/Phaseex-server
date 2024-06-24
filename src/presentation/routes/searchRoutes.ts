@@ -15,6 +15,8 @@ const searchRouter = (router: Router) => {
 
   router.route('/user/:searchKey').post(controller.onSearchUsers.bind(controller))
   router.route('/todo').post(controller.onSearchTodo.bind(controller))
+  router.route('/space').post(controller.onSearchSpaceCollab.bind(controller))
+  router.route('/task-collab').post(controller.onSearchTaskCollab.bind(controller))
 
   return router;
 };

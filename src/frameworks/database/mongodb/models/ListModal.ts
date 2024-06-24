@@ -23,6 +23,17 @@ const ListSchema = new Schema(
       default: "low",
     
     },
+    list_collaborators: [{
+      assignee: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      },
+      role: {
+        type: String,
+        enum: ["listManager","spaceOwner","viewer"],
+        default:'listManager'
+      },
+    }],
     list_start_date: { type: String  },
    progressTask: { type: Number,default:0  },
     list_due_date: { type: String  },

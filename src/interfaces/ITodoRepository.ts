@@ -36,9 +36,20 @@ export interface ITodoRepository {
     todo: string
   ): Promise<boolean>;
 
-  deleteTodoTask(   workspaceId: string,
+  deleteTodoTask(
+    workspaceId: string,
     folderId: string,
     listId: string,
     taskId: string,
-    todoId: string):Promise<boolean>
+    todoId: string
+  ): Promise<boolean>;
+
+  addCollabToTodo(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    todoId: string,
+    collabId: string
+  ): Promise<boolean>;
 }

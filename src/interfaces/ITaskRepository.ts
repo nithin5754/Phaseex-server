@@ -1,7 +1,7 @@
 
 
 
-import {TaskType} from '../Entities/Task'
+import {TaskCollaboratorDetailType, TaskType} from '../Entities/Task'
 
 export interface ITaskRepository {
 
@@ -17,6 +17,15 @@ export interface ITaskRepository {
 
 
    singleTask(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskType|null>
+
+
+   addCollabToTask(workspaceId:string,folderId:string,listId:string,taskId:string,collabId:string):Promise<boolean>
+   
+taskCollabByListId(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskCollaboratorDetailType[]|null>
+
+deleteTaskCollabByTaskId(workspaceId:string,folderId:string,listId:string,taskId:string,collabId:string,):Promise<boolean>
+
+ checkCollaboratorInTasks(workspaceId:string, folderId:string, listId:string, collaboratorId:string):Promise<boolean>
 
 
 

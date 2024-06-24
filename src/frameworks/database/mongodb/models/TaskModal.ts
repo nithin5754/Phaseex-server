@@ -41,6 +41,7 @@ const TaskSchema = new Schema(
         },
         role: {
           type: String,
+          default:"developer"
         },
       },
     ],

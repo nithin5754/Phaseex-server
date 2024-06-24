@@ -67,7 +67,10 @@ export class TodoController {
         return res.status(400).json({ message: "already exist" });
       }
 
-      let response = await this.todoService.getCreateTodoTask({ ...req.body,todo:req.body.todo.toLowerCase()});
+      let response = await this.todoService.getCreateTodoTask({
+        ...req.body,
+        todo: req.body.todo.toLowerCase(),
+      });
 
       if (!response) {
         return res
@@ -167,8 +170,7 @@ export class TodoController {
     }
   };
 
-
-  onDeleteTodoTask =async (
+  onDeleteTodoTask = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -176,25 +178,72 @@ export class TodoController {
     let todoId = req.params.todoId;
     let { folderId, workspaceId, listId, taskId } = req.body;
     try {
-      
       if (!listId || !folderId || !workspaceId || !taskId || !todoId) {
         return res.status(400).json({
           message: "credentials missing  please try again after some times",
         });
       }
 
-      let response=await this.todoService.getDeleteTodoTask(workspaceId,folderId,listId,taskId,todoId)
- 
-      if(!response){
-        return res.status(404).json({message:"something went wrong please try again"})
+      let response = await this.todoService.getDeleteTodoTask(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        todoId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
       }
 
-      return res.status(200).json(response)
-      
+      return res.status(200).json(response);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
 
+  onAddCollabToTodo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let todoId = req.params.todoId;
+      let { folderId, workspaceId, listId, taskId, collabId } = req.body;
 
+      if (
+        !listId ||
+        !folderId ||
+        !workspaceId ||
+        !taskId ||
+        !todoId ||
+        !collabId
+      ) {
+        return res.status(400).json({
+          message: "credentials missing  please try again after some times",
+        });
+      }
+
+      let response = await this.todoService.getAddCollabToTodo(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        todoId,
+        collabId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

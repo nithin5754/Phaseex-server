@@ -1,10 +1,124 @@
-import { TaskType } from "../../../../Entities/Task";
+import mongoose from "mongoose";
+import { TaskCollaboratorDetailType, TaskType } from "../../../../Entities/Task";
 import { ITaskRepository } from "../../../../Interfaces/ITaskRepository";
 import { Task as TaskModal } from "../models/TaskModal";
 import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
+  async checkCollaboratorInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
+    const query = {
+      workspaceId: new mongoose.Types.ObjectId(workspaceId),
+      folderId: new mongoose.Types.ObjectId(folderId),
+      listId: new mongoose.Types.ObjectId(listId),
+      task_collaborators: {
+        $elemMatch: {
+          assigneeId: new mongoose.Types.ObjectId(collaboratorId),
+          role:"developer"
+        }
+      }
+    };
+
+    const task = await TaskModal.findOne(query);
+
+    return !!task
+  }
+  async deleteTaskCollabByTaskId(workspaceId: string, folderId: string, listId: string, taskId: string, collabId: string): Promise<boolean> {
+    const filter = {
+      _id: taskId,
+      workspaceId: workspaceId,
+      folderId: folderId,
+      listId:listId
+    
+    };
+
+
+    const updateQuery = {
+      $pull: {
+        task_collaborators: {
+          assigneeId: collabId,
+        },
+      },
+    };
+  
+
+    const response=await TaskModal.findOneAndUpdate(filter,updateQuery)
+
+    if (response) {
+      return true;
+    }
+  
+    return false;
+  }
+async  taskCollabByListId(workspaceId: string, folderId: string, listId: string,taskId:string): Promise<TaskCollaboratorDetailType[] | null> {
+    let response = await TaskModal.aggregate([
+      {
+        $match: {
+          workspaceId: new mongoose.Types.ObjectId(workspaceId),
+          folderId: new mongoose.Types.ObjectId(folderId),
+          listId: new mongoose.Types.ObjectId(listId),
+          _id: new mongoose.Types.ObjectId(taskId),
+        },
+      },
+      {
+        $unwind: "$task_collaborators",
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "task_collaborators.assigneeId",
+          foreignField: "_id",
+          as: "collaborators_details",
+        },
+      },
+
+      { $project: { collaborators_details: 1, _id: 0 } },
+      {
+        $unwind: "$collaborators_details",
+      },
+
+      {
+        $project: {
+          id: "$collaborators_details._id",
+          fullName: "$collaborators_details.userName",
+          email: "$collaborators_details.email",
+          imageUrl: "$collaborators_details.profile_image",
+          _id: 0,
+        },
+      },
+    ]);
+
+    
+
+    if (response) {
+     
+      
+
+      return response;
+    }
+
+    return null;
+
+
+  }
+  async addCollabToTask(workspaceId: string, folderId: string, listId: string, taskId: string, collabId: string): Promise<boolean> {
+      
+    let response = await TaskModal.findOne({
+      workspaceId,
+      folderId,
+      listId: listId,
+      _id:taskId
+    });
+
+    if (response) {
+      response.task_collaborators.push({ assigneeId: collabId });
+      let isCollabAdd = await response.save();
+
+      return !!isCollabAdd;
+    }
+
+    return false;
+  }
  async updateDescription(workspaceId: string, folderId: string, listId: string, taskId: string, task_description: string): Promise<boolean> {
 
     const updateList = await TaskModal.findOneAndUpdate(

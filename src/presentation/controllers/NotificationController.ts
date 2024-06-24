@@ -98,4 +98,34 @@ export class NotificationController {
       next(error);
     }
   };
+
+onDeleteNotifIcationLink= async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let notificationId = req.params.notificationId;
+
+
+    if (!notificationId || typeof notificationId !== "string") {
+      return res.status(400).json({ message: "credentials missing" });
+    }
+    let response = await this.notificationService.getDeleteInviteLinkNoti(
+      notificationId
+    );
+
+    if (!response) {
+      return res
+        .status(404)
+        .json({ message: "error in deletinG INVITE LINK notification" });
+    }
+    return res.status(200).json(response);
+    
+  } catch (error) {
+    next(error)
+  }
+}
+
+
 }

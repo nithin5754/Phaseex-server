@@ -19,5 +19,9 @@ import { TodoType } from "../Entities/Todo";
     listId: string,
     taskId: string,
     todoId: string):Promise<boolean>
+
+
+    getAddCollabToTodo(workspaceId:string,folderId:string,listId:string,taskId:string,todoId:string,collabId:string):Promise<boolean>
+
   
  }

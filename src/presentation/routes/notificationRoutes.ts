@@ -20,6 +20,8 @@ const notificationRoutes = (router: Router) => {
   router.route('/update-notification-unread/:notificationId').patch(controller.onUpdateReadNotification.bind(controller))
   router.route('/single-delete-notification/:notificationId').delete(controller.onDeleteNotificationById.bind(controller))
 
+  router.route('/delete-notification-link/:notificationId').patch(controller.onDeleteNotifIcationLink.bind(controller))
+
   return router;
 
 };

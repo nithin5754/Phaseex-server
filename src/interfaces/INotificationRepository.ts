@@ -1,3 +1,4 @@
+import { promises } from "dns";
 import { NotificationType } from "../Entities/notification";
 
 
@@ -11,6 +12,7 @@ export interface INotificationRepository {
    createNotification(userId:string,notificationData:Partial<NotificationType>):Promise<boolean>
    updateReadNotification(notificationId:string):Promise<boolean>
    deleteNotification(notificationId:string):Promise<boolean>
+   deleteInviteLinkNoti(notificationId:string):Promise<boolean>
 }
 
 

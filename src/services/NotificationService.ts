@@ -12,6 +12,10 @@ export class NotoficationService implements INotificationService {
   constructor(notificationRepo:INotificationRepository) {
     this.notificationRepo=notificationRepo
   }
+  async getDeleteInviteLinkNoti(notificationId: string): Promise<boolean> {
+    let response=await this.notificationRepo.deleteInviteLinkNoti(notificationId)
+   return response
+  }
   async getDeleteNotification(notificationId: string): Promise<boolean> {
    let response=await this.notificationRepo.deleteNotification(notificationId)
    return response

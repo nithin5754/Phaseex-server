@@ -62,4 +62,82 @@ export class SearchController {
     }
     return res.status(200).json(response);
   };
+
+  onSearchSpaceCollab = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, collabKey } = req.query;
+
+      if (!workspaceId || !collabKey) {
+        return res
+          .status(404)
+          .json({ message: "invalid credentials please try again!!" });
+      }
+
+      if (typeof workspaceId !== "string" || typeof collabKey !== "string") {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try after sometimes" });
+      }
+      const response = await this.searchService.getSearchCollaboratorInSpace(
+        workspaceId,
+        collabKey
+      );
+      if (!response) {
+        return res.status(404).json({ message: "search item not found" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
+  onSearchTaskCollab = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+    const { workspaceId, folderId, listId, taskId,collabKey } = req.query;
+
+    if (!workspaceId || !folderId || !listId || !taskId||!collabKey) {
+      return res
+        .status(404)
+        .json({ message: "credentials missing please try again " });
+    }
+
+    if (
+      typeof workspaceId !== "string" ||
+      typeof folderId !== "string" ||
+      typeof listId !== "string" ||
+      typeof taskId !== "string"||
+      typeof collabKey !=='string'
+    ) {
+      return res
+        .status(404)
+        .json({ message: "something went wrong please try after sometimes" });
+    }
+      const response = await this.searchService.getSearchCollaboratorInTask(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        collabKey
+      );
+      if (!response) {
+        return res.status(404).json({ message: "search item not found" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+  
 }
