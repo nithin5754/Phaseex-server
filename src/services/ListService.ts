@@ -19,6 +19,13 @@ export class ListService implements IListService {
     this.listRepository = listRepository;
      this.taskRepository=taskRepository
   }
+ async getDeleteList(workspaceId: string, folderId: string, listId: string): Promise<boolean> {
+    
+       let response=await this.listRepository.deleteList(workspaceId,folderId,listId)
+       return !!response
+  }
+
+
   async checkCollabIsExistInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
      
     let response=await this.taskRepository.checkCollaboratorInTasks(workspaceId,folderId,listId,collaboratorId)

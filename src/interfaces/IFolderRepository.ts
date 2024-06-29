@@ -14,6 +14,9 @@ findDuplicateFolder(folder_title:string,workspaceId:string):Promise<boolean>
 
 updateFolder(data:Partial<FolderDataType>,folderId:string):Promise<FolderDataType|null>
 
+deleteFolder(workspaceId:string,folderId:string):Promise<boolean>
+deleteFolderWithWorkspace(workspaceId:string):Promise<boolean>
+
 }
 
 

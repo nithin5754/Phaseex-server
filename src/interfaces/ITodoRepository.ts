@@ -1,4 +1,5 @@
-import { TodoType } from "../Entities/Todo";
+import { TodoCollabTypeDetails, TodoType } from "../Entities/Todo";
+import { STaskCollabType } from "../frameworks/database/mongodb/repository/searchRepository";
 
 export interface ITodoRepository {
   allTodoTask(
@@ -44,6 +45,8 @@ export interface ITodoRepository {
     todoId: string
   ): Promise<boolean>;
 
+  deleteTodoWithWorkspace(workspaceId:string):Promise<boolean>
+
   addCollabToTodo(
     workspaceId: string,
     folderId: string,
@@ -52,4 +55,34 @@ export interface ITodoRepository {
     todoId: string,
     collabId: string
   ): Promise<boolean>;
+
+  collabTodoByTodoId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    todoId: string
+  ): Promise<TodoCollabTypeDetails[]|null>;
+
+
+  deleteCollabTodo(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    todoId: string,
+    collabId: string
+  ): Promise<boolean>;
+
+  deleteCollabFromAllTodo(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+
+    collabId: string
+  ): Promise<boolean>;
+
+
+
 }

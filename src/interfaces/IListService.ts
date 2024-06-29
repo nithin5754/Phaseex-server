@@ -28,6 +28,11 @@ export interface IListService {
 
   checkCollabIsExistInTasks(workspaceId:string,folderId:string,listId:string,collaboratorId:string):Promise<boolean>
 
-
+  
+  getDeleteList(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+  ): Promise<boolean>;
 
 }

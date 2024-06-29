@@ -5,6 +5,44 @@ import { Workspace as workspaceModal } from "../models/spaceModal";
 import UserModel from "../models/UserModel";
 
 export class workSpaceRepository implements ISpaceRepository {
+  async findInvitedSpace(assigneeId: string,active:boolean): Promise<WorkspaceDataType[] | null> {
+    
+   let response= await  workspaceModal.find({
+    active,
+      'collaborators.assignee': assigneeId
+    })
+
+    if (response && response.length > 0) {
+      let responseData: WorkspaceDataType[] = response.map((workspace) => ({
+        collaborators: workspace.collaborators.map((collaborator: any) => ({
+          assignee: collaborator.assignee.toString(),
+          role: collaborator.role,
+          verified:collaborator.verified
+        })),
+        id: workspace._id.toString() as string,
+        workspaceOwner: workspace.workspaceOwner?.toString() as string,
+        title: workspace.title,
+        workspace_description: workspace.workspace_description,
+        workspaceType: workspace.workspaceType,
+        active: workspace.active,
+        createdAt: workspace.createdAt,
+        updatedAt: workspace.updatedAt,
+      }));
+      return responseData;
+    }
+
+    return null;
+
+
+
+  }
+  async deleteWorkspace(workspaceId: string): Promise<boolean> {
+     
+    let response=await workspaceModal.findOneAndDelete({_id:workspaceId})
+
+    return !!response
+
+  }
  async updateCollaboratorsVerified(workspaceId: string, collaboratorId: string): Promise<boolean> {
    
 

@@ -28,6 +28,11 @@ deleteTaskCollabByTaskId(workspaceId:string,folderId:string,listId:string,taskId
  checkCollaboratorInTasks(workspaceId:string, folderId:string, listId:string, collaboratorId:string):Promise<boolean>
 
 
+ deleteTask(workspaceId:string, folderId:string, listId:string, taskId:string):Promise<boolean>
 
-   
+ deleteTaskWithWorkspace(workspaceId:string):Promise<boolean>
+
+
+
+
 }

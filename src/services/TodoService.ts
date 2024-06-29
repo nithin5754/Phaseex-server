@@ -1,4 +1,4 @@
-import { TodoType } from "../Entities/Todo";
+import { TodoCollabTypeDetails, TodoType } from "../Entities/Todo";
 import { ITodoRepository } from "../Interfaces/ITodoRepository";
 import { ITodoService } from "../Interfaces/ITodoService";
 
@@ -7,6 +7,37 @@ export class TodoService implements ITodoService {
   constructor(todoRepository: ITodoRepository) {
     this.todoRepository = todoRepository;
   }
+ async getDeleteTodoWithWorkspace(workspaceId: string): Promise<boolean> {
+    let response=await this.todoRepository.deleteTodoWithWorkspace(workspaceId)
+
+    return response
+
+  }
+ async getDeleteCollabTodo(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string, collabId: string): Promise<boolean> {
+   let response=await this.todoRepository.deleteCollabTodo(workspaceId,folderId,listId,taskId,todoId,collabId)
+
+   return response
+  }
+  async getCollabTodoByTodoId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    todoId: string
+  ): Promise<TodoCollabTypeDetails[] | null> {
+    let response = await this.todoRepository.collabTodoByTodoId(
+      workspaceId,
+      folderId,
+      listId,
+      taskId,
+      todoId
+    );
+    if (!response) {
+      return null;
+    }
+    return response;
+  }
+
   async getAddCollabToTodo(
     workspaceId: string,
     folderId: string,
@@ -23,8 +54,8 @@ export class TodoService implements ITodoService {
       todoId,
       collabId
     );
-      
-    return response
+
+    return response;
   }
   async getDeleteTodoTask(
     workspaceId: string,

@@ -9,8 +9,6 @@ export class FolderController {
     this.folderService = folderService;
   }
 
-
-
   onCreateNewFolder = async (
     req: Request,
     res: Response,
@@ -19,7 +17,7 @@ export class FolderController {
     let spaceOwner = req.userId;
     const { folder_title, workspaceId } = req.body;
 
-    if (!folder_title.trim() ||!req.body.folder_description.trim()) {
+    if (!folder_title.trim() || !req.body.folder_description.trim()) {
       return res.status(404).json({ message: "full space invalid" });
     }
 
@@ -33,7 +31,6 @@ export class FolderController {
       }
 
       let isCreate = await this.folderService.createNewFolder(req.body);
-  
 
       if (!isCreate) {
         return res.status(404).json({ message: "something went wrong" });
@@ -48,14 +45,12 @@ export class FolderController {
     try {
       const workspaceId: string = req.params.id;
 
-
       if (!workspaceId) {
         return res.status(404).json({ message: "something went wrong" });
       }
       let data = await this.folderService.getAllFolderByWorkSpaceId(
         workspaceId
       );
- 
 
       if (!data) {
         return res.status(404).json({ message: "not found" });
@@ -69,7 +64,6 @@ export class FolderController {
   onGetFolderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { spaceId, folderId } = req.query;
-   
 
       if (!spaceId && !folderId) {
         return res.status(404).json({ message: "something went wrong" });
@@ -93,12 +87,12 @@ export class FolderController {
     try {
       const { folderData, folderId } = req.body;
 
-    
-
-      
-    if (!folderData.folder_title.trim() ||!folderData.folder_description.trim()) {
-      return res.status(404).json({ message: "full space invalid" });
-    }
+      if (
+        !folderData.folder_title.trim() ||
+        !folderData.folder_description.trim()
+      ) {
+        return res.status(404).json({ message: "full space invalid" });
+      }
 
       let spaceId = folderData.workspaceId;
 
@@ -124,6 +118,34 @@ export class FolderController {
       }
 
       return res.status(200).json(update);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onFolderDelete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const folderId = req.params.folderId;
+      const workspaceId = req.body.workspaceId;
+
+      if (!folderId || !workspaceId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      let isFolderDeleted = await this.folderService.getDeleteFolder(
+        workspaceId,
+        folderId
+      );
+
+      if (!isFolderDeleted) {
+        return res
+          .status(404)
+          .json({
+            message: "something went wrong please try after sometimes!",
+          });
+      }
+
+      return res.status(200).json(isFolderDeleted);
     } catch (error) {
       next(error);
     }

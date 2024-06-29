@@ -11,32 +11,54 @@ import { List as ListModal } from "../models/ListModal";
 import moment from "moment";
 
 export class ListRepository implements IListRepository {
- async checkCollaboratorInList(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
+ async deleteListWithWspace(workspaceId: string): Promise<boolean> {
+    let response=await ListModal.findOneAndDelete({ workspaceId});
+
+    return !!response
+  }
+
+
+  
+ async deleteList(workspaceId: string, folderId: string, listId: string): Promise<boolean> {
+    
+      let response=await ListModal.findOneAndDelete({ workspaceId,_id:listId,folderId});
+
+      return !!response
+       
+  }
+  async checkCollaboratorInList(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
     const query = {
       workspaceId: new mongoose.Types.ObjectId(workspaceId),
       folderId: new mongoose.Types.ObjectId(folderId),
       _id: new mongoose.Types.ObjectId(listId),
-       list_collaborators: {
+      list_collaborators: {
         $elemMatch: {
           assignee: new mongoose.Types.ObjectId(collaboratorId),
-          role:"viewer"
-        }
-      }
-
+          role: "viewer",
+        },
+      },
     };
 
     const task = await ListModal.findOne(query);
 
-    return !!task
+    return !!task;
   }
- async deleteListCollabByListId(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
+  async deleteListCollabByListId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collabId: string
+  ): Promise<boolean> {
     const filter = {
       _id: listId,
       workspaceId: workspaceId,
       folderId: folderId,
-    
     };
-
 
     const updateQuery = {
       $pull: {
@@ -45,18 +67,14 @@ export class ListRepository implements IListRepository {
         },
       },
     };
-  
 
-    const response=await ListModal.findOneAndUpdate(filter,updateQuery)
+    const response = await ListModal.findOneAndUpdate(filter, updateQuery);
 
     if (response) {
       return true;
     }
-  
+
     return false;
-
-
-       
   }
 
   async updateListCollabByListId(
@@ -105,8 +123,6 @@ export class ListRepository implements IListRepository {
         $unwind: "$list_collaborators",
       },
 
-   
-
       {
         $lookup: {
           from: "users",
@@ -132,12 +148,7 @@ export class ListRepository implements IListRepository {
       },
     ]);
 
-    
-
     if (response) {
-     
-      
-
       return response;
     }
 

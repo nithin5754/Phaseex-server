@@ -12,3 +12,11 @@ export interface TodoType {
   createdAt:string,
   updatedAt:string
 }
+
+export interface TodoCollabTypeDetails {
+  id:string;
+  fullName: string; 
+  email:string;
+  imageUrl:string;
+  role:string;
+}

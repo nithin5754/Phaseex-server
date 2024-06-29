@@ -10,6 +10,10 @@ import { GenerateOtp } from "../../External- Libraries/generateOtp";
 import { Token } from "../../External- Libraries/token";
 import { SpaceService } from "../../Services/spaceService";
 import { workSpaceRepository } from "../../frameworks/database/mongodb/repository/workspaceRepository";
+import { FolderRepository } from "../../frameworks/database/mongodb/repository/FolderRepository";
+import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
+import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
+import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -26,8 +30,12 @@ const services = new AuthServices(
 );
 
 const spaceRepository = new workSpaceRepository();
+const folderRepository=new  FolderRepository()
+const listRepository=new ListRepository()
+const taskRepository=new TaskRepository()
+const todoRepository=new TodoRepository()
 
-const spaceService = new SpaceService(spaceRepository);
+const spaceService = new SpaceService(spaceRepository,folderRepository,listRepository,taskRepository,todoRepository);
 
 const controller = new WorkSpaceController(services, spaceService);
 
@@ -70,6 +78,9 @@ const spaceRoutes = (router: Router) => {
     .route("/verify-collaborator")
     .patch(controller.onVerifyCollaborator.bind(controller));
 
+  router
+    .route("/delete-workSpace/:workspaceId")
+    .post(controller.onDeleteWorkspace.bind(controller))
   return router;
 };
 

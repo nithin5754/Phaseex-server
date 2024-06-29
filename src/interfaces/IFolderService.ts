@@ -14,4 +14,6 @@ export interface IFolderService {
   
 updateFolder(data:Partial<FolderDataType>,folderId:string):Promise<FolderDataType|null>
 
+getDeleteFolder(workspaceId:string,folderId:string):Promise<boolean>
+
 }

@@ -7,16 +7,19 @@ import { TaskRepository } from "../../frameworks/database/mongodb/repository/tas
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { DueDay } from "../../External- Libraries/FindDueDate";
 import { ProgressBar } from "../../External- Libraries/ProgressPercentage";
+import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
 
 const listRepository = new ListRepository();
 const taskRepository = new TaskRepository();
 const dueDate = new DueDay();
 const progressBar = new ProgressBar();
+const todoRepository=new TodoRepository()
 const taskService = new TaskService(
   taskRepository,
   listRepository,
   dueDate,
-  progressBar
+  progressBar,
+  todoRepository
 );
 
 const controller = new TaskController(taskService);

@@ -104,6 +104,7 @@ export class SearchController {
   ) => {
     try {
     const { workspaceId, folderId, listId, taskId,collabKey } = req.query;
+   
 
     if (!workspaceId || !folderId || !listId || !taskId||!collabKey) {
       return res

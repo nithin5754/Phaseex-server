@@ -1,12 +1,45 @@
 import mongoose from "mongoose";
-import { TaskCollaboratorDetailType, TaskType } from "../../../../Entities/Task";
+import {
+  TaskCollaboratorDetailType,
+  TaskType,
+} from "../../../../Entities/Task";
 import { ITaskRepository } from "../../../../Interfaces/ITaskRepository";
 import { Task as TaskModal } from "../models/TaskModal";
 import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
-  async checkCollaboratorInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
+ async deleteTaskWithWorkspace(workspaceId: string): Promise<boolean> {
+        
+  let response = await TaskModal.findOneAndDelete({
+    workspaceId,
+  });
+
+  return !!response;
+
+
+  }
+  async deleteTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string
+  ): Promise<boolean> {
+    let response = await TaskModal.findOneAndDelete({
+      _id: taskId,
+      workspaceId,
+      folderId,
+      listId,
+    });
+
+    return !!response;
+  }
+  async checkCollaboratorInTasks(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
     const query = {
       workspaceId: new mongoose.Types.ObjectId(workspaceId),
       folderId: new mongoose.Types.ObjectId(folderId),
@@ -14,24 +47,28 @@ export class TaskRepository implements ITaskRepository {
       task_collaborators: {
         $elemMatch: {
           assigneeId: new mongoose.Types.ObjectId(collaboratorId),
-          role:"developer"
-        }
-      }
+          role: "developer",
+        },
+      },
     };
 
     const task = await TaskModal.findOne(query);
 
-    return !!task
+    return !!task;
   }
-  async deleteTaskCollabByTaskId(workspaceId: string, folderId: string, listId: string, taskId: string, collabId: string): Promise<boolean> {
+  async deleteTaskCollabByTaskId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    collabId: string
+  ): Promise<boolean> {
     const filter = {
       _id: taskId,
       workspaceId: workspaceId,
       folderId: folderId,
-      listId:listId
-    
+      listId: listId,
     };
-
 
     const updateQuery = {
       $pull: {
@@ -40,17 +77,21 @@ export class TaskRepository implements ITaskRepository {
         },
       },
     };
-  
 
-    const response=await TaskModal.findOneAndUpdate(filter,updateQuery)
+    const response = await TaskModal.findOneAndUpdate(filter, updateQuery);
 
     if (response) {
       return true;
     }
-  
+
     return false;
   }
-async  taskCollabByListId(workspaceId: string, folderId: string, listId: string,taskId:string): Promise<TaskCollaboratorDetailType[] | null> {
+  async taskCollabByListId(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string
+  ): Promise<TaskCollaboratorDetailType[] | null> {
     let response = await TaskModal.aggregate([
       {
         $match: {
@@ -88,26 +129,24 @@ async  taskCollabByListId(workspaceId: string, folderId: string, listId: string,
       },
     ]);
 
-    
-
     if (response) {
-     
-      
-
       return response;
     }
 
     return null;
-
-
   }
-  async addCollabToTask(workspaceId: string, folderId: string, listId: string, taskId: string, collabId: string): Promise<boolean> {
-      
+  async addCollabToTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    collabId: string
+  ): Promise<boolean> {
     let response = await TaskModal.findOne({
       workspaceId,
       folderId,
       listId: listId,
-      _id:taskId
+      _id: taskId,
     });
 
     if (response) {
@@ -119,26 +158,36 @@ async  taskCollabByListId(workspaceId: string, folderId: string, listId: string,
 
     return false;
   }
- async updateDescription(workspaceId: string, folderId: string, listId: string, taskId: string, task_description: string): Promise<boolean> {
-
+  async updateDescription(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    task_description: string
+  ): Promise<boolean> {
     const updateList = await TaskModal.findOneAndUpdate(
       { workspaceId, folderId, listId: listId, _id: taskId },
       { $set: { task_description } },
       { new: true }
     );
 
-    return !!updateList
-    
+    return !!updateList;
   }
- async singleTask(workspaceId: string, folderId: string, listId: string, taskId: string): Promise<TaskType | null> {
-      
-     const task=await TaskModal.findOne({workspaceId,folderId,listId,_id:taskId})
+  async singleTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string
+  ): Promise<TaskType | null> {
+    const task = await TaskModal.findOne({
+      workspaceId,
+      folderId,
+      listId,
+      _id: taskId,
+    });
 
-
-     
-      
-     if(task){
-      let responseData={
+    if (task) {
+      let responseData = {
         id: task._id.toString() as string,
         workspaceId: task.workspaceId?.toString() as string,
         folderId: task.folderId?.toString() as string,
@@ -164,80 +213,101 @@ async  taskCollabByListId(workspaceId: string, folderId: string, listId: string,
         task_title: task.task_title,
       };
 
-      return responseData
-     }
-     return null
+      return responseData;
+    }
+    return null;
   }
- async TaskStatusWiseCount(workspaceId: string, folderId: string, listId: string): Promise<{ "to-do": number , "in_progress": number ,"complete": number }> {
+  async TaskStatusWiseCount(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<{ "to-do": number; in_progress: number; complete: number }> {
     const response = await TaskModal.aggregate([
       {
-        $match:{
-         workspaceId,
-         folderId,
-         listId
-        }
-      }
-        
-        ,{
-          $group:{
-            _id:"$task_status",
-            count:{
-             $sum:1}
-          }
-        }
-    ])
+        $match: {
+          workspaceId,
+          folderId,
+          listId,
+        },
+      },
 
-    let CountAllTask:{ "to-do": number, "in_progress": number, "complete": number }={
+      {
+        $group: {
+          _id: "$task_status",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    let CountAllTask: {
+      "to-do": number;
+      in_progress: number;
+      complete: number;
+    } = {
       "to-do": 0,
-      "in_progress": 0,
-      "complete": 0
-    }
+      in_progress: 0,
+      complete: 0,
+    };
 
-    if(response){
-        response.forEach(item => {
-          if(item._id==='to-do'){
-            CountAllTask["to-do"]=item.count
-          }else if(item._id==='in_progress'){
-            CountAllTask["in_progress"]=item.count
-          }else if(item._id==='complete'){
-            CountAllTask["complete"]=item.count
-          }
+    if (response) {
+      response.forEach((item) => {
+        if (item._id === "to-do") {
+          CountAllTask["to-do"] = item.count;
+        } else if (item._id === "in_progress") {
+          CountAllTask["in_progress"] = item.count;
+        } else if (item._id === "complete") {
+          CountAllTask["complete"] = item.count;
+        }
 
-
-          return CountAllTask
+        return CountAllTask;
       });
     }
 
-    return CountAllTask
-
+    return CountAllTask;
   }
-async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promise<number> {
-    const response:number = await TaskModal.countDocuments({ workspaceId, folderId, listId });
+  async AllTaskCount(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<number> {
+    const response: number = await TaskModal.countDocuments({
+      workspaceId,
+      folderId,
+      listId,
+    });
 
-
-    return response
+    return response;
   }
- async AllCompleteTask(workspaceId: string, folderId: string, listId: string): Promise<number> {
-    const response:number = await TaskModal.countDocuments({ workspaceId, folderId, listId,status_task:'complete' });
+  async AllCompleteTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<number> {
+    const response: number = await TaskModal.countDocuments({
+      workspaceId,
+      folderId,
+      listId,
+      status_task: "complete",
+    });
 
- 
-    
-
-
-    return response
-
-  
-   
+    return response;
   }
- async updateStatus(workspaceId: string, folderId: string, listId: string, taskId: string, status: string): Promise<boolean> {
+  async updateStatus(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    status: string
+  ): Promise<boolean> {
     const updateList = await TaskModal.findOneAndUpdate(
       { workspaceId, folderId, listId: listId, _id: taskId },
       { $set: { status_task: status } },
       { new: true }
     );
 
-    return !!updateList
-       
+    return !!updateList;
   }
 
   async updatePriority(
@@ -252,7 +322,6 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
       { $set: { priority_task: priority } },
       { new: true }
     );
-
 
     return !!updateList;
   }
@@ -308,7 +377,6 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
       task_title: task_name,
     });
 
-
     return !!response;
   }
   async createTask(taskData: Partial<TaskType>): Promise<TaskType | null> {
@@ -348,7 +416,4 @@ async AllTaskCount(workspaceId: string, folderId: string, listId: string): Promi
 
     return null;
   }
-
-
-  
 }

@@ -73,11 +73,6 @@ export class WorkSpaceController {
         Number(pageId),
         limit
       );
-
-      if (!response) {
-        return res.status(404).json({ message: "response not found" });
-      }
-
       return res.status(200).json(response);
     } catch (error) {
       next(error);
@@ -92,11 +87,32 @@ export class WorkSpaceController {
     let spaceOwner = req.userId;
 
     try {
-      const response = await this.spaceService.getAllOnGoingSpace(spaceOwner);
-      if (!response) {
-        return res.status(404).json({ message: "response not found" });
+      const responsePromise = await this.spaceService.getAllOnGoingSpace(
+        spaceOwner
+      );
+      const invitesSpacePromise = await this.spaceService.getAllInvitedSpace(
+        spaceOwner,
+        true
+      );
+
+      const [response, invitesSpace] = await Promise.all([
+        responsePromise,
+        invitesSpacePromise,
+      ]);
+
+      if (!response && !invitesSpace) {
+        return res.status(404).json({ message: "Response not found" });
       }
-      return res.status(200).json(response);
+
+      const mergedArray = [];
+      if (response) {
+        mergedArray.push(...response);
+      }
+      if (invitesSpace) {
+        mergedArray.push(...invitesSpace);
+      }
+
+      return res.status(200).json(mergedArray);
     } catch (error) {
       next(error);
     }
@@ -178,8 +194,7 @@ export class WorkSpaceController {
       const workspaceId = req.body.workspaceId;
       const collaboratorId = req.body.collaboratorId;
 
-      console.log(workspaceId,collaboratorId,"add collab ids");
-      
+      console.log(workspaceId, collaboratorId, "add collab ids");
 
       if (
         !workspaceId ||
@@ -229,98 +244,114 @@ export class WorkSpaceController {
     }
   };
 
-
-
-  OnGetAllCollaboratorsInSpace= async (
+  OnGetAllCollaboratorsInSpace = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
       let workspaceId = req.params.workspaceId;
-      if (
-        !workspaceId ||
-        typeof workspaceId !== "string"
-      ) {
+      if (!workspaceId || typeof workspaceId !== "string") {
         return res
           .status(404)
           .json({ message: "something went wrong credentials missing" });
       }
 
+      let allCollabMembers = await this.spaceService.getAllCollaboratorInSpace(
+        workspaceId
+      );
 
-      let allCollabMembers=await this.spaceService.getAllCollaboratorInSpace(workspaceId)
+      console.log(allCollabMembers, "hello ,delete,update");
 
-      console.log(allCollabMembers,"hello ,delete,update");
-      
-
-      if(!allCollabMembers||allCollabMembers.length<0){
-        return res.status(404).json({message:"not found"})
+      if (!allCollabMembers || allCollabMembers.length < 0) {
+        return res.status(404).json({ message: "not found" });
       }
 
-      return res.status(200).json(allCollabMembers)
-
-      
-
-
-
-
+      return res.status(200).json(allCollabMembers);
     } catch (error) {
-      next(error)
+      next(error);
     }
   };
 
-
-  onDeleteCollabrators= async (
+  onDeleteCollabrators = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-try {
+    try {
+      const { workspaceId, collaboratorId } = req.body;
 
-  const {workspaceId,collaboratorId}=req.body
+      if (!workspaceId || !collaboratorId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
 
-  if(!workspaceId||!collaboratorId){
-    return res.status(404).json({message:"credentials missing"})
-  }
+      const response = await this.spaceService.getDeleteCollaboratorsToSpace(
+        workspaceId,
+        collaboratorId
+      );
 
-  const response=await this.spaceService.getDeleteCollaboratorsToSpace(workspaceId,collaboratorId)
-
-  if(!response){
-    return res.status(404).json({message:"something went wrong"})
-  }
-return res.status(200).json(response)
-  
-} catch (error) {
-  next(error)
-}
-
-  }
-
-
-onVerifyCollaborator= async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-   
-  try {
-    const {workspaceId,collaboratorId}=req.body
-
-    if(!workspaceId||!collaboratorId){
-      return res.status(404).json({message:"credentials missing"})
+      if (!response) {
+        return res.status(404).json({ message: "something went wrong" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
     }
+  };
 
-    let response=await this.spaceService.getUpdateCollaboratorsVerified(workspaceId,collaboratorId)
+  onVerifyCollaborator = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, collaboratorId } = req.body;
 
-    if(!response){
-      return res.status(404).json({message:"error occur please try again later"})
+      if (!workspaceId || !collaboratorId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      let response = await this.spaceService.getUpdateCollaboratorsVerified(
+        workspaceId,
+        collaboratorId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "error occur please try again later" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
     }
-    return res.status(200).json(response)
-  } catch (error) {
-    next(error)
-  }
-   
-}
+  };
 
+  onDeleteWorkspace = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const workspaceId = req.params.workspaceId;
 
+      if (!workspaceId) {
+        return res.status(404).json({ message: "not found" });
+      }
+
+      let isWorkspaceDeleted = await this.spaceService.getDeleteWorkspace(
+        workspaceId
+      );
+
+      if (!isWorkspaceDeleted) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      return res.status(200).json(isWorkspaceDeleted);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

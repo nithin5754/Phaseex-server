@@ -12,6 +12,12 @@ export class FolderService implements IFolderService  {
     this.folderRepository=folderRepository
     
   }
+  async getDeleteFolder(workspaceId: string, folderId: string): Promise<boolean> {
+     const response=await this.folderRepository.deleteFolder(workspaceId,folderId)
+
+     return !!response
+    
+  }
  async updateFolder(data: Partial<FolderDataType>, folderId: string): Promise<FolderDataType | null> {
     const response=await this.folderRepository.updateFolder(data,folderId)
     if(response){

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ITodoService } from "../../Interfaces/ITodoService";
+import { todo } from "node:test";
 
 export class TodoController {
   private todoService: ITodoService;
@@ -246,4 +247,106 @@ export class TodoController {
       next(error);
     }
   };
+
+  onGetAllTodoCollabInTodoId = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId, taskId, todoId } = req.query;
+
+      if (!workspaceId || !folderId || !listId || !taskId || !todoId) {
+        return res
+          .status(404)
+          .json({ message: "credentials missing please try again " });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof taskId !== "string" ||
+        typeof todoId !== "string"
+      ) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try after sometimes" });
+      }
+
+      let response = await this.todoService.getCollabTodoByTodoId(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        todoId
+      );
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again later!" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onGetDeleteTodoCollab = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId, taskId, todoId, collabId } =
+        req.query;
+
+      if (
+        !workspaceId ||
+        !folderId ||
+        !listId ||
+        !taskId ||
+        !todoId ||
+        !collabId
+      ) {
+        return res
+          .status(404)
+          .json({ message: "credentials missing please try again " });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof taskId !== "string" ||
+        typeof todoId !== "string" ||
+        typeof collabId !== "string"
+      ) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try after sometimes" });
+      }
+
+      let response = await this.todoService.getDeleteCollabTodo(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        todoId,
+        collabId
+      );
+
+console.log(response,"delete");
+
+        
+      if (!response) {
+        return res.status(404).json({ message: "something went wrong" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+  
 }

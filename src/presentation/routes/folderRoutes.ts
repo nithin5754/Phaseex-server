@@ -19,23 +19,19 @@ const folderRoutes = (router: Router) => {
     .route("/get-folder/:id")
     .get(controller.onGetAllFolder.bind(controller));
 
-
-    router
+  router
     .route("/updateFolder")
     .post(controller.onUpadateFolder.bind(controller));
-   
 
+  router
+    .route("/singleFolder")
+    .get(controller.onGetFolderById.bind(controller));
 
-
-
-    router
-    .route('/singleFolder')
-    .get(controller.onGetFolderById.bind(controller))
+  router
+    .route("/delete-folder/:folderId")
+    .post(controller.onFolderDelete.bind(controller));
 
   return router;
-
-
-
 };
 
 export default folderRoutes;

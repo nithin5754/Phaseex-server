@@ -1,12 +1,80 @@
 
 import moment from "moment";
-import { TodoType } from "../../../../Entities/Todo";
+import { TodoCollabTypeDetails, TodoType } from "../../../../Entities/Todo";
 import { ITodoRepository } from "../../../../Interfaces/ITodoRepository";
 import { Todo as TodoModal } from "../models/TodoModal";
+import mongoose from "mongoose";
 
 
 
 export class TodoRepository implements ITodoRepository {
+async deleteTodoWithWorkspace(workspaceId: string): Promise<boolean> {
+  const response=await TodoModal.findOneAndDelete({ workspaceId})
+
+  return !!response
+}
+async deleteCollabFromAllTodo(workspaceId: string, folderId: string, listId: string, taskId: string, collabId: string): Promise<boolean> {
+  let filter={ workspaceId, folderId, listId,taskId,assignee:collabId}
+  const query = { $set: { assignee: null } };
+
+  const updateList = await TodoModal.updateMany(filter,query)
+  return !!updateList;
+
+}
+async deleteCollabTodo(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string, collabId: string): Promise<boolean> {
+
+  let filter={ workspaceId, folderId, listId,taskId , _id:todoId}
+  let query= { $unset: { assignee:collabId} }
+
+  const updateList = await TodoModal.findOneAndUpdate(filter,query)
+  return !!updateList;
+}
+async collabTodoByTodoId(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string): Promise<TodoCollabTypeDetails[]|null> {
+
+
+   
+  const response:TodoCollabTypeDetails[]=await TodoModal.aggregate([
+    {
+      $match: {
+        workspaceId: new mongoose.Types.ObjectId(workspaceId),
+        folderId: new mongoose.Types.ObjectId(folderId),
+        listId:new mongoose.Types.ObjectId(listId),
+        taskId:new mongoose.Types.ObjectId(taskId),
+        _id: new mongoose.Types.ObjectId(todoId),
+      },
+    },
+   
+
+
+    {
+      $lookup: {
+        from: "users",
+        localField: "assignee",
+        foreignField: "_id",
+        as: "collaborators_details",
+      },
+    },
+    { $project: { collaborators_details: 1,_id:0 } },
+    { $unwind: "$collaborators_details" },
+
+    {
+      $project: {
+        id: "$collaborators_details._id",
+        fullName: "$collaborators_details.userName",
+        email: "$collaborators_details.email",
+        _id: 0,
+      },
+    },
+  ])
+
+  
+   if(!response){
+return null
+   }
+
+    return response
+
+}
 async addCollabToTodo(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string,collabId:string): Promise<boolean> {
   const updateList = await TodoModal.findOneAndUpdate(
     { workspaceId, folderId, listId,taskId , _id:todoId},
@@ -42,6 +110,7 @@ async updateTodoTask(workspaceId: string, folderId: string, listId: string, task
   return !!updateList;
 }
 async updateStatus(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string, todo_status: string): Promise<boolean> {
+  
   const updateList = await TodoModal.findOneAndUpdate(
     { workspaceId, folderId, listId,taskId , _id:todoId},
     { $set: { todo_status} },

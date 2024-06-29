@@ -204,20 +204,15 @@ export class ListController {
     res: Response,
     next: NextFunction
   ) => {
-
-
-
-
     try {
-
       const { listId } = req.params;
 
       const { workspaceId, folderId, collabId } = req.body;
-  
+
       if (!workspaceId || !folderId || !listId || !collabId) {
         return res.status(404).json({ message: "missing credential" });
       }
-  
+
       if (
         typeof workspaceId !== "string" ||
         typeof folderId !== "string" ||
@@ -228,24 +223,26 @@ export class ListController {
           message: "wrong credentials please try again after some times",
         });
       }
-     
-      let isExist=await this.listService.getSingleList(workspaceId,
+
+      let isExist = await this.listService.getSingleList(
+        workspaceId,
         folderId,
-        listId)
+        listId
+      );
 
-        if (!isExist) {
-          return res
-            .status(400)
-            .json({ message: "workspace not found please try again" });
-        }
+      if (!isExist) {
+        return res
+          .status(400)
+          .json({ message: "workspace not found please try again" });
+      }
 
-        const existingCollaborator = isExist.list_collaborators.find(
-          (collab: ListCollaboratorType) => collab.assignee === collabId
-        );
+      const existingCollaborator = isExist.list_collaborators.find(
+        (collab: ListCollaboratorType) => collab.assignee === collabId
+      );
 
-        if(existingCollaborator){
-          return res.status(404).json({message:"already exist "})
-        }
+      if (existingCollaborator) {
+        return res.status(404).json({ message: "already exist " });
+      }
 
       let response = await this.listService.getAddCollabToList(
         workspaceId,
@@ -334,16 +331,18 @@ export class ListController {
         return res.status(404).json({ message: "not found" });
       }
 
-       if(role==='viewer'){
-        let isEXIST=await this.listService.checkCollabIsExistInTasks(workspaceId,folderId,listId,collabId)
-    
-  if(isEXIST){
-    return res.status(408).json({message :"cannot set role as viewer"})
-  }
-       }
+      if (role === "viewer") {
+        let isEXIST = await this.listService.checkCollabIsExistInTasks(
+          workspaceId,
+          folderId,
+          listId,
+          collabId
+        );
 
-  
-    
+        if (isEXIST) {
+          return res.status(408).json({ message: "cannot set role as viewer" });
+        }
+      }
 
       let response = await this.listService.getUpdateListCollabByListId(
         workspaceId,
@@ -404,6 +403,33 @@ export class ListController {
       }
 
       return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onGetDeleteList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let listId = req.params.listId;
+      let { workspaceId, folderId } = req.body;
+
+      if (!listId || !workspaceId || !folderId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      let isListDeleted = await this.listService.getDeleteList(
+        workspaceId,
+        folderId,
+        listId
+      );
+
+      if (!isListDeleted) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      return res.status(200).json(isListDeleted);
     } catch (error) {
       next(error);
     }

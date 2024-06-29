@@ -5,27 +5,30 @@ import { IListRepository } from "../Interfaces/IListRepository";
 import { IProgressBar } from "../Interfaces/IProgressBar";
 import { ITaskRepository } from "../Interfaces/ITaskRepository";
 import { ITaskService } from "../Interfaces/ITaskService";
+import { ITodoRepository } from "../Interfaces/ITodoRepository";
 
 export class TaskService implements ITaskService {
   private taskRepository: ITaskRepository;
   private listRepository: IListRepository;
+  private todoRepository: ITodoRepository
   private dueDate: IDueDate;
   private progressBar: IProgressBar;
   constructor(
     taskRepository: ITaskRepository,
     listRepository: IListRepository,
     dueDate: IDueDate,
-    progressBar: IProgressBar
+    progressBar: IProgressBar,
+    todoRepository: ITodoRepository
   ) {
     this.taskRepository = taskRepository;
     this.listRepository = listRepository;
     this.dueDate = dueDate;
     this.progressBar = progressBar;
+    this.todoRepository=todoRepository
   }
 async  isCollabExistInListAsViewer(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
       
     let response=await this.listRepository.checkCollaboratorInList(workspaceId,folderId,listId,collabId)
-    console.log(response,"hello task service");
     
     return response
   }
@@ -43,6 +46,16 @@ async  isCollabExistInListAsViewer(workspaceId: string, folderId: string, listId
       taskId,
       collabId
     );
+
+
+    if(response) {
+     let deleteTodoCollabId=await this.todoRepository.deleteCollabFromAllTodo(workspaceId,folderId,listId,taskId,collabId)
+console.log(deleteTodoCollabId,"delete collab tood huiiiiii");
+
+     if(!deleteTodoCollabId){
+      return false
+     }
+    }
 
     return response;
   }

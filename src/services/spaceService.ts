@@ -4,17 +4,70 @@ import {
   getCollaboratorType,
   workspaceSpaceJwtType,
 } from "../Entities/WorkspaceDataType";
+import { IFolderRepository } from "../Interfaces/IFolderRepository";
+import { IListRepository } from "../Interfaces/IListRepository";
 
 import ISpaceRepository from "../Interfaces/ISpaceRepository";
 import ISpaceService from "../Interfaces/ISpaceService";
+import { ITaskRepository } from "../Interfaces/ITaskRepository";
+import { ITodoRepository } from "../Interfaces/ITodoRepository";
 
 export class SpaceService implements ISpaceService {
   private spaceRepository: ISpaceRepository;
+  private folderRepository:IFolderRepository;
+  private listRepository:IListRepository;
+  private taskRepository:ITaskRepository
+  private todoRepository:ITodoRepository
+
   
 
-  constructor(spaceRepository: ISpaceRepository) {
+  constructor(spaceRepository: ISpaceRepository,folderRepository:IFolderRepository,listRepository:IListRepository,taskRepository:ITaskRepository, todoRepository:ITodoRepository) {
     this.spaceRepository = spaceRepository;
+    this.folderRepository=folderRepository
+    this.listRepository=listRepository
+    this.taskRepository=taskRepository
+    this.todoRepository=todoRepository
+
    
+  }
+ getAllInvitedSpace(userId: string,active:boolean): Promise<WorkspaceDataType[] | null> {
+    return this.spaceRepository.findInvitedSpace(userId,active)
+
+  }
+ async getDeleteWorkspace(workspaceId: string): Promise<boolean> {
+     
+  let response=await this.spaceRepository.deleteWorkspace(workspaceId)
+
+  if(!response){
+   return false
+  }
+  let isFolderDeleted=await this.folderRepository.deleteFolderWithWorkspace(workspaceId)
+
+  // if(!isFolderDeleted){
+  //   return false
+  // }
+
+  let isListDeleted=await this.listRepository.deleteListWithWspace(workspaceId)
+
+  // if(!isListDeleted){
+  //   return false
+  // }
+
+  let isTaskDeleted=await this.taskRepository.deleteTaskWithWorkspace(workspaceId)
+
+  // if(!isTaskDeleted){
+  //   return false
+  // }
+
+  let isTodoDeleted=await this.todoRepository.deleteTodoWithWorkspace(workspaceId)
+
+  // if(!isTodoDeleted){
+  //   return false
+  // }
+
+
+
+  return response
   }
 async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: string): Promise<boolean> {
     let response = await this.spaceRepository.updateCollaboratorsVerified(workspaceId,collaboratorId);
@@ -100,6 +153,7 @@ async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: strin
   async getAllOnGoingSpace(
     workspaceOwner: string
   ): Promise<WorkspaceDataType[] | null> {
+       
     return this.spaceRepository.findAllOnGoing(workspaceOwner);
   }
   changeVisible(id: string, workspaceOwner: string): Promise<boolean> {
