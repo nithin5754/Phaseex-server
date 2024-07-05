@@ -10,7 +10,7 @@ import moment from "moment";
 
 export class FolderRepository implements IFolderRepository {
  async deleteFolderWithWorkspace(workspaceId: string): Promise<boolean> {
-    const deletedFolder = await FolderModal.findOneAndDelete({ workspaceId });
+    const deletedFolder = await FolderModal.deleteMany({ workspaceId });
     return !!deletedFolder
   }
   async deleteFolder(workspaceId: string, folderId: string): Promise<boolean> {

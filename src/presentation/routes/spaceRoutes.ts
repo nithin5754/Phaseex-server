@@ -30,12 +30,18 @@ const services = new AuthServices(
 );
 
 const spaceRepository = new workSpaceRepository();
-const folderRepository=new  FolderRepository()
-const listRepository=new ListRepository()
-const taskRepository=new TaskRepository()
-const todoRepository=new TodoRepository()
+const folderRepository = new FolderRepository();
+const listRepository = new ListRepository();
+const taskRepository = new TaskRepository();
+const todoRepository = new TodoRepository();
 
-const spaceService = new SpaceService(spaceRepository,folderRepository,listRepository,taskRepository,todoRepository);
+const spaceService = new SpaceService(
+  spaceRepository,
+  folderRepository,
+  listRepository,
+  taskRepository,
+  todoRepository
+);
 
 const controller = new WorkSpaceController(services, spaceService);
 
@@ -80,7 +86,12 @@ const spaceRoutes = (router: Router) => {
 
   router
     .route("/delete-workSpace/:workspaceId")
-    .post(controller.onDeleteWorkspace.bind(controller))
+    .post(controller.onDeleteWorkspace.bind(controller));
+
+  router
+    .route("/update-space-collab-role")
+    .patch(controller.onUpdateSpaceRoles.bind(controller));
+
   return router;
 };
 

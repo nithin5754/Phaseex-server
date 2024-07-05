@@ -37,6 +37,19 @@ interface ISpaceRepository {
     collaboratorId: string
   ): Promise<boolean>;
 
+
+  /**
+   * 
+   * @param workspaceId 
+   * @param collaboratorId 
+   * @param role [viewer,manager,developer]
+   */
+  updateCollaboratorsRole(
+    workspaceId: string,
+    collaboratorId: string,
+    role:string
+  ): Promise<boolean>;
+
   deleteWorkspace(workspaceId: string): Promise<boolean>;
 
   findInvitedSpace(assigneeId: string,active:boolean): Promise<WorkspaceDataType[] | null>;

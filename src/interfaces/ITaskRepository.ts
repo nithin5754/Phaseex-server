@@ -23,6 +23,8 @@ export interface ITaskRepository {
    
 taskCollabByListId(workspaceId:string,folderId:string,listId:string,taskId:string):Promise<TaskCollaboratorDetailType[]|null>
 
+
+
 deleteTaskCollabByTaskId(workspaceId:string,folderId:string,listId:string,taskId:string,collabId:string,):Promise<boolean>
 
  checkCollaboratorInTasks(workspaceId:string, folderId:string, listId:string, collaboratorId:string):Promise<boolean>

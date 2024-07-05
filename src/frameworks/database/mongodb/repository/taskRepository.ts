@@ -9,9 +9,11 @@ import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
+
+
  async deleteTaskWithWorkspace(workspaceId: string): Promise<boolean> {
         
-  let response = await TaskModal.findOneAndDelete({
+  let response = await TaskModal.deleteMany({
     workspaceId,
   });
 
@@ -53,6 +55,10 @@ export class TaskRepository implements ITaskRepository {
     };
 
     const task = await TaskModal.findOne(query);
+
+    console.log(task,"hey huiiiii")
+
+
 
     return !!task;
   }

@@ -13,7 +13,7 @@ const listRepository = new ListRepository();
 const taskRepository = new TaskRepository();
 const dueDate = new DueDay();
 const progressBar = new ProgressBar();
-const todoRepository=new TodoRepository()
+const todoRepository = new TodoRepository();
 const taskService = new TaskService(
   taskRepository,
   listRepository,
@@ -59,6 +59,10 @@ const taskRoutes = (router: Router) => {
   router
     .route("/delete-collabId-task/:collabId")
     .delete(controller.onDeleteCollabIdTask.bind(controller));
+
+  router
+    .route("/check-collab-in-list-group")
+    .get(controller.onTaskCollabListGrp.bind(controller));
 
   return router;
 };

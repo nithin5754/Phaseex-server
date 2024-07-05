@@ -29,6 +29,11 @@ interface ISpaceService {
   getDeleteCollaboratorsToSpace(workspaceId:string,collaboratorId:string):Promise<boolean>
   getUpdateCollaboratorsVerified(workspaceId:string,collaboratorId:string):Promise<boolean>
   getDeleteWorkspace(workspaceId:string):Promise<boolean>
+  getUpdateCollaboratorsRole(
+    workspaceId: string,
+    collaboratorId: string,
+    role:string
+  ): Promise<boolean>;
 
 
  

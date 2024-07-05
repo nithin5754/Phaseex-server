@@ -30,6 +30,9 @@ export class SpaceService implements ISpaceService {
 
    
   }
+  getUpdateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean> {
+   return this.spaceRepository.updateCollaboratorsRole(workspaceId,collaboratorId,role)
+  }
  getAllInvitedSpace(userId: string,active:boolean): Promise<WorkspaceDataType[] | null> {
     return this.spaceRepository.findInvitedSpace(userId,active)
 

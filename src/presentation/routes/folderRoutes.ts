@@ -10,7 +10,6 @@ const controller = new FolderController(service);
 
 const folderRoutes = (router: Router) => {
   router.use(verifyJWT);
-
   router
     .route("/space-folder")
     .post(controller.onCreateNewFolder.bind(controller));

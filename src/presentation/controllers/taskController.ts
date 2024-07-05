@@ -501,4 +501,45 @@ export class TaskController {
       next(error);
     }
   };
+
+  onTaskCollabListGrp = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId} = req.query;
+
+      let collaboratorId=req.userId
+
+      if (!workspaceId || !folderId || !listId || !collaboratorId) {
+        return res.status(404).json({ message: "missing credential" });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof collaboratorId !== "string"
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+      let isCollabExist = await this.taskService.getCheckCollaboratorInTasks(
+        workspaceId,
+        folderId,
+        listId,
+        collaboratorId
+      );
+
+
+      console.log(isCollabExist,"is collab-grp -list exits")
+
+      return res.status(200).json(isCollabExist);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

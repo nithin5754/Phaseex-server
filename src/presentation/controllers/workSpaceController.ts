@@ -95,15 +95,17 @@ export class WorkSpaceController {
         true
       );
 
+      
       const [response, invitesSpace] = await Promise.all([
         responsePromise,
         invitesSpacePromise,
       ]);
-
+      
       if (!response && !invitesSpace) {
         return res.status(404).json({ message: "Response not found" });
       }
-
+      
+      console.log(invitesSpace,"is invite space available")
       const mergedArray = [];
       if (response) {
         mergedArray.push(...response);
@@ -261,7 +263,7 @@ export class WorkSpaceController {
         workspaceId
       );
 
-      console.log(allCollabMembers, "hello ,delete,update");
+
 
       if (!allCollabMembers || allCollabMembers.length < 0) {
         return res.status(404).json({ message: "not found" });
@@ -354,4 +356,36 @@ export class WorkSpaceController {
       next(error);
     }
   };
+
+
+
+onUpdateSpaceRoles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+
+    const { workspaceId, collaboratorId,role } = req.body;
+
+    console.log(req.body,"update collab ")
+
+    if (!workspaceId || !collaboratorId||!role) {
+      return res.status(404).json({ message: "credentials missing" });
+    }
+
+    let isRoleUpdate=await this.spaceService.getUpdateCollaboratorsRole(workspaceId,collaboratorId,role)
+
+    if(!isRoleUpdate){
+      return res.status(404).json({message:"something went wrong please try again later!"})
+    }
+
+    return res.status(200).json(isRoleUpdate)
+
+    
+  } catch (error) {
+    next(error)
+  }
+}
+
 }

@@ -12,7 +12,7 @@ import moment from "moment";
 
 export class ListRepository implements IListRepository {
  async deleteListWithWspace(workspaceId: string): Promise<boolean> {
-    let response=await ListModal.findOneAndDelete({ workspaceId});
+    let response=await ListModal.deleteMany({ workspaceId});
 
     return !!response
   }

@@ -3,6 +3,7 @@ import { ListController } from "../controllers/ListController";
 import { ListService } from "../../Services/ListService";
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
+import { verifyJWT } from "../middleware/validateToken";
 const taskRepository = new TaskRepository();
 
 
@@ -12,6 +13,7 @@ let listService = new ListService(listRepository,taskRepository);
 let controller = new ListController(listService);
 
 const listRoutes = (router: Router) => {
+  router.use(verifyJWT);
   router.route("/create").post(controller.onCreateList.bind(controller));
   router.route("/get-all-list").get(controller.onGetAllList.bind(controller));
   router
@@ -44,6 +46,9 @@ const listRoutes = (router: Router) => {
     .route("/delete-collab-list-assignee/:collabId")
     .delete(controller.onDeleteCollabAssigneeFromList.bind(controller));
 
+
+
+  
   return router;
 };
 

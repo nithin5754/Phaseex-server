@@ -26,6 +26,11 @@ export class TaskService implements ITaskService {
     this.progressBar = progressBar;
     this.todoRepository=todoRepository
   }
+  async getCheckCollaboratorInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
+    let response=await this.taskRepository.checkCollaboratorInTasks(workspaceId,folderId,listId,collaboratorId)
+    return response
+  }
+
 async  isCollabExistInListAsViewer(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
       
     let response=await this.listRepository.checkCollaboratorInList(workspaceId,folderId,listId,collabId)
