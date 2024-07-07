@@ -164,10 +164,9 @@ async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: strin
   }
   getAllSpaceByUser(
     workspaceOwner: string,
-    pageId: number,
-    limit: number
+
   ): Promise<WorkspaceDataType[] | null> {
-    return this.spaceRepository.findAllByUser(workspaceOwner, pageId, limit);
+    return this.spaceRepository.findAllByUser(workspaceOwner);
   }
 
   async createSpace(

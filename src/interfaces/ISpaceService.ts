@@ -8,8 +8,7 @@ interface ISpaceService {
 
   getAllSpaceByUser(
     workspaceOwner: string,
-    pageId: number,
-    limit: number
+
   ): Promise<WorkspaceDataType[] | null>;
 
   getAllOnGoingSpace(

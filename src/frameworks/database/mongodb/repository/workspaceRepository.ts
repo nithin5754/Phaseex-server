@@ -258,17 +258,15 @@ async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role
    }
    async findAllByUser(
      workspaceOwner: string,
-     pageId: number,
-     limit: number
+
    ): Promise<WorkspaceDataType[] | null> {
-     const skip = (pageId - 1) * limit;
-     const total = await workspaceModal.countDocuments({ active: false });
+
+
  
      let response = await workspaceModal
        .find({ workspaceOwner, active: false })
        .sort({ createdAt: -1 })
-       .skip(skip)
-       .limit(limit);
+
  
      if (response && response.length > 0) {
        let responseData: WorkspaceDataType[] = response.map((workspace) => ({

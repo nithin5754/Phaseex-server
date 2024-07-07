@@ -62,16 +62,14 @@ export class WorkSpaceController {
   ) => {
     // const spaceOwner:string=req.body.spaceOwner
 
-    const { pageId = 1 } = req.query;
-    let limit = 6;
+ 
 
     let spaceOwner = req.userId;
 
     try {
       const response = await this.spaceService.getAllSpaceByUser(
         spaceOwner,
-        Number(pageId),
-        limit
+   
       );
       return res.status(200).json(response);
     } catch (error) {
@@ -215,7 +213,7 @@ export class WorkSpaceController {
 
       if (!isWorkSpaceExist) {
         return res
-          .status(400)
+          .status(400)      
           .json({ message: "workspace not found please try again" });
       }
 
