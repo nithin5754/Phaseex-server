@@ -19,11 +19,18 @@ async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role
   }
   async findInvitedSpace(assigneeId: string,active:boolean): Promise<WorkspaceDataType[] | null> {
     
-    let response= await  workspaceModal.find({
-     
-     'collaborators.verified':active,
-       'collaborators.assignee': assigneeId
-     })
+    let response = await workspaceModal.aggregate([
+      {
+        $match: {
+          collaborators: {
+            $elemMatch: {
+              assignee: new mongoose.Types.ObjectId(assigneeId),
+              verified: active
+            }
+          }
+        }
+      }
+    ]);
  
      if (response && response.length > 0) {
        let responseData: WorkspaceDataType[] = response.map((workspace) => ({
