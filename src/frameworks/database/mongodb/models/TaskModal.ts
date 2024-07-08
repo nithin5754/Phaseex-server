@@ -33,6 +33,14 @@ const TaskSchema = new Schema(
       file_name:{ type: String },
       attachment:{type:String}
     }],
+    taskLink:[
+      {
+        link_name:{type:String},
+        link:{
+          type:String
+        }
+      }
+    ],
     task_collaborators: [
       {
         assigneeId: {
