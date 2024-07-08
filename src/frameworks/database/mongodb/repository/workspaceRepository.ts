@@ -3,6 +3,7 @@ import { CollaboratorType, WorkspaceDataType } from "../../../../Entities/Worksp
 import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 import UserModel from "../models/UserModel";
+import mongoose from "mongoose";
 
 export class workSpaceRepository implements ISpaceRepository {
 async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean> {
