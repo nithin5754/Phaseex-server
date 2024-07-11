@@ -11,6 +11,11 @@ export interface TaskCollaboratorType {
 }
 
 
+export interface TaskLinkType {
+  id:string;
+  link_name: string; 
+  link: string;
+}
 
 
 
@@ -29,7 +34,7 @@ export interface TaskType {
   task_description:string;
   task_activity:Array<string>;
   task_attachment:TaskAttachmentType[];
-
+  taskLink:TaskLinkType[];
   task_collaborators:TaskCollaboratorType[];
   createdAt:string,
   updatedAt:string

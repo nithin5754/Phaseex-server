@@ -10,6 +10,7 @@ import searchRouter from "./searchRoutes";
 
 import notificationRoutes from "./notificationRoutes";
 import todoRoutes from "./todoRoutes";
+import activityRoutes from "./activityRoutes";
 
 
 
@@ -24,6 +25,7 @@ export const routes = (app: Application, router: Router) => {
   app.use('/api/v1/search',searchRouter(router))
   app.use('/api/v1/notification',notificationRoutes(router))
   app.use('/api/v1/todo',todoRoutes(router))
+  app.use('/api/v1/activity',activityRoutes(router))
 };
 
 export default routes;

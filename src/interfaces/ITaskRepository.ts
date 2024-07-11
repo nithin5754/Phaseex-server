@@ -35,6 +35,9 @@ deleteTaskCollabByTaskId(workspaceId:string,folderId:string,listId:string,taskId
  deleteTaskWithWorkspace(workspaceId:string):Promise<boolean>
 
 
+ taskLink(workspaceId:string, folderId:string, listId:string, taskId:string,link:string,link_name:string):Promise<boolean>
+ deleteTaskLink(workspaceId:string, folderId:string, listId:string, taskId:string,linkId:string):Promise<boolean>
+
 
 
 }

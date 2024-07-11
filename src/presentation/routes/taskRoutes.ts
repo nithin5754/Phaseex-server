@@ -8,6 +8,7 @@ import { ListRepository } from "../../frameworks/database/mongodb/repository/Lis
 import { DueDay } from "../../External- Libraries/FindDueDate";
 import { ProgressBar } from "../../External- Libraries/ProgressPercentage";
 import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
+import multer from "multer";
 
 const listRepository = new ListRepository();
 const taskRepository = new TaskRepository();
@@ -21,6 +22,10 @@ const taskService = new TaskService(
   progressBar,
   todoRepository
 );
+
+
+
+
 
 const controller = new TaskController(taskService);
 const taskRoutes = (router: Router) => {
@@ -63,6 +68,17 @@ const taskRoutes = (router: Router) => {
   router
     .route("/check-collab-in-list-group")
     .get(controller.onTaskCollabListGrp.bind(controller));
+
+  router
+  .route('/add_link/task/:taskId')
+  .patch(controller.onAddLinkToTask.bind(controller))
+
+
+  router
+  .route("/delete-link-task/:taskId")
+  .delete(controller.onDeleteLinkTask.bind(controller));
+
+
 
   return router;
 };

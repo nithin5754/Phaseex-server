@@ -9,6 +9,49 @@ import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
+  async deleteTaskLink(workspaceId: string, folderId: string, listId: string, taskId: string, linkId: string): Promise<boolean> {
+    const filter = {
+      _id: taskId,
+      workspaceId: workspaceId,
+      folderId: folderId,
+      listId: listId,
+    };
+
+    const updateQuery = {
+      $pull: {
+        taskLink: {
+          _id: linkId,
+        },
+      },
+    };
+
+    const response = await TaskModal.findOneAndUpdate(filter, updateQuery);
+
+    if (response) {
+      return true;
+    }
+
+    return false;
+  }
+ async taskLink(workspaceId: string, folderId: string, listId: string, taskId: string,link:string,link_name:string): Promise<boolean> {
+      
+    let response = await TaskModal.findOne({
+      workspaceId,
+      folderId,
+      listId: listId,
+      _id: taskId,
+    });
+
+    
+    if (response) {
+      response.taskLink.push({ link,link_name })
+      let isCollabAdd = await response.save();
+
+      return !!isCollabAdd;
+    }
+
+    return false;
+  }
 
 
  async deleteTaskWithWorkspace(workspaceId: string): Promise<boolean> {
@@ -85,6 +128,8 @@ export class TaskRepository implements ITaskRepository {
     };
 
     const response = await TaskModal.findOneAndUpdate(filter, updateQuery);
+
+
 
     if (response) {
       return true;
@@ -207,6 +252,11 @@ export class TaskRepository implements ITaskRepository {
         task_attachment: task.task_attachment.map((attachment: any) => ({
           attachment: attachment.attachment,
           file_name: attachment.file_name,
+        })),
+        taskLink: task.taskLink.map((link: any) => ({
+          id:link._id.toString() as string,
+          link_name: link.link_name,
+          link: link.link,
         })),
         task_collaborators: task.task_collaborators.map(
           (collaborator: any) => ({
@@ -355,6 +405,11 @@ export class TaskRepository implements ITaskRepository {
             attachment: attachment.attachment,
             file_name: attachment.file_name,
           })),
+          taskLink: task.taskLink.map((link: any) => ({
+            id:link._id.toString() as string,
+            link_name: link.link_name,
+            link: link.link,
+          })),
           task_collaborators: task.task_collaborators.map(
             (collaborator: any) => ({
               assigneeId: collaborator.assigneeId.toString(),
@@ -412,6 +467,11 @@ export class TaskRepository implements ITaskRepository {
             role: collaborator.role,
           })
         ),
+        taskLink: response.taskLink.map((link: any) => ({
+          id:link._id.toString() as string,
+          link_name: link.link_name,
+          link: link.link,
+        })),
         createdAt: moment(response.createdAt).format("MMMM D, YYYY - h:mm A"),
         updatedAt: moment(response.updatedAt).format("MMMM D, YYYY - h:mm A"),
         task_title: response.task_title,

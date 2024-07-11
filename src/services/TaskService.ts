@@ -10,7 +10,7 @@ import { ITodoRepository } from "../Interfaces/ITodoRepository";
 export class TaskService implements ITaskService {
   private taskRepository: ITaskRepository;
   private listRepository: IListRepository;
-  private todoRepository: ITodoRepository
+  private todoRepository: ITodoRepository;
   private dueDate: IDueDate;
   private progressBar: IProgressBar;
   constructor(
@@ -24,18 +24,69 @@ export class TaskService implements ITaskService {
     this.listRepository = listRepository;
     this.dueDate = dueDate;
     this.progressBar = progressBar;
-    this.todoRepository=todoRepository
+    this.todoRepository = todoRepository;
   }
-  async getCheckCollaboratorInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
-    let response=await this.taskRepository.checkCollaboratorInTasks(workspaceId,folderId,listId,collaboratorId)
-    return response
+  getDeleteTaskLink(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    linkId: string
+  ): Promise<boolean> {
+    return this.taskRepository.deleteTaskLink(
+      workspaceId,
+      folderId,
+      listId,
+      taskId,
+      linkId
+    );
+  }
+  addTaskLink(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    link: string,
+    link_name: string
+  ): Promise<boolean> {
+    return this.taskRepository.taskLink(
+      workspaceId,
+      folderId,
+      listId,
+      taskId,
+      link,
+      link_name
+    );
+  }
+  async getCheckCollaboratorInTasks(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
+    let response = await this.taskRepository.checkCollaboratorInTasks(
+      workspaceId,
+      folderId,
+      listId,
+      collaboratorId
+    );
+    return response;
   }
 
-async  isCollabExistInListAsViewer(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
-      
-    let response=await this.listRepository.checkCollaboratorInList(workspaceId,folderId,listId,collabId)
-    
-    return response
+  async isCollabExistInListAsViewer(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    collabId: string
+  ): Promise<boolean> {
+    let response = await this.listRepository.checkCollaboratorInList(
+      workspaceId,
+      folderId,
+      listId,
+      collabId
+    );
+
+    return response;
   }
   async getDeleteTaskCollabByTaskId(
     workspaceId: string,
@@ -52,14 +103,20 @@ async  isCollabExistInListAsViewer(workspaceId: string, folderId: string, listId
       collabId
     );
 
+    if (response) {
+      let deleteTodoCollabId =
+        await this.todoRepository.deleteCollabFromAllTodo(
+          workspaceId,
+          folderId,
+          listId,
+          taskId,
+          collabId
+        );
+      console.log(deleteTodoCollabId, "delete collab tood huiiiiii");
 
-    if(response) {
-     let deleteTodoCollabId=await this.todoRepository.deleteCollabFromAllTodo(workspaceId,folderId,listId,taskId,collabId)
-console.log(deleteTodoCollabId,"delete collab tood huiiiiii");
-
-     if(!deleteTodoCollabId){
-      return false
-     }
+      if (!deleteTodoCollabId) {
+        return false;
+      }
     }
 
     return response;

@@ -8,6 +8,11 @@ import { ConfigType } from "../../config";
 import cors from 'cors'
 
 
+import { v2 as cloudinary } from "cloudinary";
+
+
+
+
 
 export default function expressConfig(app:Application,config:ConfigType){
   app.use(cors({
@@ -15,6 +20,12 @@ export default function expressConfig(app:Application,config:ConfigType){
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }))
+
+cloudinary.config({
+  cloud_name:config.cloudinary.CLOUDINARY_CLOUD_NAME,
+  api_key:config.cloudinary.CLOUDINARY_API_KEY,
+  api_secret:config.cloudinary.CLOUDINARY_API_SECRET
+})
 
   app.use(morgan('dev'))
   app.use(express.json());

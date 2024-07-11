@@ -124,13 +124,15 @@ if(receiver){
 if(receiver){
 
   await this.NotificationService.getCreateNotification(receiverName,notificationData) 
-
-  
   socket.to(receiver.socketId).emit("getNotification",notificationData)
   socket.to(receiver.socketId).emit("getNotificationUnReadLength",1)
   
 }
     })
+
+
+
+    
 
 
 

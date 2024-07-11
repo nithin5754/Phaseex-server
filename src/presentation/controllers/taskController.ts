@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ITaskService } from "../../Interfaces/ITaskService";
 import { IProgressBar } from "../../Interfaces/IProgressBar";
 import { TaskCollaboratorType } from "../../Entities/Task";
+import cloudinary from 'cloudinary'
 
 export class TaskController {
   private taskService: ITaskService;
@@ -542,4 +543,113 @@ export class TaskController {
       next(error);
     }
   };
+
+
+  onAddLinkToTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { taskId } = req.params;
+
+      const { workspaceId, folderId, listId,link,link_name } = req.body;
+
+      console.log(req.body,"hello list link")
+
+      if (!workspaceId || !folderId || !listId || !link || !taskId||!link_name) {
+        return res.status(404).json({ message: "missing credential" });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof link !== "string" ||
+        typeof taskId !== "string"||
+        typeof link_name !=='string'
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+
+      const response = await this.taskService.addTaskLink(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        link,
+        link_name
+      );
+
+      if (!response) {
+        return res
+          .json(404)
+          .json({ message: "something error occur please try later" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
+
+  onDeleteLinkTask = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, folderId, listId,linkId  } = req.body;
+
+      const taskId = req.params.taskId;
+
+      console.log(req.body,taskId,"delete link task.....")
+
+      if (!workspaceId || !folderId || !listId || !taskId || !linkId) {
+        return res.status(404).json({ message: "missing credential" });
+      }
+
+      if (
+        typeof workspaceId !== "string" ||
+        typeof folderId !== "string" ||
+        typeof listId !== "string" ||
+        typeof linkId !== "string" ||
+        typeof taskId !== "string"
+      ) {
+        return res.status(404).json({
+          message: "wrong credentials please try again after some times",
+        });
+      }
+
+      let response = await this.taskService.getDeleteTaskLink(
+        workspaceId,
+        folderId,
+        listId,
+        taskId,
+        linkId
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+
+
+
+
 }

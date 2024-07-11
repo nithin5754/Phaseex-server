@@ -112,4 +112,9 @@ export interface ITaskService {
     listId: string,
     collaboratorId: string
   ): Promise<boolean>;
+
+  addTaskLink(workspaceId:string, folderId:string, listId:string, taskId:string,link:string,link_name:string):Promise<boolean>
+
+  getDeleteTaskLink(workspaceId:string, folderId:string, listId:string, taskId:string,linkId:string):Promise<boolean>
+
 }

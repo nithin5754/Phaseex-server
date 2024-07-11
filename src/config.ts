@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
+
 const config = {
   port: process.env.PORT || 3000,
   mongo: {
@@ -16,6 +18,14 @@ const config = {
     JWT_REFRESH_TOKEN:process.env.JWT_REFRESH_TOKEN
   },
   nodeEnvironment: process.env.NODEENVIRONMENT as string,
+
+  cloudinary:{
+    CLOUDINARY_CLOUD_NAME:process.env.CLOUDINARY_CLOUD_NAME as string,
+    CLOUDINARY_API_KEY:process.env.CLOUDINARY_API_KEY as string,
+    CLOUDINARY_API_SECRET:process.env.CLOUDINARY_API_SECRET as string
+  }
+
+
 
 };
 
