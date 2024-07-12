@@ -18,6 +18,7 @@ import { NotoficationService } from "./Services/NotificationService";
 import { NotificationRepository } from "./frameworks/database/mongodb/repository/NotiFicationRepo";
 import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoRepository";
 import { VideoNotiService } from "./Services/VideoNotiService";
+import { Mailer } from "./External- Libraries/mailer";
 
 
 const app: Application = express();
@@ -37,7 +38,9 @@ const videoRepository=new VideoRepository()
 
 const videoNotiService=new VideoNotiService(videoRepository)
 
-const socketService=new SocketService(userRepo,notificationService,videoNotiService)
+const mailer=new Mailer()
+
+const socketService=new SocketService(userRepo,notificationService,videoNotiService,mailer)
 
 
 expressConfig(app,config)

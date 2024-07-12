@@ -4,6 +4,7 @@ import IAuthRepository from "../Interfaces/IAuthRepository";
 import { INotificationService } from "../Interfaces/INotificationService";
 import { IVideoService } from "../Interfaces/IVideoService";
 import { TVideoInviteLink } from "../Entities/callInvites";
+import { IMailer } from "../Interfaces/IMailer";
 
 type OnlineUserType = {
   userId: string;
@@ -15,14 +16,16 @@ export class SocketService {
   private UserRepository:IAuthRepository
   private NotificationService:INotificationService
   private VideoNotiService:IVideoService
+  private mailer:IMailer
 
   private onlineUser:OnlineUserType[]=[]
 
 
-  constructor(UserRepository:IAuthRepository,NotificationService:INotificationService,VideoNotiService:IVideoService) {
+  constructor(UserRepository:IAuthRepository,NotificationService:INotificationService,VideoNotiService:IVideoService,mailer:IMailer) {
   this.UserRepository=UserRepository
   this.NotificationService=NotificationService
   this.VideoNotiService=VideoNotiService
+  this.mailer=mailer
   }
 
 
@@ -150,11 +153,15 @@ if(receiver){
     })=>{
       
         if(receiverArray&&receiverArray.length>0){
+
+          console.log(receiverArray,"array og recevier");
           receiverArray.map(async (user:any)=>{
             const receiver=this.getUser(user.id)   
+            const isUser=await this.UserRepository.findById(user.id)
 
-
-  
+         
+       
+      
             let VNotificationSend={
               senderId,
               ownerName,
@@ -163,6 +170,8 @@ if(receiver){
               type,
        
             }
+
+
            await  this.VideoNotiService.getCreate(VNotificationSend)
             
             if(receiver){
@@ -172,7 +181,12 @@ if(receiver){
            
              
            }
+           if(isUser&&isUser.email){
+            await this.mailer.SendVideoCallInvite(ownerName,isUser?.email,url)
+          }
+         
           })
+         
         }
     })
 
