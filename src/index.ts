@@ -16,6 +16,8 @@ import { UserController } from "./presentation/controllers/userController";
 import { AuthRepository } from "./frameworks/database/mongodb/repository/authRepository";
 import { NotoficationService } from "./Services/NotificationService";
 import { NotificationRepository } from "./frameworks/database/mongodb/repository/NotiFicationRepo";
+import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoRepository";
+import { VideoNotiService } from "./Services/VideoNotiService";
 
 
 const app: Application = express();
@@ -31,7 +33,11 @@ const notificationRepo=new NotificationRepository()
 
 const notificationService=new NotoficationService(notificationRepo)
 
-const socketService=new SocketService(userRepo,notificationService)
+const videoRepository=new VideoRepository()
+
+const videoNotiService=new VideoNotiService(videoRepository)
+
+const socketService=new SocketService(userRepo,notificationService,videoNotiService)
 
 
 expressConfig(app,config)

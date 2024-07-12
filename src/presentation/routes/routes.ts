@@ -11,6 +11,7 @@ import searchRouter from "./searchRoutes";
 import notificationRoutes from "./notificationRoutes";
 import todoRoutes from "./todoRoutes";
 import activityRoutes from "./activityRoutes";
+import videoChatRoutes from "./videoChatRoutes";
 
 
 
@@ -26,6 +27,7 @@ export const routes = (app: Application, router: Router) => {
   app.use('/api/v1/notification',notificationRoutes(router))
   app.use('/api/v1/todo',todoRoutes(router))
   app.use('/api/v1/activity',activityRoutes(router))
+  app.use('/api/v1/videoChat',videoChatRoutes(router))
 };
 
 export default routes;

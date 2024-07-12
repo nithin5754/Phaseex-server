@@ -2,6 +2,8 @@
 import { Socket } from "socket.io";
 import IAuthRepository from "../Interfaces/IAuthRepository";
 import { INotificationService } from "../Interfaces/INotificationService";
+import { IVideoService } from "../Interfaces/IVideoService";
+import { TVideoInviteLink } from "../Entities/callInvites";
 
 type OnlineUserType = {
   userId: string;
@@ -12,12 +14,15 @@ type OnlineUserType = {
 export class SocketService {
   private UserRepository:IAuthRepository
   private NotificationService:INotificationService
+  private VideoNotiService:IVideoService
+
   private onlineUser:OnlineUserType[]=[]
 
 
-  constructor(UserRepository:IAuthRepository,NotificationService:INotificationService) {
+  constructor(UserRepository:IAuthRepository,NotificationService:INotificationService,VideoNotiService:IVideoService) {
   this.UserRepository=UserRepository
   this.NotificationService=NotificationService
+  this.VideoNotiService=VideoNotiService
   }
 
 
@@ -128,7 +133,49 @@ if(receiver){
   socket.to(receiver.socketId).emit("getNotificationUnReadLength",1)
   
 }
+    });
+
+
+
+
+    socket.on('SendInviteVideoCall',async({
+      senderId,
+      ownerName,
+      receiverArray,
+      workspaceId,
+      type,
+      url,
+
+      
+    })=>{
+      
+        if(receiverArray&&receiverArray.length>0){
+          receiverArray.map(async (user:any)=>{
+            const receiver=this.getUser(user.id)   
+
+
+  
+            let VNotificationSend={
+              senderId,
+              ownerName,
+              workspaceId,
+              url,
+              type,
+       
+            }
+           await  this.VideoNotiService.getCreate(VNotificationSend)
+            
+            if(receiver){
+              
+             socket.to(receiver.socketId).emit("getInviteVideoCall",VNotificationSend)
+             socket.to(receiver.socketId).emit("getInviteVideoCallIndicator",{workspaceId,count:1})
+           
+             
+           }
+          })
+        }
     })
+
 
 
 
