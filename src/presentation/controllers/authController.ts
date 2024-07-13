@@ -2,14 +2,17 @@ import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../Interfaces/IAuthService";
 import ISpaceService from "../../Interfaces/ISpaceService";
 import { workspaceSpaceJwtType } from "../../Entities/WorkspaceDataType";
+import { IGoogleService } from "../../Interfaces/IGoogleService";
 
 export class AuthController {
   private authService: IAuthUserService;
   private spaceService:ISpaceService;
+  private googleService:IGoogleService
 
-  constructor(authService: IAuthUserService,spaceService:ISpaceService) {
+  constructor(authService: IAuthUserService,spaceService:ISpaceService,googleService:IGoogleService) {
     this.authService = authService;
-    this.spaceService=spaceService
+    this.spaceService=spaceService;
+    this.googleService=googleService
   }
   //@login
   OnLoginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -81,6 +84,50 @@ export class AuthController {
   };
 
   //@login
+
+
+
+onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
+    
+         try {
+          const {token}=req.params
+
+      if(!token){
+        return res.status(404).json({message:"credetials missing"})
+      }
+
+      let isUserExist=await this.googleService.googleAuthentication(token)
+      if (isUserExist&&isUserExist?._id&&isUserExist.roles) {
+        let spaces=await this.spaceService.getAllSpaceByOwner(isUserExist._id!)
+        
+        let userId = isUserExist._id as string;
+        let roles=isUserExist.roles
+        const { accessToken, refreshToken } =
+          this.authService.generateToken(userId,roles,spaces);
+
+        console.log(accessToken);
+
+        res.cookie("jwt", refreshToken, {
+          httpOnly: true,
+          secure: true,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          sameSite: "none",
+        });
+
+        return res.status(200).json({
+          message: "user login successfully",
+          data: isUserExist,
+          accessToken: accessToken,
+        });
+      }
+    
+
+      return res.status(404).json("error")
+         } catch (error) {
+          next(error)
+         }
+}
+
 
   onRefresh = async (req: Request, res: Response, next: NextFunction) => {
     try {

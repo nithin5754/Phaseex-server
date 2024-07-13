@@ -21,6 +21,7 @@ import { FolderRepository } from "../../frameworks/database/mongodb/repository/F
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
 import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
+import { GoogleService } from "../../Services/GoogleService";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -44,12 +45,15 @@ const todoRepository=new TodoRepository()
 
 const spaceService = new SpaceService(spaceRepository,folderRepository,listRepository,taskRepository,todoRepository);
 
-const controller = new AuthController(services,spaceService);
+const googleService=new GoogleService(repository)
+const controller = new AuthController(services,spaceService,googleService);
 
 const authRouter = (router: Router) => {
   router
     .route("/login")
     .post(validateLoginUser, controller.OnLoginUser.bind(controller));
+
+   router.route('/googleAuth/:token').post(controller.onGoogleAuth.bind(controller)) 
   router.route("/refresh").get(controller.onRefresh.bind(controller));
   router.route("/logout").post(controller.onLogOut.bind(controller));
   router
@@ -64,7 +68,7 @@ const authRouter = (router: Router) => {
 
   router.route("/verifyToken").post(controller.verifyToken.bind(controller));
 
-  router.route("/test").get(verifyJWT, controller.home.bind(controller));
+  router.route("/test").get( controller.home.bind(controller));
   return router;
 };
 
