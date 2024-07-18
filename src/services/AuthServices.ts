@@ -33,6 +33,10 @@ export class AuthServices implements IAuthUserService {
     this.token=token
  
   }
+  getAddProfile(userId: string, profile_image: string): Promise<{ profile_image: string; } | null> {
+      
+    return this.authRepository.addProfile(userId,profile_image)
+  }
   async findUserById(_id: string): Promise<User | null> {
     let found=await this.authRepository.findById(_id)
     return found

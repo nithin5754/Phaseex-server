@@ -28,7 +28,7 @@ interface IAuthUserService {
 
   verifyResendOtp(email:string):Promise<boolean>
 
-
+getAddProfile(userId:string,profile_image:string):Promise<{profile_image:string}|null>
 
   
  

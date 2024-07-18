@@ -20,6 +20,8 @@ export interface IAuthRepository {
     deleteTempUser(email:string):Promise<boolean>
     forgotPassWordVerified(userData:User):Promise<boolean>
 
+    addProfile(userId:string,profile_image:string):Promise<{profile_image:string}|null>
+
     
 }
 

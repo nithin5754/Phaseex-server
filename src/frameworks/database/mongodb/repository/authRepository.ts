@@ -6,6 +6,21 @@ import UserTempModel from "../models/TempUserModel";
 import UserModel from "../models/UserModel";
 
 export class AuthRepository implements IAuthRepository {
+  async addProfile(
+    userId: string,
+    profile_image: string
+  ): Promise<{ profile_image: string } | null> {
+    const updateUserProfile = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $set: { profile_image: profile_image } },
+      { new: true }
+    );
+
+    if (!updateUserProfile) {
+      return null;
+    }
+    return { profile_image: updateUserProfile.profile_image };
+  }
 
   async resendToOtp(otp: string, email: string): Promise<boolean> {
     let response = await UserTempModel.updateOne(
@@ -37,13 +52,11 @@ export class AuthRepository implements IAuthRepository {
       { $set: { forgotPassWord_verified: true } }
     );
 
-
     return result.modifiedCount > 0;
   }
 
   async deleteTempUser(email: string): Promise<boolean> {
     let isDeleted = await UserTempModel.deleteMany({ email });
- 
 
     if (isDeleted.deletedCount === 0) {
       return false;

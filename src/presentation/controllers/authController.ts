@@ -1,18 +1,31 @@
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../Interfaces/IAuthService";
 import ISpaceService from "../../Interfaces/ISpaceService";
-import { workspaceSpaceJwtType } from "../../Entities/WorkspaceDataType";
+
 import { IGoogleService } from "../../Interfaces/IGoogleService";
+
+import { ICloudinaryStorage } from "../../Interfaces/ICloudinaryStorage";
+import { IMulterConverter } from "../../Interfaces/IMulterConverter";
 
 export class AuthController {
   private authService: IAuthUserService;
-  private spaceService:ISpaceService;
-  private googleService:IGoogleService
+  private spaceService: ISpaceService;
+  private googleService: IGoogleService;
+  private ICloudinary: ICloudinaryStorage;
+  private multerConverter: IMulterConverter;
 
-  constructor(authService: IAuthUserService,spaceService:ISpaceService,googleService:IGoogleService) {
+  constructor(
+    authService: IAuthUserService,
+    spaceService: ISpaceService,
+    googleService: IGoogleService,
+    ICloudinary: ICloudinaryStorage,
+    multerConverter: IMulterConverter
+  ) {
     this.authService = authService;
-    this.spaceService=spaceService;
-    this.googleService=googleService
+    this.spaceService = spaceService;
+    this.googleService = googleService;
+    this.ICloudinary = ICloudinary;
+    this.multerConverter = multerConverter;
   }
   //@login
   OnLoginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,19 +58,19 @@ export class AuthController {
         });
       }
 
-  
-
-
-  
-
       //  let roles:string[]=[...isUserExist.roles]
-      if (isUserExist?._id,isUserExist.roles) {
-        let spaces=await this.spaceService.getAllSpaceByOwner(isUserExist._id!)
-        
+      if ((isUserExist?._id, isUserExist.roles)) {
+        let spaces = await this.spaceService.getAllSpaceByOwner(
+          isUserExist._id!
+        );
+
         let userId = isUserExist._id as string;
-        let roles=isUserExist.roles
-        const { accessToken, refreshToken } =
-          this.authService.generateToken(userId,roles,spaces);
+        let roles = isUserExist.roles;
+        const { accessToken, refreshToken } = this.authService.generateToken(
+          userId,
+          roles,
+          spaces
+        );
 
         console.log(accessToken);
 
@@ -85,25 +98,27 @@ export class AuthController {
 
   //@login
 
+  onGoogleAuth = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { token } = req.params;
 
-
-onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
-    
-         try {
-          const {token}=req.params
-
-      if(!token){
-        return res.status(404).json({message:"credetials missing"})
+      if (!token) {
+        return res.status(404).json({ message: "credetials missing" });
       }
 
-      let isUserExist=await this.googleService.googleAuthentication(token)
-      if (isUserExist&&isUserExist?._id&&isUserExist.roles) {
-        let spaces=await this.spaceService.getAllSpaceByOwner(isUserExist._id!)
-        
+      let isUserExist = await this.googleService.googleAuthentication(token);
+      if (isUserExist && isUserExist?._id && isUserExist.roles) {
+        let spaces = await this.spaceService.getAllSpaceByOwner(
+          isUserExist._id!
+        );
+
         let userId = isUserExist._id as string;
-        let roles=isUserExist.roles
-        const { accessToken, refreshToken } =
-          this.authService.generateToken(userId,roles,spaces);
+        let roles = isUserExist.roles;
+        const { accessToken, refreshToken } = this.authService.generateToken(
+          userId,
+          roles,
+          spaces
+        );
 
         console.log(accessToken);
 
@@ -120,14 +135,12 @@ onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
           accessToken: accessToken,
         });
       }
-    
 
-      return res.status(404).json("error")
-         } catch (error) {
-          next(error)
-         }
-}
-
+      return res.status(404).json("error");
+    } catch (error) {
+      next(error);
+    }
+  };
 
   onRefresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -151,11 +164,15 @@ onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
         return res.status(403).json({ message: "Invalid refresh token" });
       }
 
-      if (foundUser._id&&foundUser.roles) {
-        let spaces=await this.spaceService.getAllSpaceByOwner(foundUser._id!)
+      if (foundUser._id && foundUser.roles) {
+        let spaces = await this.spaceService.getAllSpaceByOwner(foundUser._id!);
         let userId = foundUser._id;
-        let roles=foundUser.roles
-        const accessToken = this.authService.generateAccessToken(userId,roles,spaces);
+        let roles = foundUser.roles;
+        const accessToken = this.authService.generateAccessToken(
+          userId,
+          roles,
+          spaces
+        );
         return res
           .status(200)
           .json({ accessToken: accessToken, data: foundUser });
@@ -209,7 +226,6 @@ onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
         return res.status(401).json({ message: "Invalid token" });
       }
     } catch (error) {
-      console.log("HEY NITHIN JOIJI");
 
       console.error("Error verifying token:", error);
       return res.status(403).json({ message: "Internal server error" });
@@ -292,32 +308,85 @@ onGoogleAuth= async (req: Request, res: Response, next: NextFunction) => {
     res: Response,
     next: NextFunction
   ) => {
-    const { password, tokenId } = req.body;
+    try {
+      const { password, tokenId } = req.body;
 
-    const isEmailExist = await this.authService.isTempTokenIDcheck(tokenId);
+      const isEmailExist = await this.authService.isTempTokenIDcheck(tokenId);
 
-    if (!isEmailExist) {
-      return res.status(404).json({ message: "user not found" });
+      if (!isEmailExist) {
+        return res.status(404).json({ message: "user not found" });
+      }
+
+      if (isEmailExist.forgotPassWord_verified !== true) {
+        return res.status(404).json({ message: "please try later" });
+      }
+
+      const isPasswordChanged: boolean =
+        await this.authService.isEmailChangePassword(
+          isEmailExist.email,
+          password
+        );
+
+      if (!isPasswordChanged) {
+        return res
+          .status(404)
+          .json({
+            message: "something went wrong please try after sometime..",
+          });
+      }
+
+      return res
+        .status(200)
+        .json({ message: "password successfully changed", isPasswordChanged });
+    } catch (error) {
+      next(error);
     }
+  };
 
-    if (isEmailExist.forgotPassWord_verified !== true) {
-      return res.status(404).json({ message: "please try later" });
-    }
+  onAddProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.userId;
+      const file = req.file;
 
-    const isPasswordChanged: boolean =
-      await this.authService.isEmailChangePassword(
-        isEmailExist.email,
-        password
+      console.log(userId, "multer file in userId");
+
+      if (!userId) {
+        return res
+          .status(404)
+          .json({ message: "credentials not matching please try again later" });
+      }
+
+      if (!file) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again later" });
+      }
+
+      let dataURI = this.multerConverter.convertFileToString(file);
+
+      const isUploaded = await this.ICloudinary.uploadPhoto(dataURI);
+      if (!isUploaded) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
+
+      let isImageToSever = await this.authService.getAddProfile(
+        userId,
+        isUploaded.url
       );
 
-    if (!isPasswordChanged) {
-      return res
-        .status(404)
-        .json({ message: "something went wrong please try after sometime.." });
-    }
+      if (!isImageToSever) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again" });
+      }
 
-    return res
-      .status(200)
-      .json({ message: "password successfully changed", isPasswordChanged });
+      return res
+        .status(200)
+        .json({ profile_image: isImageToSever?.profile_image });
+    } catch (error) {
+      next(error);
+    }
   };
 }
