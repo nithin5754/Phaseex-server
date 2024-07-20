@@ -22,14 +22,14 @@ export class Token implements IToken{
     
     if(!spaces){
       const accessToken = jwt.sign( {userId,roles},this.jwt_key, {
-        expiresIn:'1m' 
+        expiresIn:'1d' 
     });
   
     return accessToken;
     }
 
     const accessToken = jwt.sign( {userId,roles,spaces},this.jwt_key, {
-      expiresIn:'1m' 
+      expiresIn:'1d' 
   });
 
   return accessToken;
@@ -41,10 +41,10 @@ export class Token implements IToken{
 
     if(!spaces){
       const accessToken=jwt.sign({userId,roles},this.jwt_key,{
-        expiresIn:'15m'
+        expiresIn:'1d'
       })
       const refreshToken=jwt.sign({userId},this.refresh_secret,{
-        expiresIn:'1d'
+        expiresIn:'7d'
       })
   
       return{
@@ -52,10 +52,10 @@ export class Token implements IToken{
       }
     }
     const accessToken=jwt.sign({userId,roles,spaces},this.jwt_key,{
-      expiresIn:'15m'
+      expiresIn:'1d'
     })
     const refreshToken=jwt.sign({userId},this.refresh_secret,{
-      expiresIn:'1d'
+      expiresIn:'7d'
     })
 
     return{

@@ -12,6 +12,7 @@ import notificationRoutes from "./notificationRoutes";
 import todoRoutes from "./todoRoutes";
 import activityRoutes from "./activityRoutes";
 import videoChatRoutes from "./videoChatRoutes";
+import AttachmentRoutes from "./attachmentRoutes";
 
 
 
@@ -28,6 +29,7 @@ export const routes = (app: Application, router: Router) => {
   app.use('/api/v1/todo',todoRoutes(router))
   app.use('/api/v1/activity',activityRoutes(router))
   app.use('/api/v1/videoChat',videoChatRoutes(router))
+  app.use('/api/v1/attachment',AttachmentRoutes(router))
 };
 
 export default routes;

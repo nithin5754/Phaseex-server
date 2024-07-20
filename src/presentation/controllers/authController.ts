@@ -120,7 +120,7 @@ export class AuthController {
           spaces
         );
 
-        console.log(accessToken);
+      
 
         res.cookie("jwt", refreshToken, {
           httpOnly: true,
