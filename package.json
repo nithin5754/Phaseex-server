@@ -2,7 +2,7 @@
   "name": "phaseex-server",
   "version": "1.0.0",
   "description": "project management tool website ,on app for may purpose",
-  "main": "./src/index.ts",
+  "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
