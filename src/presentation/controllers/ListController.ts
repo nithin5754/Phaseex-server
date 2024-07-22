@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { IListService } from "../../Interfaces/IListService";
+import { IListService } from "../../interfaces/IListService";
 import { ListCollaboratorType } from "../../Entities/List";
 
 export class ListController {

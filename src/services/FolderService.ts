@@ -1,6 +1,6 @@
 import { FolderDataType } from "../Entities/Folder";
-import { IFolderRepository } from "../Interfaces/IFolderRepository";
-import { IFolderService } from "../Interfaces/IFolderService";
+import { IFolderRepository } from "../interfaces/IFolderRepository";
+import { IFolderService } from "../interfaces/IFolderService";
 
 
 

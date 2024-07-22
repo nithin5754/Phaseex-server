@@ -3,9 +3,9 @@ import {
   SendAttachment,
   SendAttachmentDetails,
 } from "../../Entities/attachment";
-import { IAttachmentService } from "../../Interfaces/IAttachmentService";
-import { IMulterConverter } from "../../Interfaces/IMulterConverter";
-import { ICloudinaryStorage } from "../../Interfaces/ICloudinaryStorage";
+import { IAttachmentService } from "../../interfaces/IAttachmentService";
+import { IMulterConverter } from "../../interfaces/IMulterConverter";
+import { ICloudinaryStorage } from "../../interfaces/ICloudinaryStorage";
 
 export class AttachmentController {
   private attachMentService: IAttachmentService;

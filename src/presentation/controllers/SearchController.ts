@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ISearchService } from "../../Interfaces/ISearchService";
+import { ISearchService } from "../../interfaces/ISearchService";
 
 export class SearchController {
   private searchService: ISearchService;

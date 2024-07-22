@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { CActivityType } from "../../Entities/activity";
-import { IActivityService } from "../../Interfaces/IActivityService";
+import { IActivityService } from "../../interfaces/IActivityService";
 
 export class ActivityController {
   private activityService: IActivityService;

@@ -3,7 +3,7 @@ import {
   TaskCollaboratorDetailType,
   TaskType,
 } from "../../../../Entities/Task";
-import { ITaskRepository } from "../../../../Interfaces/ITaskRepository";
+import { ITaskRepository } from "../../../../interfaces/ITaskRepository";
 import { Task as TaskModal } from "../models/TaskModal";
 import moment from "moment";
 

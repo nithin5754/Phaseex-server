@@ -1,7 +1,7 @@
 import { TodoType } from "../Entities/Todo";
 import { UserType } from "../Entities/Users";
-import { ISearchRepository } from "../Interfaces/ISearchRepository";
-import { ISearchService } from "../Interfaces/ISearchService";
+import { ISearchRepository } from "../interfaces/ISearchRepository";
+import { ISearchService } from "../interfaces/ISearchService";
 import { STaskCollabType, WorkSpaceCollabType } from "../frameworks/database/mongodb/repository/searchRepository";
 
 

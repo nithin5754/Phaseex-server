@@ -1,6 +1,6 @@
 
 import { NextFunction, Request, Response } from "express";
-import { IVideoService } from "../../Interfaces/IVideoService";
+import { IVideoService } from "../../interfaces/IVideoService";
 
 
 

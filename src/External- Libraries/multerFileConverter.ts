@@ -1,4 +1,4 @@
-import { IMulterConverter } from "../Interfaces/IMulterConverter";
+import { IMulterConverter } from "../interfaces/IMulterConverter";
 
 
 

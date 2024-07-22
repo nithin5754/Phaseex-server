@@ -1,9 +1,9 @@
 import { User } from "../Entities/Users";
-import IAuthRepository from "../Interfaces/IAuthRepository";
-import { IGoogleService } from "../Interfaces/IGoogleService";
+import IAuthRepository from "../interfaces/IAuthRepository";
+import { IGoogleService } from "../interfaces/IGoogleService";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import cloudinary from "cloudinary";
-import { ICloudinaryStorage } from "../Interfaces/ICloudinaryStorage";
+import { ICloudinaryStorage } from "../interfaces/ICloudinaryStorage";
 
 export class GoogleService implements IGoogleService {
   private authRepository: IAuthRepository;

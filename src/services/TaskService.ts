@@ -1,11 +1,11 @@
 import { ListDataType } from "../Entities/List";
 import { TaskCollaboratorDetailType, TaskType } from "../Entities/Task";
-import { IDueDate } from "../Interfaces/IDueDate";
-import { IListRepository } from "../Interfaces/IListRepository";
-import { IProgressBar } from "../Interfaces/IProgressBar";
-import { ITaskRepository } from "../Interfaces/ITaskRepository";
-import { ITaskService } from "../Interfaces/ITaskService";
-import { ITodoRepository } from "../Interfaces/ITodoRepository";
+import { IDueDate } from "../interfaces/IDueDate";
+import { IListRepository } from "../interfaces/IListRepository";
+import { IProgressBar } from "../interfaces/IProgressBar";
+import { ITaskRepository } from "../interfaces/ITaskRepository";
+import { ITaskService } from "../interfaces/ITaskService";
+import { ITodoRepository } from "../interfaces/ITodoRepository";
 
 export class TaskService implements ITaskService {
   private taskRepository: ITaskRepository;

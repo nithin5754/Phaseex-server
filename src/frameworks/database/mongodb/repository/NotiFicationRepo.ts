@@ -1,4 +1,4 @@
-import { INotificationRepository } from "../../../../Interfaces/INotificationRepository";
+import { INotificationRepository } from "../../../../interfaces/INotificationRepository";
 import { Notification as NotificationModal } from "../models/Notification";
 import { NotificationType } from "../../../../Entities/notification";
 import moment from "moment";

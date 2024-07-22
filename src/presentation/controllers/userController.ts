@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import IAuthUserService from "../../Interfaces/IAuthService";
+import IAuthUserService from "../../interfaces/IAuthService";
 import { AuthServices } from "../../Services/AuthServices";
 
 export class UserController {

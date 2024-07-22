@@ -7,9 +7,9 @@ import {
 import {
   IListRepository,
   ListDataTypePage,
-} from "../Interfaces/IListRepository";
-import { IListService } from "../Interfaces/IListService";
-import { ITaskRepository } from "../Interfaces/ITaskRepository";
+} from "../interfaces/IListRepository";
+import { IListService } from "../interfaces/IListService";
+import { ITaskRepository } from "../interfaces/ITaskRepository";
 import { TaskType } from "../Entities/Task";
 
 export class ListService implements IListService {

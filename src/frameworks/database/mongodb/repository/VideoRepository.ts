@@ -1,6 +1,6 @@
 import moment from "moment";
 import { TVideoInviteLink } from "../../../../Entities/callInvites";
-import { IVideoRepository } from "../../../../Interfaces/IVedioRepository";
+import { IVideoRepository } from "../../../../interfaces/IVedioRepository";
 
 import { CallNotification as VCNotification } from "../models/VideoNotificationModal";
    

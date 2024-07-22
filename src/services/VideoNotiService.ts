@@ -1,6 +1,6 @@
 import { TVideoInviteLink } from "../Entities/callInvites";
-import { IVideoRepository } from "../Interfaces/IVedioRepository";
-import { IVideoService } from "../Interfaces/IVideoService";
+import { IVideoRepository } from "../interfaces/IVedioRepository";
+import { IVideoService } from "../interfaces/IVideoService";
 
 
 

@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken'
 
-import {  IToken} from "../Interfaces/IToken";
+import {  IToken} from "../interfaces/IToken";
 import config from '../config';
 import { workspaceSpaceJwtType } from '../Entities/WorkspaceDataType';
 

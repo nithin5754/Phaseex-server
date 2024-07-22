@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { CollaboratorType, WorkspaceDataType } from "../../../../Entities/WorkspaceDataType";
-import ISpaceRepository from "../../../../Interfaces/ISpaceRepository";
+import ISpaceRepository from "../../../../interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 import UserModel from "../models/UserModel";
 import mongoose from "mongoose";

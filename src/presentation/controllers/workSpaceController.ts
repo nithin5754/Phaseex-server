@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import IAuthUserService from "../../Interfaces/IAuthService";
-import ISpaceService from "../../Interfaces/ISpaceService";
+import IAuthUserService from "../../interfaces/IAuthService";
+import ISpaceService from "../../interfaces/ISpaceService";
 import { CollaboratorType } from "../../Entities/WorkspaceDataType";
 
 export class WorkSpaceController {

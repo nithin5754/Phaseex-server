@@ -1,6 +1,6 @@
 import { CActivityType, CCommentType, ResponseActivityModal } from "../Entities/activity";
-import IActivityRepository from "../Interfaces/IActivityRepository";
-import { IActivityService } from "../Interfaces/IActivityService";
+import IActivityRepository from "../interfaces/IActivityRepository";
+import { IActivityService } from "../interfaces/IActivityService";
 
 
 

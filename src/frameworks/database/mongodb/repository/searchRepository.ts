@@ -1,5 +1,5 @@
 import { User, UserType } from "../../../../Entities/Users";
-import { ISearchRepository } from "../../../../Interfaces/ISearchRepository";
+import { ISearchRepository } from "../../../../interfaces/ISearchRepository";
 import UserModal from "../models/UserModel";
 import { Todo as TodoModal } from "../models/TodoModal";
 import { TodoType } from "../../../../Entities/Todo";

@@ -1,6 +1,6 @@
 import { TodoCollabTypeDetails, TodoType } from "../Entities/Todo";
-import { ITodoRepository } from "../Interfaces/ITodoRepository";
-import { ITodoService } from "../Interfaces/ITodoService";
+import { ITodoRepository } from "../interfaces/ITodoRepository";
+import { ITodoService } from "../interfaces/ITodoService";
 
 export class TodoService implements ITodoService {
   private todoRepository: ITodoRepository;

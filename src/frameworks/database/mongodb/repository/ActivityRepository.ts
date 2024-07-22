@@ -1,6 +1,6 @@
 import moment from "moment";
 import { CActivityType, CCommentType, ResponseActivityModal } from "../../../../Entities/activity";
-import IActivityRepository from "../../../../Interfaces/IActivityRepository";
+import IActivityRepository from "../../../../interfaces/IActivityRepository";
 
 import { Activity as ActivityModal } from "../models/AcivityModal";
 

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import IAuthUserService from "../../Interfaces/IAuthService";
-import ISpaceService from "../../Interfaces/ISpaceService";
+import IAuthUserService from "../../interfaces/IAuthService";
+import ISpaceService from "../../interfaces/ISpaceService";
 
-import { IGoogleService } from "../../Interfaces/IGoogleService";
+import { IGoogleService } from "../../interfaces/IGoogleService";
 
-import { ICloudinaryStorage } from "../../Interfaces/ICloudinaryStorage";
-import { IMulterConverter } from "../../Interfaces/IMulterConverter";
+import { ICloudinaryStorage } from "../../interfaces/ICloudinaryStorage";
+import { IMulterConverter } from "../../interfaces/IMulterConverter";
 
 export class AuthController {
   private authService: IAuthUserService;

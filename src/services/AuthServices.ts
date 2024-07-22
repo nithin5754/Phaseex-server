@@ -1,12 +1,12 @@
 import { User } from "../Entities/Users";
 import { v4 as uuidv4 } from "uuid";
 import { ERROR } from "../frameworks/webserver/common/error";
-import IAuthRepository from "../Interfaces/IAuthRepository";
-import IAuthUserService from "../Interfaces/IAuthService";
-import { IBcrypt } from "../Interfaces/IBcrypt";
-import { IMailer } from "../Interfaces/IMailer";
-import { IGenerateOtp } from "../Interfaces/IGenerateOtp";
-import { IToken } from "../Interfaces/IToken";
+import IAuthRepository from "../interfaces/IAuthRepository";
+import IAuthUserService from "../interfaces/IAuthService";
+import { IBcrypt } from "../interfaces/IBcrypt";
+import { IMailer } from "../interfaces/IMailer";
+import { IGenerateOtp } from "../interfaces/IGenerateOtp";
+import { IToken } from "../interfaces/IToken";
 import { TokenGenerateProps } from "../External- Libraries/token";
 import { workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 

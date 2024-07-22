@@ -1,8 +1,8 @@
 
 import { response } from "express";
 import { NotificationType } from "../Entities/notification";
-import { INotificationRepository } from "../Interfaces/INotificationRepository";
-import { INotificationService, NotifTotalType } from "../Interfaces/INotificationService";
+import { INotificationRepository } from "../interfaces/INotificationRepository";
+import { INotificationService, NotifTotalType } from "../interfaces/INotificationService";
 
 
 

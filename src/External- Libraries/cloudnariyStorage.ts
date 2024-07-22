@@ -1,4 +1,4 @@
-import { ICloudinaryStorage } from "../Interfaces/ICloudinaryStorage";
+import { ICloudinaryStorage } from "../interfaces/ICloudinaryStorage";
 import cloudinary from 'cloudinary'
 
 export class CloudinaryStorage implements ICloudinaryStorage  {

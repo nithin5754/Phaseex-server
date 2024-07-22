@@ -4,13 +4,13 @@ import {
   getCollaboratorType,
   workspaceSpaceJwtType,
 } from "../Entities/WorkspaceDataType";
-import { IFolderRepository } from "../Interfaces/IFolderRepository";
-import { IListRepository } from "../Interfaces/IListRepository";
+import { IFolderRepository } from "../interfaces/IFolderRepository";
+import { IListRepository } from "../interfaces/IListRepository";
 
-import ISpaceRepository from "../Interfaces/ISpaceRepository";
-import ISpaceService from "../Interfaces/ISpaceService";
-import { ITaskRepository } from "../Interfaces/ITaskRepository";
-import { ITodoRepository } from "../Interfaces/ITodoRepository";
+import ISpaceRepository from "../interfaces/ISpaceRepository";
+import ISpaceService from "../interfaces/ISpaceService";
+import { ITaskRepository } from "../interfaces/ITaskRepository";
+import { ITodoRepository } from "../interfaces/ITodoRepository";
 
 export class SpaceService implements ISpaceService {
   private spaceRepository: ISpaceRepository;

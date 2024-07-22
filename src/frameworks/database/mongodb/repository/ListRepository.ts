@@ -5,7 +5,7 @@ import {
   ListDataType,
   listCollabRole,
 } from "../../../../Entities/List";
-import { IListRepository } from "../../../../Interfaces/IListRepository";
+import { IListRepository } from "../../../../interfaces/IListRepository";
 
 import { List as ListModal } from "../models/ListModal";
 import moment from "moment";

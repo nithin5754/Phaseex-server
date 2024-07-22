@@ -1,5 +1,5 @@
 import { FolderDataType } from "../../../../Entities/Folder";
-import { IFolderRepository } from "../../../../Interfaces/IFolderRepository";
+import { IFolderRepository } from "../../../../interfaces/IFolderRepository";
 import { Folder as FolderModal } from "../models/FolderModal";
 import moment from "moment";
 

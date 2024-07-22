@@ -4,7 +4,7 @@ import {
   CreateTopComment,
   SendGetAllComment,
 } from "../../../../Entities/comment";
-import { ICommentsRepo } from "../../../../Interfaces/ICommentsRepo";
+import { ICommentsRepo } from "../../../../interfaces/ICommentsRepo";
 
 import { comments as commentsModal } from "../models/CommentsModal";
 import moment from "moment";

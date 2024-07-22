@@ -1,6 +1,6 @@
 import { AttachmentSliceType, SendAttachment } from "../Entities/attachment";
-import { IAttachmentRepository } from "../Interfaces/IAttachmentRepository";
-import { IAttachmentService } from "../Interfaces/IAttachmentService";
+import { IAttachmentRepository } from "../interfaces/IAttachmentRepository";
+import { IAttachmentService } from "../interfaces/IAttachmentService";
 
 
 

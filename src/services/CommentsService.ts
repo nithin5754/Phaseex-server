@@ -1,6 +1,6 @@
 import { CreateTopComment, SendGetAllComment } from "../Entities/comment";
-import { ICommentService } from "../Interfaces/ICommentService";
-import { ICommentsRepo } from "../Interfaces/ICommentsRepo";
+import { ICommentService } from "../interfaces/ICommentService";
+import { ICommentsRepo } from "../interfaces/ICommentsRepo";
 
 export class CommentsService implements ICommentService {
   private CommentsRepo: ICommentsRepo;

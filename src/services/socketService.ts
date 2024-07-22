@@ -1,10 +1,10 @@
 
 import { Socket } from "socket.io";
-import IAuthRepository from "../Interfaces/IAuthRepository";
-import { INotificationService } from "../Interfaces/INotificationService";
-import { IVideoService } from "../Interfaces/IVideoService";
+import IAuthRepository from "../interfaces/IAuthRepository";
+import { INotificationService } from "../interfaces/INotificationService";
+import { IVideoService } from "../interfaces/IVideoService";
 import { TVideoInviteLink } from "../Entities/callInvites";
-import { IMailer } from "../Interfaces/IMailer";
+import { IMailer } from "../interfaces/IMailer";
 
 type OnlineUserType = {
   userId: string;

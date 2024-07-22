@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ITaskService } from "../../Interfaces/ITaskService";
-import { IProgressBar } from "../../Interfaces/IProgressBar";
+import { ITaskService } from "../../interfaces/ITaskService";
+import { IProgressBar } from "../../interfaces/IProgressBar";
 import { TaskCollaboratorType } from "../../Entities/Task";
 import cloudinary from 'cloudinary'
 

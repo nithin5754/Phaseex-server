@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { IFolderService } from "../../Interfaces/IFolderService";
+import { IFolderService } from "../../interfaces/IFolderService";
 import { FolderDataType } from "../../Entities/Folder";
 
 export class FolderController {

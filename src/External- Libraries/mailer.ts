@@ -1,7 +1,7 @@
 
 
 import config from "../config";
-import { IMailer } from "../Interfaces/IMailer";
+import { IMailer } from "../interfaces/IMailer";
 import nodemailer from 'nodemailer'
 
 export class Mailer implements IMailer{

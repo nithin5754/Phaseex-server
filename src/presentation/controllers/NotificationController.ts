@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { INotificationService } from "../../Interfaces/INotificationService";
+import { INotificationService } from "../../interfaces/INotificationService";
 
 export class NotificationController {
   private notificationService: INotificationService;

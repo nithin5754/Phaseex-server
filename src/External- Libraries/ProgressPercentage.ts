@@ -1,4 +1,4 @@
-import { IProgressBar } from "../Interfaces/IProgressBar";
+import { IProgressBar } from "../interfaces/IProgressBar";
 
 
 

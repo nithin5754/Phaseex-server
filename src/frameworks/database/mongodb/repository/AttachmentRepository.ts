@@ -1,5 +1,5 @@
 import { Attachment, AttachmentSliceType, SendAttachment } from "../../../../Entities/attachment";
-import { IAttachmentRepository } from "../../../../Interfaces/IAttachmentRepository";
+import { IAttachmentRepository } from "../../../../interfaces/IAttachmentRepository";
 import { Attachment as AttachmentModal } from "../models/AttachmentModal";
 
 

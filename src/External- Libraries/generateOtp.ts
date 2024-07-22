@@ -1,6 +1,6 @@
 
 import crypto from 'crypto';
-import { IGenerateOtp } from '../Interfaces/IGenerateOtp';
+import { IGenerateOtp } from '../interfaces/IGenerateOtp';
 
 export class GenerateOtp implements IGenerateOtp {
  private generatedOTPs = new Set<string>();

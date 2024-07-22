@@ -1,7 +1,7 @@
 
 import moment from "moment";
 import { TodoCollabTypeDetails, TodoType } from "../../../../Entities/Todo";
-import { ITodoRepository } from "../../../../Interfaces/ITodoRepository";
+import { ITodoRepository } from "../../../../interfaces/ITodoRepository";
 import { Todo as TodoModal } from "../models/TodoModal";
 import mongoose from "mongoose";
 

@@ -1,5 +1,5 @@
 import { User } from "../../../../Entities/Users";
-import IAuthRepository from "../../../../Interfaces/IAuthRepository";
+import IAuthRepository from "../../../../interfaces/IAuthRepository";
 
 import UserTempModel from "../models/TempUserModel";
 

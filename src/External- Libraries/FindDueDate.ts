@@ -1,11 +1,10 @@
 import moment from "moment";
-import { IDueDate } from "../Interfaces/IDueDate";
+import { IDueDate } from "../interfaces/IDueDate";
+
 
 
 export class DueDay implements IDueDate {
-  constructor() {
-    
-  }
+
   useTimeDue(start_date: string, due_date: string): number {
 
     const start = moment(start_date, 'MMMM D, YYYY').toDate();
