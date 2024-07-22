@@ -4,10 +4,9 @@
   "description": "project management tool website ,on app for may purpose",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "build": "tsc -p .",
-    "deploy": "npm install && tsc -p ."
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "npx nodemon --watch 'src/**/*.ts' --exec ts-node src/main.ts"
   },
   "keywords": [],
   "author": "",
