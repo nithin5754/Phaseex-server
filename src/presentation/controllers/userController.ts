@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../interfaces/IAuthService";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 
 export class UserController {
   private authService: IAuthUserService;

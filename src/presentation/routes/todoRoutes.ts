@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { TodoController } from "../controllers/TodoController";
-import { TodoService } from "../../Services/TodoService";
+import { TodoService } from "../../services/TodoService";
 import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
 
 const todoRepository = new TodoRepository();

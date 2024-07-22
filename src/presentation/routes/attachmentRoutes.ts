@@ -3,7 +3,7 @@ import { Router } from "express";
 import { verifyJWT } from "../middleware/validateToken";
 
 import { AttachmentController } from "../controllers/attachmentController";
-import { AttachmentService } from "../../Services/AttachmentService";
+import { AttachmentService } from "../../services/AttachmentService";
 import { AttachmentRepository } from "../../frameworks/database/mongodb/repository/AttachmentRepository";
 import { MulterFileConverter } from "../../External- Libraries/multerFileConverter";
 import upload from "../middleware/multer";

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { SearchController } from "../controllers/SearchController";
-import { SearchService } from "../../Services/searchService";
+import { SearchService } from "../../services/searchService";
 import { SearchRepo } from "../../frameworks/database/mongodb/repository/searchRepository";
 
 const searchRepository=new SearchRepo()

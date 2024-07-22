@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { VideoRepository } from "../../frameworks/database/mongodb/repository/VideoRepository";
-import { VideoNotiService } from "../../Services/VideoNotiService";
+import { VideoNotiService } from "../../services/VideoNotiService";
 import { CallController } from "../controllers/CallController";
 
 const repository = new VideoRepository();

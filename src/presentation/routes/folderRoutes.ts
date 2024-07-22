@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { FolderRepository } from "../../frameworks/database/mongodb/repository/FolderRepository";
-import { FolderService } from "../../Services/FolderService";
+import { FolderService } from "../../services/FolderService";
 import { FolderController } from "../controllers/FolderController";
 import { verifyJWT } from "../middleware/validateToken";
 

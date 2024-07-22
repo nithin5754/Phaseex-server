@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { UserController } from "../controllers/userController";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 import { AuthRepository } from "../../frameworks/database/mongodb/repository/authRepository";
 import { Bcrypt } from "../../External- Libraries/bcrypt";
 import { Mailer } from "../../External- Libraries/mailer";
@@ -15,13 +15,13 @@ import {
 import { AuthController } from "../controllers/authController";
 
 import rateLimitMiddleware from "../utils/rateLimiter";
-import { SpaceService } from "../../Services/spaceService";
+import { SpaceService } from "../../services/spaceService";
 import { workSpaceRepository } from "../../frameworks/database/mongodb/repository/workspaceRepository";
 import { FolderRepository } from "../../frameworks/database/mongodb/repository/FolderRepository";
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
 import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
-import { GoogleService } from "../../Services/GoogleService";
+import { GoogleService } from "../../services/GoogleService";
 import upload from "../middleware/multer";
 import { CloudinaryStorage } from "../../External- Libraries/cloudnariyStorage";
 import { MulterFileConverter } from "../../External- Libraries/multerFileConverter";

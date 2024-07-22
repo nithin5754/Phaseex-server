@@ -11,13 +11,13 @@ import http, { Server as httpServerType } from 'http';
 import { Server } from "socket.io";
 
 import ioMiddleware from "./presentation/middleware/ioMiddleware";
-import { SocketService } from "./Services/socketService";
+import { SocketService } from "./services/socketService";
 import { UserController } from "./presentation/controllers/userController";
 import { AuthRepository } from "./frameworks/database/mongodb/repository/authRepository";
-import { NotoficationService } from "./Services/NotificationService";
+import { NotoficationService } from "./services/NotificationService";
 import { NotificationRepository } from "./frameworks/database/mongodb/repository/NotiFicationRepo";
 import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoRepository";
-import { VideoNotiService } from "./Services/VideoNotiService";
+import { VideoNotiService } from "./services/VideoNotiService";
 import { Mailer } from "./External- Libraries/mailer";
 
 

@@ -2,9 +2,9 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { CommentsController } from "../controllers/CommentsController";
-import { CommentsService } from "../../Services/CommentsService";
+import { CommentsService } from "../../services/CommentsService";
 import { CommentsRepo } from "../../frameworks/database/mongodb/repository/CommentsRepo";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 import { AuthRepository } from "../../frameworks/database/mongodb/repository/authRepository";
 import { Bcrypt } from "../../External- Libraries/bcrypt";
 import { Mailer } from "../../External- Libraries/mailer";

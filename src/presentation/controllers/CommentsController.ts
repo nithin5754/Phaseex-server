@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ICommentService } from "../../interfaces/ICommentService";
 import { CreateTopComment, SendGetAllComment } from "../../Entities/comment";
 import IAuthUserService from "../../interfaces/IAuthService";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 
 export class CommentsController {
   private commentService: ICommentService;

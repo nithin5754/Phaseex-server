@@ -4,7 +4,7 @@
 import { Router } from "express";
 import { verifyJWT } from "../middleware/validateToken";
 import { ActivityController } from "../controllers/activityController";
-import { ActivityService } from "../../Services/ActivityService";
+import { ActivityService } from "../../services/ActivityService";
 import { ActivityRepository } from "../../frameworks/database/mongodb/repository/ActivityRepository";
 
 const repository = new ActivityRepository();

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ListController } from "../controllers/ListController";
-import { ListService } from "../../Services/ListService";
+import { ListService } from "../../services/ListService";
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
 import { verifyJWT } from "../middleware/validateToken";

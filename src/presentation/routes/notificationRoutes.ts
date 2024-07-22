@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { NotificationController } from "../controllers/NotificationController";
-import { NotoficationService } from "../../Services/NotificationService";
+import { NotoficationService } from "../../services/NotificationService";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { NotificationRepository } from "../../frameworks/database/mongodb/repository/NotiFicationRepo";

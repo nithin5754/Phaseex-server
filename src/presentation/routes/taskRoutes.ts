@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { TaskController } from "../controllers/taskController";
-import { TaskService } from "../../Services/TaskService";
+import { TaskService } from "../../services/TaskService";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { DueDay } from "../../External- Libraries/FindDueDate";

@@ -2,13 +2,13 @@ import { Router } from "express";
 
 import { verifyJWT } from "../middleware/validateToken";
 import { WorkSpaceController } from "../controllers/workSpaceController";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 import { AuthRepository } from "../../frameworks/database/mongodb/repository/authRepository";
 import { Bcrypt } from "../../External- Libraries/bcrypt";
 import { Mailer } from "../../External- Libraries/mailer";
 import { GenerateOtp } from "../../External- Libraries/generateOtp";
 import { Token } from "../../External- Libraries/token";
-import { SpaceService } from "../../Services/spaceService";
+import { SpaceService } from "../../services/spaceService";
 import { workSpaceRepository } from "../../frameworks/database/mongodb/repository/workspaceRepository";
 import { FolderRepository } from "../../frameworks/database/mongodb/repository/FolderRepository";
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";

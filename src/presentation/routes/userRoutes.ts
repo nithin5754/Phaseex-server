@@ -4,7 +4,7 @@ import { Bcrypt } from "../../External- Libraries/bcrypt";
 import { Mailer } from "../../External- Libraries/mailer";
 import { GenerateOtp } from "../../External- Libraries/generateOtp";
 import { Token } from "../../External- Libraries/token";
-import { AuthServices } from "../../Services/AuthServices";
+import { AuthServices } from "../../services/AuthServices";
 import { UserController } from "../controllers/userController";
 import { validateRegisterUser } from "../validators/authValidator";
 import { verifyJWT } from "../middleware/validateToken";
