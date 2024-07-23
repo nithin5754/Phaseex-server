@@ -16,7 +16,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 export default function expressConfig(app:Application,config:ConfigType){
   app.use(cors({
-    origin: [ "https://www.phaseex.live", "https://phaseex.live",'http://localhost:3000','http://localhost:5173','http://localhost:5174'],
+    origin: [ 'https://www.phaseex.live','http://localhost:5173',],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }))
