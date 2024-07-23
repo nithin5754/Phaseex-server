@@ -100,7 +100,11 @@ export class AuthController {
 
   onGoogleAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = req.params;
+      console.log("hello");
+      
+      const { token } = req.body;
+
+      console.log(req.body,"token")
 
       if (!token) {
         return res.status(404).json({ message: "credetials missing" });

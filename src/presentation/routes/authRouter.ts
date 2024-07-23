@@ -70,7 +70,7 @@ const authRouter = (router: Router) => {
     .post(validateLoginUser, controller.OnLoginUser.bind(controller));
 
   router
-    .route("/googleAuth/:token")
+    .route("/googleAuth")
     .post(controller.onGoogleAuth.bind(controller));
   router.route("/refresh").get(controller.onRefresh.bind(controller));
   router.route("/logout").post(controller.onLogOut.bind(controller));

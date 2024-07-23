@@ -59,7 +59,6 @@ const io = new Server(httpServer, {
   transports:['polling'],
   cors: {
     origin: [ 'https://www.phaseex.live','https://phaseex.live','http://localhost:5173'],
- 
     credentials: true,
   }
   
