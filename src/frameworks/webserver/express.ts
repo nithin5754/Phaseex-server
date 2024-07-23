@@ -5,7 +5,7 @@ import mongoSanitize from 'express-mongo-sanitize'
 import helmet from "helmet";
 import cookieParser from 'cookie-parser'
 import { ConfigType } from "../../config";
-import cors from 'cors'
+
 
 
 import { v2 as cloudinary } from "cloudinary";
@@ -15,11 +15,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 
 export default function expressConfig(app:Application,config:ConfigType){
-  app.use(cors({
-    origin: [ 'https://www.phaseex.live','http://localhost:5173',],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true
-}))
+
 
 cloudinary.config({
   cloud_name:config.cloudinary.CLOUDINARY_CLOUD_NAME,

@@ -19,7 +19,7 @@ import { NotificationRepository } from "./frameworks/database/mongodb/repository
 import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoRepository";
 import { VideoNotiService } from "./services/VideoNotiService";
 import { Mailer } from "./External- Libraries/mailer";
-
+import cors from 'cors'
 
 const app: Application = express();
 const router: Router = express.Router()
@@ -52,6 +52,12 @@ connection(mongoose,config).connectToMongo()
 app.use(errorHandlingMiddleware)
 
 const httpServer:httpServerType = http.createServer(app);
+
+app.use(cors({
+  origin: [ 'https://www.phaseex.live','http://localhost:5173',],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
+}))
 
 const io = new Server(httpServer, {
   transports:['polling'],
