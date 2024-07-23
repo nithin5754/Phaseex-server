@@ -56,11 +56,14 @@ const httpServer:httpServerType = http.createServer(app);
 const io = new Server(httpServer, {
   transports:['polling'],
   cors: {
-    
-    origin: ["http://localhost:5173", "https://www.phaseex.live",],
-    methods: ["GET", "POST", "OPTIONS","PATCH","PUT"],
+    origin: [
+      "http://localhost:5173",
+      "https://www.phaseex.live"
+    ],
+    methods: ["GET", "POST", "OPTIONS", "PATCH", "PUT"],
     credentials: true,
-  },
+  }
+  
 });
 
 
