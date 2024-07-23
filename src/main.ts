@@ -53,11 +53,7 @@ app.use(errorHandlingMiddleware)
 
 const httpServer:httpServerType = http.createServer(app);
 
-app.use(cors({
-  origin: [ 'https://www.phaseex.live','http://localhost:5173',],
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true
-}))
+
 
 const io = new Server(httpServer, {
   transports:['polling'],
