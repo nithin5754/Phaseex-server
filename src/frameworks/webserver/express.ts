@@ -15,17 +15,12 @@ import { v2 as cloudinary } from "cloudinary";
 
 
 export default function expressConfig(app:Application,config:ConfigType){
-  const corsOptions = {
-    origin: config.nodeEnvironment === 'production'
-      ? 'https://www.phaseex.live'
-      : 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  app.use(cors({
+    origin: [ "https://www.phaseex.live",'https://api.phaseex.live','http://localhost:3000','http://localhost:5173','http://localhost:5174'],
+    credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  };
-  
-  app.use(cors(corsOptions));
-  
+    exposedHeaders: ["set-cookie"],
+}))
 
 cloudinary.config({
   cloud_name:config.cloudinary.CLOUDINARY_CLOUD_NAME,
