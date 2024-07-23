@@ -60,8 +60,8 @@ const io = new Server(httpServer, {
       "http://localhost:5173",
       "https://www.phaseex.live"
     ],
-    methods: ["GET", "POST", "OPTIONS", "PATCH", "PUT"],
     credentials: true,
+    exposedHeaders: ["set-cookie"],
   }
   
 });
