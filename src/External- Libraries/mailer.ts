@@ -17,7 +17,7 @@ export class Mailer implements IMailer{
         },
       });
 
-      let res = await transporter.sendMail({
+     await transporter.sendMail({
         from: "nithinjoji0756@gmail.com",
         to: `${email}`,
         subject: "OTP for verification",
@@ -42,8 +42,7 @@ export class Mailer implements IMailer{
         },
       });
 
-
-      let res = await transporter.sendMail({
+await transporter.sendMail({
         from: "nithinjoji0756@gmail.com",
         to: `${email}`,
         subject: "OTP for verification",
