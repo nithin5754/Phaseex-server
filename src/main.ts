@@ -12,14 +12,13 @@ import { Server } from "socket.io";
 
 import ioMiddleware from "./presentation/middleware/ioMiddleware";
 import { SocketService } from "./services/socketService";
-import { UserController } from "./presentation/controllers/userController";
 import { AuthRepository } from "./frameworks/database/mongodb/repository/authRepository";
 import { NotoficationService } from "./services/NotificationService";
 import { NotificationRepository } from "./frameworks/database/mongodb/repository/NotiFicationRepo";
 import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoRepository";
 import { VideoNotiService } from "./services/VideoNotiService";
 import { Mailer } from "./External- Libraries/mailer";
-import cors from 'cors'
+
 
 const app: Application = express();
 const router: Router = express.Router()

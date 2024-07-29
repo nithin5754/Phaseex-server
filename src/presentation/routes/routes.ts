@@ -14,6 +14,10 @@ import activityRoutes from "./activityRoutes";
 import videoChatRoutes from "./videoChatRoutes";
 import AttachmentRoutes from "./attachmentRoutes";
 import commentRoutes from "./commentRoutes";
+import UploadRoutes from "./uploadRoutes";
+import gptRoutes from "./gptRoutes";
+
+
 
 
 
@@ -32,6 +36,9 @@ export const routes = (app: Application, router: Router) => {
   app.use('/api/v1/videoChat',videoChatRoutes(router))
   app.use('/api/v1/attachment',AttachmentRoutes(router))
   app.use('/api/v1/comments',commentRoutes(router))
+  app.use('/api/v1/upload',UploadRoutes(router))
+  app.use('/api/v1/gpt',gptRoutes(router))
+
 };
 
 export default routes;

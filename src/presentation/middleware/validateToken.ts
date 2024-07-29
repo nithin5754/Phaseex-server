@@ -18,7 +18,7 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   // console.log(authHeader, "connection string");
 
   if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "unauthorized token" });
+    return res.status(401).json({ message: "unauthorized token string" });
   }
 
   const token = authHeader.split(" ")[1];

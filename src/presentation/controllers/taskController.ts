@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { ITaskService } from "../../interfaces/ITaskService";
-import { IProgressBar } from "../../interfaces/IProgressBar";
+
 import { TaskCollaboratorType } from "../../Entities/Task";
-import cloudinary from 'cloudinary'
+
 
 export class TaskController {
   private taskService: ITaskService;
