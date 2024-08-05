@@ -61,9 +61,11 @@ export class GPTController {
       let getALLGroup = await this.gptService.AllGroup(userId);
 
       if (!getALLGroup) {
-        return res
-          .status(404)
-          .json({ message: "something went wrong please try again " });
+    await this.gptService.getAddGroup({
+      
+   group_title:"chat-one",
+   userId
+        });
       }
 
       return res.status(200).json(getALLGroup);
