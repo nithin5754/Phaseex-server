@@ -139,6 +139,7 @@ export class AuthController {
           spaces
         );
 
+   
         let getALLGroup = await this.gptService.AllGroup(userId);
         
         if (!getALLGroup) {
@@ -148,7 +149,6 @@ export class AuthController {
          userId
               });
             }
-
       
 
         res.cookie("jwt", refreshToken, {
