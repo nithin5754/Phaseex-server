@@ -139,14 +139,6 @@ export class AuthController {
           spaces
         );
 
-      
-
-        res.cookie("jwt", refreshToken, {
-          httpOnly: true,
-          secure: true,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-          sameSite: "none",
-        });
         let getALLGroup = await this.gptService.AllGroup(userId);
         
         if (!getALLGroup) {
@@ -156,6 +148,16 @@ export class AuthController {
          userId
               });
             }
+
+      
+
+        res.cookie("jwt", refreshToken, {
+          httpOnly: true,
+          secure: true,
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+          sameSite: "none",
+        });
+
 
         return res.status(200).json({
           message: "user login successfully",
