@@ -25,6 +25,8 @@ import { GoogleService } from "../../services/GoogleService";
 import upload from "../middleware/multer";
 import { CloudinaryStorage } from "../../External- Libraries/cloudnariyStorage";
 import { MulterFileConverter } from "../../External- Libraries/multerFileConverter";
+import { GptRepository } from "../../frameworks/database/mongodb/repository/GptRepository";
+import { GptService } from "../../services/GptService";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -46,6 +48,9 @@ const listRepository = new ListRepository();
 const taskRepository = new TaskRepository();
 const todoRepository = new TodoRepository();
 
+const gptRepository = new GptRepository();
+const gptService = new GptService(gptRepository);
+
 const spaceService = new SpaceService(
   spaceRepository,
   folderRepository,
@@ -54,14 +59,15 @@ const spaceService = new SpaceService(
   todoRepository
 );
 const ICloudinary = new CloudinaryStorage();
-const multerConverter=new MulterFileConverter()
+const multerConverter = new MulterFileConverter();
 const googleService = new GoogleService(repository, ICloudinary);
 const controller = new AuthController(
   services,
   spaceService,
   googleService,
   ICloudinary,
-  multerConverter
+  multerConverter,
+  gptService
 );
 
 const authRouter = (router: Router) => {
@@ -69,9 +75,7 @@ const authRouter = (router: Router) => {
     .route("/login")
     .post(validateLoginUser, controller.OnLoginUser.bind(controller));
 
-  router
-    .route("/googleAuth")
-    .post(controller.onGoogleAuth.bind(controller));
+  router.route("/googleAuth").post(controller.onGoogleAuth.bind(controller));
   router.route("/refresh").get(controller.onRefresh.bind(controller));
   router.route("/logout").post(controller.onLogOut.bind(controller));
   router

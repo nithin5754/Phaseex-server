@@ -6,6 +6,7 @@ import { IGoogleService } from "../../interfaces/IGoogleService";
 
 import { ICloudinaryStorage } from "../../interfaces/ICloudinaryStorage";
 import { IMulterConverter } from "../../interfaces/IMulterConverter";
+import { IGptService } from "../../interfaces/IGptService";
 
 export class AuthController {
   private authService: IAuthUserService;
@@ -13,19 +14,22 @@ export class AuthController {
   private googleService: IGoogleService;
   private ICloudinary: ICloudinaryStorage;
   private multerConverter: IMulterConverter;
+  private gptService: IGptService;
 
   constructor(
     authService: IAuthUserService,
     spaceService: ISpaceService,
     googleService: IGoogleService,
     ICloudinary: ICloudinaryStorage,
-    multerConverter: IMulterConverter
+    multerConverter: IMulterConverter,
+    gptService: IGptService
   ) {
     this.authService = authService;
     this.spaceService = spaceService;
     this.googleService = googleService;
     this.ICloudinary = ICloudinary;
     this.multerConverter = multerConverter;
+    this.gptService=gptService
   }
   //@login
   OnLoginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -81,6 +85,17 @@ export class AuthController {
           sameSite: "none",
         });
 
+
+        let getALLGroup = await this.gptService.AllGroup(userId);
+
+        if (!getALLGroup) {
+      await this.gptService.getAddGroup({
+        
+     group_title:"chat-one",
+     userId
+          });
+        }
+
         return res.status(200).json({
           message: "user login successfully",
           data: isUserExist,
@@ -132,6 +147,15 @@ export class AuthController {
           maxAge: 7 * 24 * 60 * 60 * 1000,
           sameSite: "none",
         });
+        let getALLGroup = await this.gptService.AllGroup(userId);
+        
+        if (!getALLGroup) {
+          await this.gptService.getAddGroup({
+            
+         group_title:"chat-one",
+         userId
+              });
+            }
 
         return res.status(200).json({
           message: "user login successfully",
