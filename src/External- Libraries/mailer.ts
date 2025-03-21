@@ -48,10 +48,8 @@ await transporter.sendMail({
         subject: "OTP for verification",
         html: `<h1>Hy ${name}</h1><br><p>Your OTP for the verification is <h2>${otp}</h2></p>`,
       });
-
       return true
       }
-
     } 
       
 

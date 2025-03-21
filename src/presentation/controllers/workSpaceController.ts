@@ -60,7 +60,7 @@ export class WorkSpaceController {
     res: Response,
     next: NextFunction
   ) => {
-    // const spaceOwner:string=req.body.spaceOwner
+   
 
  
 
@@ -71,7 +71,7 @@ export class WorkSpaceController {
         spaceOwner,
    
       );
-      return res.status(200).json(response);
+      return res.status(200).json(response?response:[]);
     } catch (error) {
       next(error);
     }
@@ -83,7 +83,8 @@ export class WorkSpaceController {
     next: NextFunction
   ) => {
     let spaceOwner = req.userId;
-
+    
+    const mergedArray:any[] = [];
     try {
       const responsePromise = await this.spaceService.getAllOnGoingSpace(
         spaceOwner
@@ -100,11 +101,11 @@ export class WorkSpaceController {
       ]);
       
       if (!response && !invitesSpace) {
-        return res.status(404).json({ message: "Response not found" });
+        return res.status(200).json(mergedArray);
       }
       
-      console.log(invitesSpace,"is invite space available")
-      const mergedArray = [];
+
+  
       if (response) {
         mergedArray.push(...response);
       }
