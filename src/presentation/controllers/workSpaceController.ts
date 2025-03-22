@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../interfaces/IAuthService";
 import ISpaceService from "../../interfaces/ISpaceService";
-import { CollaboratorType } from "../../Entities/WorkspaceDataType";
 
 export class WorkSpaceController {
   private authService: IAuthUserService;
@@ -55,69 +54,62 @@ export class WorkSpaceController {
     }
   };
 
-  onGetAllWorkSpaceByUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-   
+  // type:'COMPLETED'|'HIDDEN'|'INVITED'|'OWNER'
 
- 
-
-    let spaceOwner = req.userId;
-
-    try {
-      const response = await this.spaceService.getAllSpaceByUser(
-        spaceOwner,
-   
-      );
-      return res.status(200).json(response?response:[]);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onGoingWorkSpace = async (
+  onGetAllOwnerSpaceLists = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     let spaceOwner = req.userId;
-    
-    const mergedArray:any[] = [];
+
     try {
-      const responsePromise = await this.spaceService.getAllOnGoingSpace(
-        spaceOwner
-      );
-      const invitesSpacePromise = await this.spaceService.getAllInvitedSpace(
+      const response = await this.spaceService.spaceListsService(
         spaceOwner,
-        true
+        "OWNER"
       );
-
-      
-      const [response, invitesSpace] = await Promise.all([
-        responsePromise,
-        invitesSpacePromise,
-      ]);
-      
-      if (!response && !invitesSpace) {
-        return res.status(200).json(mergedArray);
-      }
-      
-
-  
-      if (response) {
-        mergedArray.push(...response);
-      }
-      if (invitesSpace) {
-        mergedArray.push(...invitesSpace);
-      }
-
-      return res.status(200).json(mergedArray);
+      return res.status(200).json(response ? response : []);
     } catch (error) {
       next(error);
     }
   };
+
+  onGetAllHiddenSpaceLists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    let spaceOwner = req.userId;
+
+    try {
+      const response = await this.spaceService.spaceListsService(
+        spaceOwner,
+        "HIDDEN"
+      );
+      return res.status(200).json(response ? response : []);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onGetAllInvitedSpaceLists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    let spaceOwner = req.userId;
+
+    try {
+      const response = await this.spaceService.spaceListsService(
+        spaceOwner,
+        "INVITED"
+      );
+      return res.status(200).json(response ? response : []);
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
   onChangeVisibility = async (
     req: Request,
@@ -134,193 +126,6 @@ export class WorkSpaceController {
       );
       if (!response) {
         return res.status(404).json({ message: "error in changing visiblity" });
-      }
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onInActiveCount = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      let workspaceOwner: string = req.userId;
-      let allCount = await this.spaceService.getCountInActive(workspaceOwner);
-      if (!allCount) {
-        return res.status(404).json({ message: "something went wrong" });
-      }
-
-      return res.status(200).json({ count: allCount });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onGetSingleWorkSpace = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      let workspaceOwner: string = req.userId;
-      const workspaceId: string = req.params.id;
-
-      if (!workspaceId) {
-        return res.status(404).json({ message: "credentials missing" });
-      }
-
-      let isOwnerExist = await this.authService.findUserById(workspaceOwner);
-      if (!isOwnerExist) {
-        return res.status(404).json({ message: "user not found" });
-      }
-
-      let singleWorkSpace = await this.spaceService.getSingleWorkSpace(
-        workspaceId
-      );
-      if (!singleWorkSpace) {
-        return res.status(404).json({ message: "workspace not found" });
-      }
-
-      return res.status(200).json(singleWorkSpace);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onAddCollaboratorsToSpace = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const workspaceId = req.body.workspaceId;
-      const collaboratorId = req.body.collaboratorId;
-
-      console.log(workspaceId, collaboratorId, "add collab ids");
-
-      if (
-        !workspaceId ||
-        typeof workspaceId !== "string" ||
-        !collaboratorId ||
-        typeof collaboratorId !== "string"
-      ) {
-        return res
-          .status(404)
-          .json({ message: "something went wrong credentials missing" });
-      }
-
-      let isWorkSpaceExist = await this.spaceService.getSingleWorkSpace(
-        workspaceId
-      );
-
-      if (!isWorkSpaceExist) {
-        return res
-          .status(400)      
-          .json({ message: "workspace not found please try again" });
-      }
-
-      const existingCollaborator = isWorkSpaceExist.collaborators.find(
-        (collab: CollaboratorType) => collab.assignee === collaboratorId
-      );
-
-      if (existingCollaborator) {
-        return res
-          .status(404)
-          .json({ message: "user is already collbrating in this space" });
-      }
-
-      let addCollaborators = await this.spaceService.getAddCollaboratorsToSpace(
-        workspaceId,
-        collaboratorId
-      );
-
-      if (!addCollaborators) {
-        return res
-          .status(400)
-          .json({ message: "error in adding new  assignee to space" });
-      }
-
-      return res.status(200).json(addCollaborators);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  OnGetAllCollaboratorsInSpace = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      let workspaceId = req.params.workspaceId;
-      if (!workspaceId || typeof workspaceId !== "string") {
-        return res
-          .status(404)
-          .json({ message: "something went wrong credentials missing" });
-      }
-
-      let allCollabMembers = await this.spaceService.getAllCollaboratorInSpace(
-        workspaceId
-      );
-
-
-
-      if (!allCollabMembers || allCollabMembers.length < 0) {
-        return res.status(404).json({ message: "not found" });
-      }
-
-      return res.status(200).json(allCollabMembers);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onDeleteCollabrators = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { workspaceId, collaboratorId } = req.body;
-
-      if (!workspaceId || !collaboratorId) {
-        return res.status(404).json({ message: "credentials missing" });
-      }
-
-      const response = await this.spaceService.getDeleteCollaboratorsToSpace(
-        workspaceId,
-        collaboratorId
-      );
-
-      if (!response) {
-        return res.status(404).json({ message: "something went wrong" });
-      }
-      return res.status(200).json(response);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  onVerifyCollaborator = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { workspaceId, collaboratorId } = req.body;
-
-      if (!workspaceId || !collaboratorId) {
-        return res.status(404).json({ message: "credentials missing" });
-      }
-
-      let response = await this.spaceService.getUpdateCollaboratorsVerified(
-        workspaceId,
-        collaboratorId
-      );
-
-      if (!response) {
-        return res
-          .status(404)
-          .json({ message: "error occur please try again later" });
       }
       return res.status(200).json(response);
     } catch (error) {
@@ -357,34 +162,36 @@ export class WorkSpaceController {
   };
 
 
+  onGetSingleWorkSpace = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let workspaceOwner: string = req.userId;
+      const workspaceId: string = req.params.id;
 
-onUpdateSpaceRoles = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+      if (!workspaceId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
 
-    const { workspaceId, collaboratorId,role } = req.body;
+      let isOwnerExist = await this.authService.findUserById(workspaceOwner);
+      if (!isOwnerExist) {
+        return res.status(404).json({ message: "user not found" });
+      }
 
-    console.log(req.body,"update collab ")
+      let singleWorkSpace = await this.spaceService.singleSpaceDetails(
+        workspaceId,'WORK-SPACE-ID'
+      );
+      if (!singleWorkSpace) {
+        return res.status(404).json({ message: "workspace not found" });
+      }
+      let ownerSpaceName = await this.authService.findUserById(singleWorkSpace.workspaceOwner);
 
-    if (!workspaceId || !collaboratorId||!role) {
-      return res.status(404).json({ message: "credentials missing" });
+
+      return res.status(200).json({...singleWorkSpace,ownerName:ownerSpaceName?.userName||isOwnerExist.userName});
+    } catch (error) {
+      next(error);
     }
-
-    let isRoleUpdate=await this.spaceService.getUpdateCollaboratorsRole(workspaceId,collaboratorId,role)
-
-    if(!isRoleUpdate){
-      return res.status(404).json({message:"something went wrong please try again later!"})
-    }
-
-    return res.status(200).json(isRoleUpdate)
-
-    
-  } catch (error) {
-    next(error)
-  }
-}
-
+  };
 }

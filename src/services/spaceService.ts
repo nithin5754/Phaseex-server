@@ -14,105 +14,37 @@ import { ITodoRepository } from "../interfaces/ITodoRepository";
 
 export class SpaceService implements ISpaceService {
   private spaceRepository: ISpaceRepository;
-  private folderRepository:IFolderRepository;
-  private listRepository:IListRepository;
-  private taskRepository:ITaskRepository
-  private todoRepository:ITodoRepository
+  private folderRepository: IFolderRepository;
+  private listRepository: IListRepository;
+  private taskRepository: ITaskRepository;
+  private todoRepository: ITodoRepository;
 
-  
-
-  constructor(spaceRepository: ISpaceRepository,folderRepository:IFolderRepository,listRepository:IListRepository,taskRepository:ITaskRepository, todoRepository:ITodoRepository) {
+  constructor(
+    spaceRepository: ISpaceRepository,
+    folderRepository: IFolderRepository,
+    listRepository: IListRepository,
+    taskRepository: ITaskRepository,
+    todoRepository: ITodoRepository
+  ) {
     this.spaceRepository = spaceRepository;
-    this.folderRepository=folderRepository
-    this.listRepository=listRepository
-    this.taskRepository=taskRepository
-    this.todoRepository=todoRepository
-
-   
+    this.folderRepository = folderRepository;
+    this.listRepository = listRepository;
+    this.taskRepository = taskRepository;
+    this.todoRepository = todoRepository;
   }
-  getUpdateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean> {
-   return this.spaceRepository.updateCollaboratorsRole(workspaceId,collaboratorId,role)
+
+  async createSpace(
+    data: Partial<WorkspaceDataType>
+  ): Promise<WorkspaceDataType> {
+    return this.spaceRepository.create(data);
   }
- getAllInvitedSpace(userId: string,active:boolean): Promise<WorkspaceDataType[] | null> {
-    return this.spaceRepository.findInvitedSpace(userId,active)
 
-  }
- async getDeleteWorkspace(workspaceId: string): Promise<boolean> {
-     
-  let response=await this.spaceRepository.deleteWorkspace(workspaceId)
-
-  if(!response){
-   return false
-  }
-  let isFolderDeleted=await this.folderRepository.deleteFolderWithWorkspace(workspaceId)
-
-  // if(!isFolderDeleted){
-  //   return false
-  // }
-
-  let isListDeleted=await this.listRepository.deleteListWithWspace(workspaceId)
-
-  // if(!isListDeleted){
-  //   return false
-  // }
-
-  let isTaskDeleted=await this.taskRepository.deleteTaskWithWorkspace(workspaceId)
-
-  // if(!isTaskDeleted){
-  //   return false
-  // }
-
-  let isTodoDeleted=await this.todoRepository.deleteTodoWithWorkspace(workspaceId)
-
-  // if(!isTodoDeleted){
-  //   return false
-  // }
-
-
-
-  return response
-  }
-async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: string): Promise<boolean> {
-    let response = await this.spaceRepository.updateCollaboratorsVerified(workspaceId,collaboratorId);
-    return response
-
-  }
-  async getDeleteCollaboratorsToSpace(workspaceId: string, collaboratorId: string): Promise<boolean> {
-    let response = await this.spaceRepository.deleteCollaboratorsToSpace(workspaceId,collaboratorId);
-    return response
-  }
-  async getAllCollaboratorInSpace(workspaceId: string): Promise<getCollaboratorType[] | null> {
-    let response = await this.spaceRepository.allCollaboratorInSpace(workspaceId);
+  async getWorkSpaceByName(title: string): Promise<boolean> {
+    const response = await this.spaceRepository.findWorkSpaceByName(title);
     if (response) {
-  
-      const collaboratorsPromises: any= response.collaborators.map(async (collaborator: CollaboratorType) => {
-        const assigneeDetail = await this.spaceRepository.findByIdForName(collaborator.assignee);
-        return {
-          assignee: assigneeDetail,
-          role: collaborator.role,
-          id:collaborator.assignee,
-          verified:collaborator.verified
-        };
-      });
-  
-      const collaborators = await Promise.all(collaboratorsPromises);
-      if (collaborators && collaborators.length > 0) {
-        return collaborators;
-      }
+      return true;
     }
-    return null;
-  }
-  
-  async getAddCollaboratorsToSpace(
-    workspaceId: string,
-    collaboratorId: string
-  ): Promise<boolean> {
-    let response = await this.spaceRepository.addCollaboratorsToSpace(
-      workspaceId,
-      collaboratorId
-    );
-
-    return response;
+    return false;
   }
 
   async getAllSpaceByOwner(
@@ -131,47 +63,69 @@ async  getUpdateCollaboratorsVerified(workspaceId: string, collaboratorId: strin
     }
     return null;
   }
-  async getWorkSpaceByName(title: string): Promise<boolean> {
-    const response = await this.spaceRepository.findWorkSpaceByName(title);
-    if (response) {
-      return true;
+
+  async spaceListsService(
+    workspaceOwner: string,
+    type: "COMPLETED" | "HIDDEN" | "INVITED" | "OWNER"
+  ): Promise<WorkspaceDataType[] | null> {
+    let response: WorkspaceDataType[] | null = null;
+    switch (type) {
+      case "COMPLETED":
+        response = [];
+        break;
+      case "HIDDEN":
+        response = await this.spaceRepository.getHiddenSpaceByOwnerLists(
+          workspaceOwner
+        );
+        break;
+      case "INVITED":
+        response = await this.spaceRepository.getInvitesSpaceLists(
+          workspaceOwner  
+        );
+        break;
+      case "OWNER":
+        response = await this.spaceRepository.getLiveSpaceByOwnerLists(
+          workspaceOwner
+        );
+        break;
     }
-    return false;
-  }
-  async getSingleWorkSpace(
-    workspace_id: string
-  ): Promise<WorkspaceDataType | null> {
-    let response = await this.spaceRepository.findSingleWorkSpace(workspace_id);
-    if (response) {
-      return response;
-    }
-    return null;
-  }
-  async getCountInActive(workspaceOwner: string): Promise<number> {
-    let response = await this.spaceRepository.findAllByUserLength(
-      workspaceOwner
-    );
+
     return response;
   }
-  async getAllOnGoingSpace(
-    workspaceOwner: string
-  ): Promise<WorkspaceDataType[] | null> {
-       
-    return this.spaceRepository.findAllOnGoing(workspaceOwner);
-  }
+
   changeVisible(id: string, workspaceOwner: string): Promise<boolean> {
     return this.spaceRepository.changeVisibility(id, workspaceOwner);
   }
-  getAllSpaceByUser(
-    workspaceOwner: string,
 
-  ): Promise<WorkspaceDataType[] | null> {
-    return this.spaceRepository.findAllByUser(workspaceOwner);
+  async getDeleteWorkspace(workspaceId: string): Promise<boolean> {
+    try {
+      await Promise.all([
+        this.spaceRepository.deleteWorkspace(workspaceId),
+        this.folderRepository.deleteFolderWithWorkspace(workspaceId),
+        this.listRepository.deleteListWithWspace(workspaceId),
+        this.taskRepository.deleteTaskWithWorkspace(workspaceId),
+        this.todoRepository.deleteTodoWithWorkspace(workspaceId),
+      ]);
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
-  async createSpace(
-    data: Partial<WorkspaceDataType>
-  ): Promise<WorkspaceDataType> {
-    return this.spaceRepository.create(data);
+  async singleSpaceDetails(
+    workspace_id: string,
+    type: "WORK-SPACE-ID"
+  ): Promise<WorkspaceDataType | null> {
+    switch (type) {
+      case "WORK-SPACE-ID":
+        let response = await this.spaceRepository.findSpaceById(workspace_id);
+        if (response) {
+          return response;
+        }
+
+        break;
+    }
+    return null;
   }
 }

@@ -49,48 +49,57 @@ const spaceRoutes = (router: Router) => {
   router.use(verifyJWT);
   router
     .route("/workspace")
-    .get(controller.onGetAllWorkSpaceByUser.bind(controller))
+    // .get(controller.onGetAllWorkSpaceByUser.bind(controller))
     .post(controller.onCreateNewSpace.bind(controller));
+  router
+    .route("/workspace/owner")
+    .get(controller.onGetAllOwnerSpaceLists.bind(controller));
+  router
+    .route("/workspace/hidden")
+    .get(controller.onGetAllHiddenSpaceLists.bind(controller));
+  router
+    .route("/workspace/invited")
+    .get(controller.onGetAllInvitedSpaceLists.bind(controller));
 
   router
-    .route("/workspacedetails/:id")
+    .route("/workspace/id.details/:id")
     .get(controller.onGetSingleWorkSpace.bind(controller));
 
   router
-    .route("/workspace-visiblity")
+    .route("/workspace/change/visibility")
     .post(controller.onChangeVisibility.bind(controller));
 
-  router
-    .route("/ongoing-workspace")
-    .get(controller.onGoingWorkSpace.bind(controller));
+  // router
+  //   .route("/ongoing-workspace")
+  //   .get(controller.onGoingWorkSpace.bind(controller));
+
+  // router
+  //   .route("/allInactive-workspace")
+  //   .get(controller.onInActiveCount.bind(controller));
+
+  // router
+  //   .route("/add-new-collaborators")
+  //   .post(controller.onAddCollaboratorsToSpace.bind(controller));
+
+  // router
+  //   .route("/get-all-collab/:workspaceId")
+  //   .get(controller.OnGetAllCollaboratorsInSpace.bind(controller));
+
+  // router
+  //   .route("/delete-collaborator")
+  //   .delete(controller.onDeleteCollabrators.bind(controller));
+
+  // router
+  //   .route("/verify-collaborator")
+  //   .patch(controller.onVerifyCollaborator.bind(controller));
 
   router
-    .route("/allInactive-workspace")
-    .get(controller.onInActiveCount.bind(controller));
-
-  router
-    .route("/add-new-collaborators")
-    .post(controller.onAddCollaboratorsToSpace.bind(controller));
-
-  router
-    .route("/get-all-collab/:workspaceId")
-    .get(controller.OnGetAllCollaboratorsInSpace.bind(controller));
-
-  router
-    .route("/delete-collaborator")
-    .delete(controller.onDeleteCollabrators.bind(controller));
-
-  router
-    .route("/verify-collaborator")
-    .patch(controller.onVerifyCollaborator.bind(controller));
-
-  router
-    .route("/delete-workSpace/:workspaceId")
+    .route("/workspace/delete/:workspaceId")
     .post(controller.onDeleteWorkspace.bind(controller));
 
-  router
-    .route("/update-space-collab-role")
-    .patch(controller.onUpdateSpaceRoles.bind(controller));
+  // router
+  //   .route("/update-space-collab-role")
+  //   .patch(controller.onUpdateSpaceRoles.bind(controller));
 
   return router;
 };
