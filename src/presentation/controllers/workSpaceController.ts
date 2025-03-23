@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import IAuthUserService from "../../interfaces/IAuthService";
 import ISpaceService from "../../interfaces/ISpaceService";
+import { CollaboratorType } from "../../Entities/WorkspaceDataType";
 
 export class WorkSpaceController {
   private authService: IAuthUserService;
@@ -38,8 +39,9 @@ export class WorkSpaceController {
           .json({ message: "something went wrong please try again later..." });
       }
 
-      const isWorkSpaceExist = await this.spaceService.getWorkSpaceByName(
-        title
+      const isWorkSpaceExist = await this.spaceService.isTrueService(
+        { title },
+        "GET-SPACE-NAME"
       );
 
       if (isWorkSpaceExist) {
@@ -110,7 +112,6 @@ export class WorkSpaceController {
     }
   };
 
-
   onChangeVisibility = async (
     req: Request,
     res: Response,
@@ -120,9 +121,9 @@ export class WorkSpaceController {
     try {
       let workspaceOwner = req.userId;
 
-      const response = await this.spaceService.changeVisible(
-        id,
-        workspaceOwner
+      const response = await this.spaceService.isTrueService(
+        { id, workspaceOwner },
+        "CHANGE-VISIBILITY"
       );
       if (!response) {
         return res.status(404).json({ message: "error in changing visiblity" });
@@ -145,8 +146,9 @@ export class WorkSpaceController {
         return res.status(404).json({ message: "not found" });
       }
 
-      let isWorkspaceDeleted = await this.spaceService.getDeleteWorkspace(
-        workspaceId
+      let isWorkspaceDeleted = await this.spaceService.isTrueService(
+        { workspaceId },
+        "DELETE-WORKSPACE"
       );
 
       if (!isWorkspaceDeleted) {
@@ -160,7 +162,6 @@ export class WorkSpaceController {
       next(error);
     }
   };
-
 
   onGetSingleWorkSpace = async (
     req: Request,
@@ -181,15 +182,189 @@ export class WorkSpaceController {
       }
 
       let singleWorkSpace = await this.spaceService.singleSpaceDetails(
-        workspaceId,'WORK-SPACE-ID'
+        workspaceId,
+        "WORK-SPACE-ID"
       );
       if (!singleWorkSpace) {
         return res.status(404).json({ message: "workspace not found" });
       }
-      let ownerSpaceName = await this.authService.findUserById(singleWorkSpace.workspaceOwner);
+      let ownerSpaceName = await this.authService.findUserById(
+        singleWorkSpace.workspaceOwner
+      );
 
+      return res.status(200).json({
+        ...singleWorkSpace,
+        ownerName: ownerSpaceName?.userName || isOwnerExist.userName,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
-      return res.status(200).json({...singleWorkSpace,ownerName:ownerSpaceName?.userName||isOwnerExist.userName});
+  OnGetAllCollaboratorsInSpace = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      let workspaceId = req.params.workspaceId;
+      if (!workspaceId || typeof workspaceId !== "string") {
+        return res
+          .status(404)
+          .json({ message: "something went wrong credentials missing" });
+      }
+
+      let allCollabMembers = await this.spaceService.getAllCollaboratorInSpace(
+        workspaceId
+      );
+
+      return res
+        .status(200)
+        .json(
+          allCollabMembers && allCollabMembers.length > 0
+            ? allCollabMembers
+            : []
+        );
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onAddCollaboratorsToSpace = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const workspaceId = req.body.workspaceId;
+      const collaboratorId = req.body.collaboratorId;
+
+      if (
+        !workspaceId ||
+        typeof workspaceId !== "string" ||
+        !collaboratorId ||
+        typeof collaboratorId !== "string"
+      ) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong credentials missing" });
+      }
+
+      let isWorkSpaceExist = await this.spaceService.singleSpaceDetails(
+        workspaceId,
+        "WORK-SPACE-ID"
+      );
+
+      if (!isWorkSpaceExist) {
+        return res
+          .status(400)
+          .json({ message: "workspace not found please try again" });
+      }
+
+      const existingCollaborator = isWorkSpaceExist.collaborators.find(
+        (collab: CollaboratorType) => collab.assignee === collaboratorId
+      );
+
+      if (existingCollaborator) {
+        return res
+          .status(404)
+          .json({ message: "user is already collaborating in this space" });
+      }
+
+      let addCollaborators = await this.spaceService.isTrueService(
+        { workspaceId, collaboratorId },
+        "ADD-COLLABORATORS"
+      );
+
+      if (!addCollaborators) {
+        return res
+          .status(400)
+          .json({ message: "error in adding new  assignee to space" });
+      }
+
+      return res.status(200).json(addCollaborators);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onDeleteCollabrators = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, collaboratorId } = req.body;
+
+      if (!workspaceId || !collaboratorId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      const response = await this.spaceService.isTrueService(
+        { workspaceId, collaboratorId },
+        "DELETE-COLLABORATORS"
+      );
+
+      if (!response) {
+        return res.status(404).json({ message: "something went wrong" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+  onVerifyCollaborator = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, collaboratorId } = req.body;
+
+      if (!workspaceId || !collaboratorId) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      let response = await this.spaceService.isTrueService(
+        { workspaceId, collaboratorId },
+        "VERIFY-COLLABORATORS"
+      );
+
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "error occur please try again later" });
+      }
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onUpdateSpaceRoles = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { workspaceId, collaboratorId, role } = req.body;
+
+      if (!workspaceId || !collaboratorId || !role) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      let isRoleUpdate = await this.spaceService.isTrueService(
+        { workspaceId, collaboratorId, role },
+        "UPDATE-COLLAB-ROLE"
+      );
+
+      if (!isRoleUpdate) {
+        return res
+          .status(404)
+          .json({ message: "something went wrong please try again later!" });
+      }
+
+      return res.status(200).json(isRoleUpdate);
     } catch (error) {
       next(error);
     }

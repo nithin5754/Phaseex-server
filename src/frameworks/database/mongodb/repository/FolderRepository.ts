@@ -21,7 +21,7 @@ export class FolderRepository implements IFolderRepository {
   }
  async updateFolder(data: Partial<FolderDataType>, folderId: string): Promise<FolderDataType | null> {
     const response = await FolderModal.findByIdAndUpdate({_id:folderId}, data, { new: true });
-    console.log(response,"is updated");
+
 
     
     if (response) {
@@ -45,7 +45,7 @@ export class FolderRepository implements IFolderRepository {
 
  async  findDuplicateFolder(folder_title: string, workspaceId: string): Promise<boolean> {
   const response=await FolderModal.find({folder_title,workspaceId})
-  console.log(response,"is yest db")
+
   if(response.length>0){
      return true
   }

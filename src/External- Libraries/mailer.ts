@@ -30,7 +30,7 @@ export class Mailer implements IMailer{
       });
     }
     async SendEmail(name: string,email:string,otp:string) {
-      console.log(name,email,otp)
+ 
       const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,

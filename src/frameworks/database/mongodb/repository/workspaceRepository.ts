@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { WorkspaceDataType } from "../../../../Entities/WorkspaceDataType";
 import ISpaceRepository from "../../../../interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
+import UserModel from "../models/UserModel";
 
 export class workSpaceRepository implements ISpaceRepository {
   async getHiddenSpaceByOwnerLists(
@@ -116,6 +117,93 @@ export class workSpaceRepository implements ISpaceRepository {
     }
 
     return null;
+  }
+
+  async allCollaboratorInSpace(
+    workspaceId: string
+  ): Promise<WorkspaceDataType | null> {
+    const response = await workspaceModal.findById(workspaceId);
+
+    if (response) {
+      return this.convertSpaceData(response);
+    }
+
+    return null;
+  }
+
+  async findByIdForName(id: string): Promise<string | null> {
+    let found = await UserModel.findById(id);
+
+    if (!found) {
+      return null;
+    } else {
+      return found.userName;
+    }
+  }
+
+  async addCollaboratorsToSpace(
+    workspaceId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
+    const workspace = await workspaceModal.findById(workspaceId);
+
+    if (workspace) {
+      workspace.collaborators.push({ assignee: collaboratorId });
+      let response = await workspace.save();
+
+      return !!response;
+    }
+
+    return false;
+  }
+
+  async deleteCollaboratorsToSpace(
+    workspaceId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
+    const workspace: any = await workspaceModal.findById(workspaceId);
+
+    if (workspace) {
+      if (workspace.collaborators) {
+        workspace.collaborators = workspace?.collaborators?.filter(
+          (collaborator: any) =>
+            collaborator?.assignee.toString() !== collaboratorId.toString()
+        );
+      }
+
+      await workspace.save();
+
+      return true;
+    }
+
+    return false;
+  }
+
+  async updateCollaboratorsVerified(
+    workspaceId: string,
+    collaboratorId: string
+  ): Promise<boolean> {
+    const result = await workspaceModal.updateOne(
+      { _id: workspaceId, "collaborators.assignee": collaboratorId },
+      { $set: { "collaborators.$.verified": true } }
+    );
+
+    return !!result;
+  }
+
+
+
+  async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean> {
+      
+    
+    const result = await workspaceModal.updateOne(
+      { _id: workspaceId, "collaborators.assignee": collaboratorId },
+      { $set: { "collaborators.$.role": role } }
+    );
+
+
+
+    return !!result
   }
 
   convertDataArray(response: any): WorkspaceDataType[] {

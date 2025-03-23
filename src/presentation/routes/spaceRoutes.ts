@@ -62,44 +62,42 @@ const spaceRoutes = (router: Router) => {
     .get(controller.onGetAllInvitedSpaceLists.bind(controller));
 
   router
-    .route("/workspace/id.details/:id")
+    .route("/workspace/details/:id")
     .get(controller.onGetSingleWorkSpace.bind(controller));
 
   router
     .route("/workspace/change/visibility")
     .post(controller.onChangeVisibility.bind(controller));
 
-  // router
-  //   .route("/ongoing-workspace")
-  //   .get(controller.onGoingWorkSpace.bind(controller));
+
 
   // router
   //   .route("/allInactive-workspace")
   //   .get(controller.onInActiveCount.bind(controller));
 
-  // router
-  //   .route("/add-new-collaborators")
-  //   .post(controller.onAddCollaboratorsToSpace.bind(controller));
+  router
+    .route("/workspace/add/members")
+    .post(controller.onAddCollaboratorsToSpace.bind(controller));
 
-  // router
-  //   .route("/get-all-collab/:workspaceId")
-  //   .get(controller.OnGetAllCollaboratorsInSpace.bind(controller));
+  router
+    .route("/workspace/members/:workspaceId")
+    .get(controller.OnGetAllCollaboratorsInSpace.bind(controller));
 
-  // router
-  //   .route("/delete-collaborator")
-  //   .delete(controller.onDeleteCollabrators.bind(controller));
+  router
+    .route("/workspace/delete/members")
+    .delete(controller.onDeleteCollabrators.bind(controller));
 
-  // router
-  //   .route("/verify-collaborator")
-  //   .patch(controller.onVerifyCollaborator.bind(controller));
+  router
+    .route("/workspace/verify/member")
+    .patch(controller.onVerifyCollaborator.bind(controller));
 
   router
     .route("/workspace/delete/:workspaceId")
     .post(controller.onDeleteWorkspace.bind(controller));
 
-  // router
-  //   .route("/update-space-collab-role")
-  //   .patch(controller.onUpdateSpaceRoles.bind(controller));
+  router
+    .route("/workspace/members/role/update")
+    .patch(controller.onUpdateSpaceRoles.bind(controller));
 
   return router;
 };
