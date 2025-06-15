@@ -21,25 +21,7 @@ import { TodoCollabTypeDetails, TodoType } from "../Entities/Todo";
     todoId: string):Promise<boolean>
 
 
-    getAddCollabToTodo(workspaceId:string,folderId:string,listId:string,taskId:string,todoId:string,collabId:string):Promise<boolean>
-
-
-    getCollabTodoByTodoId(
-      workspaceId: string,
-      folderId: string,
-      listId: string,
-      taskId: string,
-      todoId: string
-    ):  Promise<TodoCollabTypeDetails[]|null>;
-
-    getDeleteCollabTodo(
-      workspaceId: string,
-      folderId: string,
-      listId: string,
-      taskId: string,
-      todoId: string,
-      collabId: string
-    ): Promise<boolean>;
+  
 
 
     getDeleteTodoWithWorkspace(workspaceId:string):Promise<boolean>

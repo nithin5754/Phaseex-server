@@ -1,7 +1,6 @@
 import {
-  ListCollaboratorDetailType,
+
   ListDataType,
-  listCollabRole,
 } from "../Entities/List";
 
 export interface ListDataTypePage {
@@ -52,12 +51,7 @@ export interface IListRepository {
     list_due_date: string
   ): Promise<boolean>;
 
-  addCollabToList(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
-  ): Promise<boolean>;
+
   singleList(
     workspaceId: string,
     folderId: string,
@@ -71,32 +65,6 @@ export interface IListRepository {
     percentage: number
   ): Promise<boolean>;
 
-  listCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string
-  ): Promise<ListCollaboratorDetailType[] | null>;
-  updateListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string,
-    role: listCollabRole
-  ): Promise<boolean>;
-
-  deleteListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
-  ): Promise<boolean>;
-
-  checkCollaboratorInList(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collaboratorId: string
-  ): Promise<boolean>;
 
 
   deleteList(

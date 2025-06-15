@@ -47,41 +47,7 @@ export interface ITodoRepository {
 
   deleteTodoWithWorkspace(workspaceId:string):Promise<boolean>
 
-  addCollabToTodo(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    todoId: string,
-    collabId: string
-  ): Promise<boolean>;
 
-  collabTodoByTodoId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    todoId: string
-  ): Promise<TodoCollabTypeDetails[]|null>;
-
-
-  deleteCollabTodo(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    todoId: string,
-    collabId: string
-  ): Promise<boolean>;
-
-  deleteCollabFromAllTodo(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-
-    collabId: string
-  ): Promise<boolean>;
 
 
 

@@ -1,23 +1,22 @@
-import { response } from "express";
+
 import {
-  ListCollaboratorDetailType,
   ListDataType,
-  listCollabRole,
+
 } from "../Entities/List";
 import {
   IListRepository,
   ListDataTypePage,
 } from "../interfaces/IListRepository";
 import { IListService } from "../interfaces/IListService";
-import { ITaskRepository } from "../interfaces/ITaskRepository";
-import { TaskType } from "../Entities/Task";
+
+
 
 export class ListService implements IListService {
   private listRepository: IListRepository;
-  private taskRepository:ITaskRepository
-  constructor(listRepository: IListRepository,taskRepository:ITaskRepository) {
+
+  constructor(listRepository: IListRepository) {
     this.listRepository = listRepository;
-     this.taskRepository=taskRepository
+
   }
  async getDeleteList(workspaceId: string, folderId: string, listId: string): Promise<boolean> {
     
@@ -25,84 +24,6 @@ export class ListService implements IListService {
        return !!response
   }
 
-
-  async checkCollabIsExistInTasks(workspaceId: string, folderId: string, listId: string, collaboratorId: string): Promise<boolean> {
-     
-    let response=await this.taskRepository.checkCollaboratorInTasks(workspaceId,folderId,listId,collaboratorId)
-
-    return response
-  }
-
-  async getDeleteListCollabByListId(workspaceId: string, folderId: string, listId: string, collabId: string): Promise<boolean> {
-
-    let response=await this.listRepository.deleteListCollabByListId(workspaceId,folderId,listId,collabId)
-  return response
-  }
-  async getUpdateListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string,
-    role: listCollabRole
-  ): Promise<boolean> {
-    let response = await this.listRepository.updateListCollabByListId(
-      workspaceId,
-      folderId,
-      listId,
-      collabId,
-      role
-    );
-
-    return !!response;
-  }
-  async getListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string
-  ): Promise<ListCollaboratorDetailType[] | null> {
-    const userRoles: {
-      [index: string]: "listManager" | "spaceOwner" | "viewer";
-    } = {};
-    let response = await this.listRepository.listCollabByListId(
-      workspaceId,
-      folderId,
-      listId
-    );
-    let singleList = await this.listRepository.singleList(
-      workspaceId,
-      folderId,
-      listId
-    );
-
-    if (response && singleList) {
-      singleList.list_collaborators.forEach((user) => {
-        userRoles[user.assignee] = user.role;
-      });
-
-      response.forEach((user) => {
-        user.role = userRoles[user.id];
-      });
-
-      return response;
-    }
-
-    return null;
-  }
-  async getAddCollabToList(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
-  ): Promise<boolean> {
-    let response = await this.listRepository.addCollabToList(
-      workspaceId,
-      folderId,
-      listId,
-      collabId
-    );
-
-    return response;
-  }
   async getSingleList(
     workspaceId: string,
     folderId: string,

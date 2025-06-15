@@ -23,10 +23,6 @@ const taskService = new TaskService(
   todoRepository
 );
 
-
-
-
-
 const controller = new TaskController(taskService);
 const taskRoutes = (router: Router) => {
   router.use(verifyJWT);
@@ -54,31 +50,12 @@ const taskRoutes = (router: Router) => {
     .get(controller.onSingleList.bind(controller));
 
   router
-    .route("/add-collab-task/:taskId")
-    .patch(controller.onAddCollaboratorsToTask.bind(controller));
+    .route("/add_link/task/:taskId")
+    .patch(controller.onAddLinkToTask.bind(controller));
 
   router
-    .route("/get-all-collab-task")
-    .get(controller.onGetCollabByTask.bind(controller));
-
-  router
-    .route("/delete-collabId-task/:collabId")
-    .delete(controller.onDeleteCollabIdTask.bind(controller));
-
-  router
-    .route("/check-collab-in-list-group")
-    .get(controller.onTaskCollabListGrp.bind(controller));
-
-  router
-  .route('/add_link/task/:taskId')
-  .patch(controller.onAddLinkToTask.bind(controller))
-
-
-  router
-  .route("/delete-link-task/:taskId")
-  .delete(controller.onDeleteLinkTask.bind(controller));
-
-
+    .route("/delete-link-task/:taskId")
+    .delete(controller.onDeleteLinkTask.bind(controller));
 
   return router;
 };

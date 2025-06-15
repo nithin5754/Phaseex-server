@@ -1,5 +1,5 @@
-import { ListDataType } from "../Entities/List";
-import { TaskCollaboratorDetailType, TaskType } from "../Entities/Task";
+
+import {  TaskType } from "../Entities/Task";
 
 export interface ITaskService {
   createTask(taskData: Partial<TaskType>): Promise<TaskType | null>;
@@ -76,42 +76,14 @@ export interface ITaskService {
     taskId: string
   ): Promise<TaskType | null>;
 
-  getAddCollabToTask(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    collabId: string
-  ): Promise<boolean>;
+ 
 
-  getTaskCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string
-  ): Promise<TaskCollaboratorDetailType[] | null>;
 
-  getDeleteTaskCollabByTaskId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    collabId: string
-  ): Promise<boolean>;
 
-  isCollabExistInListAsViewer(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
-  ): Promise<boolean>;
 
-  getCheckCollaboratorInTasks(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collaboratorId: string
-  ): Promise<boolean>;
+
+
+
 
   addTaskLink(workspaceId:string, folderId:string, listId:string, taskId:string,link:string,link_name:string):Promise<boolean>
 

@@ -1,180 +1,30 @@
-import mongoose from "mongoose";
-import {
-  ListCollaboratorDetailType,
-  ListCollaboratorType,
-  ListDataType,
-  listCollabRole,
-} from "../../../../Entities/List";
+import { ListDataType } from "../../../../Entities/List";
 import { IListRepository } from "../../../../interfaces/IListRepository";
 
 import { List as ListModal } from "../models/ListModal";
 import moment from "moment";
 
 export class ListRepository implements IListRepository {
- async deleteListWithWspace(workspaceId: string): Promise<boolean> {
-    let response=await ListModal.deleteMany({ workspaceId});
+  async deleteListWithWspace(workspaceId: string): Promise<boolean> {
+    let response = await ListModal.deleteMany({ workspaceId });
 
-    return !!response
+    return !!response;
   }
 
-
-  
- async deleteList(workspaceId: string, folderId: string, listId: string): Promise<boolean> {
-    
-      let response=await ListModal.findOneAndDelete({ workspaceId,_id:listId,folderId});
-
-      return !!response
-       
-  }
-  async checkCollaboratorInList(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collaboratorId: string
-  ): Promise<boolean> {
-    const query = {
-      workspaceId: new mongoose.Types.ObjectId(workspaceId),
-      folderId: new mongoose.Types.ObjectId(folderId),
-      _id: new mongoose.Types.ObjectId(listId),
-      list_collaborators: {
-        $elemMatch: {
-          assignee: new mongoose.Types.ObjectId(collaboratorId),
-          role: "viewer",
-        },
-      },
-    };
-
-    const task = await ListModal.findOne(query);
-
-    return !!task;
-  }
-  async deleteListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
-  ): Promise<boolean> {
-    const filter = {
-      _id: listId,
-      workspaceId: workspaceId,
-      folderId: folderId,
-    };
-
-    const updateQuery = {
-      $pull: {
-        list_collaborators: {
-          assignee: collabId,
-        },
-      },
-    };
-
-    const response = await ListModal.findOneAndUpdate(filter, updateQuery);
-
-    if (response) {
-      return true;
-    }
-
-    return false;
-  }
-
-  async updateListCollabByListId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string,
-    role: listCollabRole
-  ): Promise<boolean> {
-    const filter = {
-      _id: listId,
-      workspaceId: workspaceId,
-      folderId: folderId,
-      "list_collaborators.assignee": collabId,
-    };
-
-    const update = {
-      $set: {
-        "list_collaborators.$.role": role,
-      },
-    };
-
-    const result = await ListModal.findOneAndUpdate(filter, update);
-
-    if (!result) {
-      return false;
-    }
-
-    return true;
-  }
-
-  async listCollabByListId(
+  async deleteList(
     workspaceId: string,
     folderId: string,
     listId: string
-  ): Promise<ListCollaboratorDetailType[] | null> {
-    let response = await ListModal.aggregate([
-      {
-        $match: {
-          workspaceId: new mongoose.Types.ObjectId(workspaceId),
-          folderId: new mongoose.Types.ObjectId(folderId),
-          _id: new mongoose.Types.ObjectId(listId),
-        },
-      },
-      {
-        $unwind: "$list_collaborators",
-      },
-
-      {
-        $lookup: {
-          from: "users",
-          localField: "list_collaborators.assignee",
-          foreignField: "_id",
-          as: "collaborators_details",
-        },
-      },
-
-      { $project: { collaborators_details: 1, _id: 0 } },
-      {
-        $unwind: "$collaborators_details",
-      },
-
-      {
-        $project: {
-          id: "$collaborators_details._id",
-          fullName: "$collaborators_details.userName",
-          email: "$collaborators_details.email",
-          imageUrl: "$collaborators_details.profile_image",
-          _id: 0,
-        },
-      },
-    ]);
-
-    if (response) {
-      return response;
-    }
-
-    return null;
-  }
-  async addCollabToList(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    collabId: string
   ): Promise<boolean> {
-    let response = await ListModal.findOne({
+    let response = await ListModal.findOneAndDelete({
       workspaceId,
-      folderId,
       _id: listId,
+      folderId,
     });
 
-    if (response) {
-      response.list_collaborators.push({ assignee: collabId });
-      let isCollabAdd = await response.save();
-
-      return !!isCollabAdd;
-    }
-
-    return false;
+    return !!response;
   }
+
   async updateProgressTask(
     workspaceId: string,
     folderId: string,

@@ -13,50 +13,7 @@ export class TodoService implements ITodoService {
     return response
 
   }
- async getDeleteCollabTodo(workspaceId: string, folderId: string, listId: string, taskId: string, todoId: string, collabId: string): Promise<boolean> {
-   let response=await this.todoRepository.deleteCollabTodo(workspaceId,folderId,listId,taskId,todoId,collabId)
 
-   return response
-  }
-  async getCollabTodoByTodoId(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    todoId: string
-  ): Promise<TodoCollabTypeDetails[] | null> {
-    let response = await this.todoRepository.collabTodoByTodoId(
-      workspaceId,
-      folderId,
-      listId,
-      taskId,
-      todoId
-    );
-    if (!response) {
-      return null;
-    }
-    return response;
-  }
-
-  async getAddCollabToTodo(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string,
-    todoId: string,
-    collabId: string
-  ): Promise<boolean> {
-    let response = await this.todoRepository.addCollabToTodo(
-      workspaceId,
-      folderId,
-      listId,
-      taskId,
-      todoId,
-      collabId
-    );
-
-    return response;
-  }
   async getDeleteTodoTask(
     workspaceId: string,
     folderId: string,

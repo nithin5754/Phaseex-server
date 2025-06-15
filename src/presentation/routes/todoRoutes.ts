@@ -33,17 +33,7 @@ const todoRoutes = (router: Router) => {
     .route("/delete-todo-task/:todoId")
     .delete(controller.onDeleteTodoTask.bind(controller));
 
-  router
-    .route("/add-collab-todo/:todoId")
-    .patch(controller.onAddCollabToTodo.bind(controller));
 
-  router
-    .route("/get-collab-todo")
-    .get(controller.onGetAllTodoCollabInTodoId.bind(controller));
-
-  router
-  .route('/delete-collab-todo')
-  .delete(controller.onGetDeleteTodoCollab.bind(controller))
 
   return router;
 };
