@@ -536,7 +536,7 @@ export class TaskController {
       );
 
 
-      console.log(isCollabExist,"is collab-grp -list exits")
+
 
       return res.status(200).json(isCollabExist);
     } catch (error) {
@@ -555,7 +555,7 @@ export class TaskController {
 
       const { workspaceId, folderId, listId,link,link_name } = req.body;
 
-      console.log(req.body,"hello list link")
+
 
       if (!workspaceId || !folderId || !listId || !link || !taskId||!link_name) {
         return res.status(404).json({ message: "missing credential" });
@@ -609,7 +609,6 @@ export class TaskController {
 
       const taskId = req.params.taskId;
 
-      console.log(req.body,taskId,"delete link task.....")
 
       if (!workspaceId || !folderId || !listId || !taskId || !linkId) {
         return res.status(404).json({ message: "missing credential" });

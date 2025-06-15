@@ -66,7 +66,7 @@ export class UserController {
     try {
       const tokenId: string = req.body.tokenId;
 
-      console.log(tokenId, "token verified");
+    
 
       let isEmailExist = await this.authService.isTempTokenIDcheck(tokenId);
 

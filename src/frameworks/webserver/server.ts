@@ -1,4 +1,4 @@
-import { Application } from 'express';
+
 import { ConfigType } from '../../config';
 
 import  { Server as httpServerType } from 'http';

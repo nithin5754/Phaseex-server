@@ -99,7 +99,7 @@ export class TaskRepository implements ITaskRepository {
 
     const task = await TaskModal.findOne(query);
 
-    console.log(task,"hey huiiiii")
+
 
 
 

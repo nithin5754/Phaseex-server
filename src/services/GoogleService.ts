@@ -62,7 +62,7 @@ export class GoogleService implements IGoogleService {
   
       return null;
     } catch (error) {
-      console.log("mu google auth",error)
+
       return null
     }
   }

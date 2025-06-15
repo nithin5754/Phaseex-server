@@ -17,7 +17,6 @@ export class ActivityController {
     try {
       const { workspaceId, folderId, listId, taskId, activity } = req.body;
 
-      console.log(req.body, "what is missing");
 
       if (!workspaceId || !folderId || !listId || !activity || !taskId) {
         return res.status(404).json({ message: "missing credential" });
@@ -49,7 +48,7 @@ export class ActivityController {
         activityCData
       );
 
-      console.log(activityCData, "activity data.....");
+    
 
       if (!response) {
         return res.status(400).json("something went wrong");

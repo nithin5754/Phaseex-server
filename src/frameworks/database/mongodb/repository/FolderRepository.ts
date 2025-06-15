@@ -54,7 +54,7 @@ export class FolderRepository implements IFolderRepository {
  async getAllFolder(workspaceId: string): Promise<FolderDataType[] | null> {
        
           let response=await FolderModal.find({workspaceId}).sort({ createdAt: -1 })
-          console.log(response,"folder");
+
           
           if (response) {
              let responseData:FolderDataType[]=response.map((folder)=>(
@@ -76,7 +76,7 @@ export class FolderRepository implements IFolderRepository {
     data: Partial<FolderDataType>
   ): Promise<FolderDataType | null> {
     let response = await FolderModal.create(data);
-    console.log(response,"new folder")
+
 
     if (response) {
       let responseData: FolderDataType = {

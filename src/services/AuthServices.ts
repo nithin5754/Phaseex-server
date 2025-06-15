@@ -7,7 +7,7 @@ import { IBcrypt } from "../interfaces/IBcrypt";
 import { IMailer } from "../interfaces/IMailer";
 import { IGenerateOtp } from "../interfaces/IGenerateOtp";
 import { IToken } from "../interfaces/IToken";
-import { TokenGenerateProps } from "../External- Libraries/token";
+
 import { workspaceSpaceJwtType } from "../Entities/WorkspaceDataType";
 
 
@@ -104,7 +104,7 @@ export class AuthServices implements IAuthUserService {
     const createOtp= this.generateOtp.createOtp(6)
     
      const token=uuidv4()
-     console.log(token,"token")
+
      const TempData: User = {
        otp: createOtp,
        verify_token: token,
@@ -234,7 +234,7 @@ export class AuthServices implements IAuthUserService {
 
     );
     const token=uuidv4()
-    console.log(token,"token")
+
 
     const userData: User = {
       ...data,

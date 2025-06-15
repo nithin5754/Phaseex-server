@@ -35,7 +35,7 @@ export class AuthController {
   OnLoginUser = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
-    console.log(email, password, "login-page");
+   
 
     try {
       if (!email || !password) {
@@ -76,7 +76,7 @@ export class AuthController {
           spaces
         );
 
-        console.log(accessToken);
+
 
         res.cookie("jwt", refreshToken, {
           httpOnly: true,
@@ -222,7 +222,7 @@ export class AuthController {
   onLogOut = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cookies = req.cookies;
-      console.log(cookies, "jwt");
+
 
       if (!cookies?.jwt) return res.sendStatus(204);
       res.clearCookie("jwt", {
@@ -266,7 +266,6 @@ export class AuthController {
 
   home = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("welcome home");
 
       return res
         .status(200)
@@ -296,7 +295,7 @@ export class AuthController {
       }
       return res.status(200).json(isSend);
     } catch (error) {
-      console.log("HEY NITHIN JOIJI THIS MY HOMe");
+
       next(error);
     }
   };
@@ -306,7 +305,7 @@ export class AuthController {
     next: NextFunction
   ) => {
     try {
-      console.log(req.body);
+
       const { otp, tokenId } = req.body;
 
       let verify_token: string = tokenId;
@@ -378,7 +377,7 @@ export class AuthController {
       const userId = req.userId;
       const file = req.file;
 
-      console.log(userId, "multer file in userId");
+
 
       if (!userId) {
         return res

@@ -3,10 +3,17 @@ import IAuthUserService from "../../interfaces/IAuthService";
 import ISpaceService from "../../interfaces/ISpaceService";
 import { CollaboratorType } from "../../Entities/WorkspaceDataType";
 
+import { IChat, ICreateChatPayload } from "../../Entities/chat-message";
+import { ChatService } from "../../services/ChatService";
+
 export class WorkSpaceController {
   private authService: IAuthUserService;
   private spaceService: ISpaceService;
-  constructor(authService: IAuthUserService, spaceService: ISpaceService) {
+  constructor(
+    authService: IAuthUserService,
+    spaceService: ISpaceService,
+    private readonly chatService: ChatService
+  ) {
     this.authService = authService;
     this.spaceService = spaceService;
   }
@@ -49,6 +56,17 @@ export class WorkSpaceController {
       }
 
       const response = await this.spaceService.createSpace(spaceData);
+
+      if (response) {
+        const chatDto: ICreateChatPayload = {
+          workspaceId: response.id,
+          members: [],
+        };
+
+        const createChat = await this.chatService.createChat(chatDto, userId);
+
+
+      }
 
       return res.status(200).json(response);
     } catch (error) {
@@ -275,6 +293,8 @@ export class WorkSpaceController {
         { workspaceId, collaboratorId },
         "ADD-COLLABORATORS"
       );
+
+      
 
       if (!addCollaborators) {
         return res

@@ -14,6 +14,8 @@ import { FolderRepository } from "../../frameworks/database/mongodb/repository/F
 import { ListRepository } from "../../frameworks/database/mongodb/repository/ListRepository";
 import { TaskRepository } from "../../frameworks/database/mongodb/repository/taskRepository";
 import { TodoRepository } from "../../frameworks/database/mongodb/repository/todoRepository";
+import { ChatRepository } from "../../frameworks/database/mongodb/repository/ChatRepository";
+import { ChatService } from "../../services/ChatService";
 
 const repository = new AuthRepository();
 const bcrypt = new Bcrypt();
@@ -43,7 +45,10 @@ const spaceService = new SpaceService(
   todoRepository
 );
 
-const controller = new WorkSpaceController(services, spaceService);
+const chatRepository=new ChatRepository()
+const chatService=new ChatService(chatRepository)
+
+const controller = new WorkSpaceController(services, spaceService,chatService);
 
 const spaceRoutes = (router: Router) => {
   router.use(verifyJWT);

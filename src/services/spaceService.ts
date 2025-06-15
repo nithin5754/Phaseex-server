@@ -139,56 +139,6 @@ export class SpaceService implements ISpaceService {
     return null;
   }
 
-  // async getAddCollaboratorsToSpace(
-  //   workspaceId: string,
-  //   collaboratorId: string
-  // ): Promise<boolean> {
-  //   let response = await this.spaceRepository.addCollaboratorsToSpace(
-  //     workspaceId,
-  //     collaboratorId
-  //   );
-
-  //   return response;
-  // }
-
-  // async getDeleteCollaboratorsToSpace(
-  //   workspaceId: string,
-  //   collaboratorId: string
-  // ): Promise<boolean> {
-  //   let response = await this.spaceRepository.deleteCollaboratorsToSpace(
-  //     workspaceId,
-  //     collaboratorId
-  //   );
-  //   return response;
-  // }
-
-  // changeVisible(id: string, workspaceOwner: string): Promise<boolean> {
-  //   return this.spaceRepository.changeVisibility(id, workspaceOwner);
-  // }
-
-  // async getDeleteWorkspace(workspaceId: string): Promise<boolean> {
-  //   try {
-  //     await Promise.all([
-  //       this.spaceRepository.deleteWorkspace(workspaceId),
-  //       this.folderRepository.deleteFolderWithWorkspace(workspaceId),
-  //       this.listRepository.deleteListWithWspace(workspaceId),
-  //       this.taskRepository.deleteTaskWithWorkspace(workspaceId),
-  //       this.todoRepository.deleteTodoWithWorkspace(workspaceId),
-  //     ]);
-
-  //     return true;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
-
-  // async getWorkSpaceByName(title: string): Promise<boolean> {
-  //   const response = await this.spaceRepository.findWorkSpaceByName(title);
-  //   if (response) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   async isTrueService(
     data: IisTrueService,

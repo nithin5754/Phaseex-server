@@ -34,7 +34,6 @@ export class SocketService {
       this.onlineUser.push({ userId, socketId });
     }
 
-    console.log(this.onlineUser,"hello online");
     
   };
 
@@ -55,22 +54,19 @@ export class SocketService {
   handleConnection(socket: Socket): void {
     socket.on("disconnect", () => {
       this.removeUser(socket.id)
-      console.log("user disconnected");
+
       
     });
 
     socket.on("newUser", async (userId:string) => {
-      console.log("newUser");
+
       
       try {
        if(userId){
         const oneUser = await this.UserRepository.findById(userId)
         if (oneUser) {
            this.addNewUser(userId,socket.id)
-           console.log(this.onlineUser,"online user")
-          console.log(`⚡ Socket: User with id ${userId} connected`);
-        } else {
-          console.log(`🚩 Socket: No user with id ${userId}`);
+
         }
 
        }
@@ -108,7 +104,11 @@ if(receiver){
       
     })=>{
       
+
  const receiver=this.getUser(receiverName)   
+
+console.log("receive message",receiver,link);
+
 
  let notificationData={
   ownerId:receiverName,
@@ -154,7 +154,7 @@ if(receiver){
       
         if(receiverArray&&receiverArray.length>0){
 
-          console.log(receiverArray,"array og recevier");
+ 
           receiverArray.map(async (user:any)=>{
             const receiver=this.getUser(user.id)   
             const isUser=await this.UserRepository.findById(user.id)
@@ -192,6 +192,13 @@ if(receiver){
 
 
 
+
+
+  socket.on('send-ws-inivite',async ()=>{
+
+    
+
+  })
 
     
 

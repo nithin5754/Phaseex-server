@@ -71,7 +71,7 @@ export class GptRepository implements IGptRepository {
         promptArray: data,
       };
 
-      console.log(resData, "hello promts");
+
 
       return resData;
     }

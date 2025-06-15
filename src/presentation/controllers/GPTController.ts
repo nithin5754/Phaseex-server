@@ -16,11 +16,11 @@ export class GPTController {
     try {
       const group_title = req.body.group_title;
 
-      console.log("hello");
+
 
       const userId = req.userId;
 
-      console.log(req.body, "body", userId, "userId");
+
 
       if (
         !group_title ||

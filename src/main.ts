@@ -1,5 +1,5 @@
 import express, { Application, Router } from "express";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import expressConfig from "./frameworks/webserver/express";
 import config from "./config";
 import connection from "./frameworks/database/mongodb/connection";
@@ -7,7 +7,7 @@ import serverConfig from "./frameworks/webserver/server";
 import routes from "./presentation/routes/routes";
 import errorHandlingMiddleware from "./presentation/middleware/errorHandling";
 
-import http, { Server as httpServerType } from 'http';
+import http, { Server as httpServerType } from "http";
 import { Server } from "socket.io";
 
 import ioMiddleware from "./presentation/middleware/ioMiddleware";
@@ -19,64 +19,55 @@ import { VideoRepository } from "./frameworks/database/mongodb/repository/VideoR
 import { VideoNotiService } from "./services/VideoNotiService";
 import { Mailer } from "./External- Libraries/mailer";
 
-
 const app: Application = express();
-const router: Router = express.Router()
+const router: Router = express.Router();
 
+const userRepo = new AuthRepository();
 
+const notificationRepo = new NotificationRepository();
 
+const notificationService = new NotoficationService(notificationRepo);
 
+const videoRepository = new VideoRepository();
 
-const userRepo=new AuthRepository()
+const videoNotiService = new VideoNotiService(videoRepository);
 
-const notificationRepo=new NotificationRepository()
+const mailer = new Mailer();
 
-const notificationService=new NotoficationService(notificationRepo)
+const socketService = new SocketService(
+  userRepo,
+  notificationService,
+  videoNotiService,
+  mailer
+);
 
-const videoRepository=new VideoRepository()
+expressConfig(app, config);
 
-const videoNotiService=new VideoNotiService(videoRepository)
+routes(app, router);
 
-const mailer=new Mailer()
+connection(mongoose, config).connectToMongo();
 
-const socketService=new SocketService(userRepo,notificationService,videoNotiService,mailer)
+app.use(errorHandlingMiddleware);
 
-
-expressConfig(app,config)
-
-routes(app,router)
-
-connection(mongoose,config).connectToMongo()
-
-app.use(errorHandlingMiddleware)
-
-const httpServer:httpServerType = http.createServer(app);
-
-
+const httpServer: httpServerType = http.createServer(app);
 
 const io = new Server(httpServer, {
-  transports:['polling'],
+  transports: ["websocket", "polling"],
   cors: {
-    origin: [ 'https://www.phaseex.live','https://phaseex.live','http://localhost:5173'],
+    origin: [
+      "https://www.phaseex.live",
+      "https://phaseex.live",
+      "http://localhost:5173",
+    ],
     credentials: true,
-  }
-  
+  },
 });
-
-
-
 
 app.use(ioMiddleware(io));
 
-io.on("connection", socket => {
-  console.log('New client connected');
-  socket.on("disconnect", () => {
-  });
-  socketService.handleConnection(socket)
-  
+io.on("connection", (socket) => {
+  socket.on("disconnect", () => {});
+  socketService.handleConnection(socket);
 });
 
-
-
-
-serverConfig(httpServer,config).startServer()
+serverConfig(httpServer, config).startServer();

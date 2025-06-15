@@ -93,7 +93,7 @@ export class TodoController {
       let todoId = req.params.todoId;
       let { folderId, workspaceId, listId, taskId, todo_status } = req.body;
 
-      console.log(todoId, req.body, "hello00000000000000000");
+
 
       if (
         !listId ||
@@ -336,7 +336,7 @@ export class TodoController {
         collabId
       );
 
-console.log(response,"delete");
+
 
         
       if (!response) {
