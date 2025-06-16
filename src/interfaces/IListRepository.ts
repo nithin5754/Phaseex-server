@@ -1,7 +1,4 @@
-import {
-
-  ListDataType,
-} from "../Entities/List";
+import { ListDataType } from "../Entities/List";
 
 export interface ListDataTypePage {
   lists: ListDataType[] | null;
@@ -12,6 +9,8 @@ export interface IListRepository {
   createNewList(
     workspaceId: string,
     folderId: string,
+    userId: string,
+
     listData: Partial<ListDataType>
   ): Promise<ListDataType | null>;
   listExist(
@@ -51,7 +50,6 @@ export interface IListRepository {
     list_due_date: string
   ): Promise<boolean>;
 
-
   singleList(
     workspaceId: string,
     folderId: string,
@@ -65,15 +63,19 @@ export interface IListRepository {
     percentage: number
   ): Promise<boolean>;
 
-
-
   deleteList(
     workspaceId: string,
     folderId: string,
-    listId: string,
+    listId: string
   ): Promise<boolean>;
 
-  deleteListWithWspace(
+  deleteListWithWspace(workspaceId: string): Promise<boolean>;
+
+  addManagerViewerList(
     workspaceId: string,
+    folderId: string,
+    listId: string,
+    memberId: string,
+    role: "manager" | "viewer"
   ): Promise<boolean>;
 }

@@ -369,7 +369,7 @@ export class WorkSpaceController {
     try {
       const { workspaceId, collaboratorId, role } = req.body;
 
-      if (!workspaceId || !collaboratorId || !role) {
+      if (!workspaceId || !collaboratorId || !role ) {
         return res.status(404).json({ message: "credentials missing" });
       }
 

@@ -6,8 +6,9 @@ export interface TaskAttachmentType {
 
 
 export interface TaskCollaboratorType {
-  assigneeId: string; 
-  role: string;
+ assignee_name?:string;
+  assignee: string; 
+  role:"manager"|"owner"|"viewer"|"developer";
 }
 
 

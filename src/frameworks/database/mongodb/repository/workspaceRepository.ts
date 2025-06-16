@@ -3,6 +3,7 @@ import { WorkspaceDataType } from "../../../../Entities/WorkspaceDataType";
 import ISpaceRepository from "../../../../interfaces/ISpaceRepository";
 import { Workspace as workspaceModal } from "../models/spaceModal";
 import UserModel from "../models/UserModel";
+import { Role } from "../../../../presentation/utils/rolesPermission";
 
 export class workSpaceRepository implements ISpaceRepository {
   async getHiddenSpaceByOwnerLists(
@@ -101,7 +102,7 @@ export class workSpaceRepository implements ISpaceRepository {
     return false;
   }
 
-  // delete workspace
+
 
   async deleteWorkspace(workspaceId: string): Promise<boolean> {
     let response = await workspaceModal.findOneAndDelete({ _id: workspaceId });
@@ -193,7 +194,7 @@ export class workSpaceRepository implements ISpaceRepository {
 
 
 
-  async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean> {
+  async  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: Role): Promise<boolean> {
       
     
     const result = await workspaceModal.updateOne(

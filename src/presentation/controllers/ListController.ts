@@ -1,21 +1,29 @@
 import { NextFunction, Request, Response } from "express";
 import { IListService } from "../../interfaces/IListService";
-import { ListCollaboratorType } from "../../Entities/List";
+
 
 export class ListController {
   private listService: IListService;
-  constructor(listService: IListService) {
+  constructor(
+    listService: IListService,
+
+  ) {
     this.listService = listService;
   }
 
   onCreateList = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { workspaceId, folderId, listData } = req.body;
-      if (!listData.list_title.trim() || !listData.list_description.trim()) {
+      const userId = req.userId;
+      if (
+        !listData.list_title.trim() ||
+        !listData.list_description.trim() ||
+        !userId
+      ) {
         return res.status(404).json({ message: "full space invalid" });
       }
 
-      let isDuplicateList = await this.listService.isListExist(
+      const isDuplicateList = await this.listService.isListExist(
         workspaceId,
         folderId,
         listData.list_title
@@ -25,9 +33,12 @@ export class ListController {
         return res.status(404).json({ message: "already exist" });
       }
 
-      let createNewList = await this.listService.createList(
+
+
+      const createNewList = await this.listService.createList(
         workspaceId,
         folderId,
+        userId,
         listData
       );
       if (!createNewList) {
@@ -51,7 +62,7 @@ export class ListController {
     }
 
     try {
-      let response = await this.listService.getallList(
+      const response = await this.listService.getallList(
         workspaceId as string,
         folderId as string
       );
@@ -76,7 +87,7 @@ export class ListController {
         .json({ message: "invalid credentials please try again!!" });
     }
     try {
-      let response = await this.listService.getAllListPage(
+      const response = await this.listService.getAllListPage(
         workspaceId as string,
         folderId as string,
         page as string
@@ -96,8 +107,8 @@ export class ListController {
     next: NextFunction
   ) => {
     try {
-      let listId = req.params.listId;
-      let { folderId, workspaceId, priority } = req.body;
+      const listId = req.params.listId;
+      const { folderId, workspaceId, priority } = req.body;
 
       if (!listId || !folderId || !workspaceId || !priority) {
         return res.status(400).json({
@@ -105,7 +116,7 @@ export class ListController {
         });
       }
 
-      let response = await this.listService.getUpdatePriority(
+      const response = await this.listService.getUpdatePriority(
         workspaceId,
         folderId,
         listId,
@@ -130,8 +141,9 @@ export class ListController {
     next: NextFunction
   ) => {
     try {
-      let listId = req.params.listId;
-      let { folderId, workspaceId, list_start_date, list_due_date } = req.body;
+      const listId = req.params.listId;
+      const { folderId, workspaceId, list_start_date, list_due_date } =
+        req.body;
 
       if (
         !listId ||
@@ -144,7 +156,7 @@ export class ListController {
           message: "credentials missing  please try again after some times",
         });
       }
-      let response = await this.listService.getUpdateListDate(
+      const response = await this.listService.getUpdateListDate(
         workspaceId,
         folderId,
         listId,
@@ -181,7 +193,7 @@ export class ListController {
       });
     }
     try {
-      let singleList = await this.listService.getSingleList(
+      const singleList = await this.listService.getSingleList(
         workspaceId,
         folderId,
         listId
@@ -199,18 +211,16 @@ export class ListController {
     }
   };
 
-
-
   onGetDeleteList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let listId = req.params.listId;
-      let { workspaceId, folderId } = req.body;
+      const listId = req.params.listId;
+      const { workspaceId, folderId } = req.body;
 
       if (!listId || !workspaceId || !folderId) {
         return res.status(404).json({ message: "credentials missing" });
       }
 
-      let isListDeleted = await this.listService.getDeleteList(
+      const isListDeleted = await this.listService.getDeleteList(
         workspaceId,
         folderId,
         listId
@@ -223,6 +233,33 @@ export class ListController {
       }
 
       return res.status(200).json(isListDeleted);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  onAddMembersToList = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const listId = req.params.listId;
+      const { workspaceId, folderId, memberId, role } = req.body;
+
+      if (!listId || !workspaceId || !memberId || !folderId || !role) {
+        return res.status(404).json({ message: "credentials missing" });
+      }
+
+      const response = await this.listService.addManagerViewerList(
+        workspaceId,
+        folderId,
+        listId,
+        memberId,
+        role
+      );
+
+      return res.status(200).json(response);
     } catch (error) {
       next(error);
     }

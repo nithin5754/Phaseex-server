@@ -30,8 +30,8 @@ const ListSchema = new Schema(
       },
       role: {
         type: String,
-        enum: ["listManager","spaceOwner","viewer"],
-        default:'listManager'
+        enum: ["manager","viewer",'owner'],
+        default:'manager'
       },
     }],
     list_start_date: { type: String  },

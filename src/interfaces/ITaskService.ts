@@ -80,7 +80,7 @@ export interface ITaskService {
 
 
 
-
+addDevelopers(workspaceId:string, folderId:string, listId:string, taskId:string,memberId:string):Promise<boolean>
 
 
 

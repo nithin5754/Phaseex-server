@@ -1,27 +1,42 @@
-
-import {
-  ListDataType,
-
-} from "../Entities/List";
+import { ListDataType } from "../Entities/List";
 import {
   IListRepository,
   ListDataTypePage,
 } from "../interfaces/IListRepository";
 import { IListService } from "../interfaces/IListService";
 
-
-
 export class ListService implements IListService {
   private listRepository: IListRepository;
 
   constructor(listRepository: IListRepository) {
     this.listRepository = listRepository;
-
   }
- async getDeleteList(workspaceId: string, folderId: string, listId: string): Promise<boolean> {
-    
-       let response=await this.listRepository.deleteList(workspaceId,folderId,listId)
-       return !!response
+  addManagerViewerList(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    memberId: string,
+    role:'manager'|'viewer'
+  ): Promise<boolean> {
+    return this.listRepository.addManagerViewerList(
+      workspaceId,
+      folderId,
+      listId,
+      memberId,
+      role
+    );
+  }
+  async getDeleteList(
+    workspaceId: string,
+    folderId: string,
+    listId: string
+  ): Promise<boolean> {
+    let response = await this.listRepository.deleteList(
+      workspaceId,
+      folderId,
+      listId
+    );
+    return !!response;
   }
 
   async getSingleList(
@@ -123,11 +138,14 @@ export class ListService implements IListService {
   async createList(
     workspaceId: string,
     folderId: string,
+    userId: string,
+   
     listData: Partial<ListDataType>
   ): Promise<ListDataType | null> {
     let response = await this.listRepository.createNewList(
       workspaceId,
       folderId,
+      userId,
       listData
     );
 

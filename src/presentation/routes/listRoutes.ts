@@ -16,6 +16,10 @@ const listRoutes = (router: Router) => {
   router
     .route("/get-all-list-page")
     .get(controller.onGetAllListPage.bind(controller));
+
+  router
+    .route("/get-single-list")
+    .get(controller.onGetSingleList.bind(controller));
   router
     .route("/update-priority-list/:listId")
     .patch(controller.onUpdatePriorityList.bind(controller));
@@ -24,14 +28,9 @@ const listRoutes = (router: Router) => {
     .patch(controller.onUpdateListDate.bind(controller));
 
   router
-    .route("/get-single-list")
-    .get(controller.onGetSingleList.bind(controller));
+    .route("/add-manager-viewer-list/:listId")
+    .post(controller.onAddMembersToList.bind(controller));
 
-
-
-
-
-  
   return router;
 };
 

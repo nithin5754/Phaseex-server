@@ -1,15 +1,72 @@
-import mongoose from "mongoose";
-import {
-  TaskCollaboratorDetailType,
-  TaskType,
-} from "../../../../Entities/Task";
+import { TaskType } from "../../../../Entities/Task";
 import { ITaskRepository } from "../../../../interfaces/ITaskRepository";
 import { Task as TaskModal } from "../models/TaskModal";
 import moment from "moment";
 
 export class TaskRepository implements ITaskRepository {
   constructor() {}
-  async deleteTaskLink(workspaceId: string, folderId: string, listId: string, taskId: string, linkId: string): Promise<boolean> {
+
+  async addMDeveloperToTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    memberId: string
+  ): Promise<boolean> {
+    let response = await TaskModal.updateOne(
+      { workspaceId, folderId, _id: taskId, listId },
+      {
+        $addToSet: {
+          task_collaborators: {
+            assignee: memberId,
+            role: "developer",
+          },
+        },
+      }
+    );
+
+    console.log;
+    return !!response;
+  }
+
+  async deleteTaskMember(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    memberId: string
+  ): Promise<boolean> {
+    const filter = {
+      _id: taskId,
+      workspaceId: workspaceId,
+      folderId: folderId,
+      listId: listId,
+    };
+
+    const updateQuery = {
+      $pull: {
+        task_collaborators: {
+          assignee: memberId,
+        },
+      },
+    };
+
+    const response = await TaskModal.findOneAndUpdate(filter, updateQuery);
+
+    if (response) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async deleteTaskLink(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    linkId: string
+  ): Promise<boolean> {
     const filter = {
       _id: taskId,
       workspaceId: workspaceId,
@@ -33,8 +90,14 @@ export class TaskRepository implements ITaskRepository {
 
     return false;
   }
- async taskLink(workspaceId: string, folderId: string, listId: string, taskId: string,link:string,link_name:string): Promise<boolean> {
-      
+  async taskLink(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    link: string,
+    link_name: string
+  ): Promise<boolean> {
     let response = await TaskModal.findOne({
       workspaceId,
       folderId,
@@ -42,9 +105,8 @@ export class TaskRepository implements ITaskRepository {
       _id: taskId,
     });
 
-    
     if (response) {
-      response.taskLink.push({ link,link_name })
+      response.taskLink.push({ link, link_name });
       let isCollabAdd = await response.save();
 
       return !!isCollabAdd;
@@ -53,16 +115,12 @@ export class TaskRepository implements ITaskRepository {
     return false;
   }
 
+  async deleteTaskWithWorkspace(workspaceId: string): Promise<boolean> {
+    let response = await TaskModal.deleteMany({
+      workspaceId,
+    });
 
- async deleteTaskWithWorkspace(workspaceId: string): Promise<boolean> {
-        
-  let response = await TaskModal.deleteMany({
-    workspaceId,
-  });
-
-  return !!response;
-
-
+    return !!response;
   }
   async deleteTask(
     workspaceId: string,
@@ -106,7 +164,10 @@ export class TaskRepository implements ITaskRepository {
       folderId,
       listId,
       _id: taskId,
-    });
+    })
+      .populate("task_collaborators.assignee")
+      .lean()
+      .exec();
 
     if (task) {
       let responseData = {
@@ -125,13 +186,15 @@ export class TaskRepository implements ITaskRepository {
           file_name: attachment.file_name,
         })),
         taskLink: task.taskLink.map((link: any) => ({
-          id:link._id.toString() as string,
+          id: link._id.toString() as string,
           link_name: link.link_name,
           link: link.link,
         })),
         task_collaborators: task.task_collaborators.map(
           (collaborator: any) => ({
-            assigneeId: collaborator.assigneeId.toString(),
+            assignee: collaborator?.assignee?._id?.toString(),
+
+            assignee_name: collaborator?.assignee?.userName,
             role: collaborator.role,
           })
         ),
@@ -257,7 +320,10 @@ export class TaskRepository implements ITaskRepository {
     folderId: string,
     listId: string
   ): Promise<TaskType[] | null> {
-    const response = await TaskModal.find({ workspaceId, folderId, listId });
+    const response = await TaskModal.find({ workspaceId, folderId, listId })
+      .populate("task_collaborators.assignee")
+      .lean()
+      .exec();
 
     if (response) {
       let responseData: TaskType[] = response.map((task) => {
@@ -277,13 +343,14 @@ export class TaskRepository implements ITaskRepository {
             file_name: attachment.file_name,
           })),
           taskLink: task.taskLink.map((link: any) => ({
-            id:link._id.toString() as string,
+            id: link._id.toString() as string,
             link_name: link.link_name,
             link: link.link,
           })),
           task_collaborators: task.task_collaborators.map(
             (collaborator: any) => ({
-              assigneeId: collaborator.assigneeId.toString(),
+              assignee: collaborator?.assignee?._id?.toString(),
+              assignee_name: collaborator?.assignee?.userName,
               role: collaborator.role,
             })
           ),
@@ -334,12 +401,12 @@ export class TaskRepository implements ITaskRepository {
         })),
         task_collaborators: response.task_collaborators.map(
           (collaborator: any) => ({
-            assigneeId: collaborator.assigneeId.toString(),
+            assignee: collaborator.assignee.toString(),
             role: collaborator.role,
           })
         ),
         taskLink: response.taskLink.map((link: any) => ({
-          id:link._id.toString() as string,
+          id: link._id.toString() as string,
           link_name: link.link_name,
           link: link.link,
         })),

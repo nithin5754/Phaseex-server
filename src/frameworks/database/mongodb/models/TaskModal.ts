@@ -43,7 +43,7 @@ const TaskSchema = new Schema(
     ],
     task_collaborators: [
       {
-        assigneeId: {
+         assignee: {
           type: Schema.Types.ObjectId,
           ref: "User",
         },

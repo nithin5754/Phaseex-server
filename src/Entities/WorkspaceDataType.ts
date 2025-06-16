@@ -1,7 +1,8 @@
+import { Role } from "../presentation/utils/rolesPermission";
 
 export interface CollaboratorType {
   assignee: string; 
-  role: string;
+  role: Role;
   verified:boolean
 }
 

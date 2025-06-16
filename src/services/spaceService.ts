@@ -11,6 +11,7 @@ import ISpaceRepository from "../interfaces/ISpaceRepository";
 import ISpaceService from "../interfaces/ISpaceService";
 import { ITaskRepository } from "../interfaces/ITaskRepository";
 import { ITodoRepository } from "../interfaces/ITodoRepository";
+import { Role } from "../presentation/utils/rolesPermission";
 
 export interface IisTrueService {
   workspaceId?: string;
@@ -18,7 +19,7 @@ export interface IisTrueService {
   workspaceOwner?: string;
   collaboratorId?: string;
   title?: string;
-  role?:string
+  role?: Role;
 }
 
 export class SpaceService implements ISpaceService {
@@ -131,14 +132,30 @@ export class SpaceService implements ISpaceService {
         }
       );
 
-      const collaborators = await Promise.all(collaboratorsPromises);
+      const ownerName: string | null =
+        await this.spaceRepository.findByIdForName(response.workspaceOwner);
+
+      let collaborators: getCollaboratorType[] = await Promise.all(
+        collaboratorsPromises
+      );
+      if (ownerName) {
+        collaborators = [
+          ...collaborators,
+          {
+            assignee: ownerName,
+            role: "owner",
+            id: response.workspaceOwner,
+            verified: true,
+          },
+        ];
+      }
+
       if (collaborators && collaborators.length > 0) {
         return collaborators;
       }
     }
     return null;
   }
-
 
   async isTrueService(
     data: IisTrueService,
@@ -214,10 +231,14 @@ export class SpaceService implements ISpaceService {
           );
           return response;
         }
-       case "UPDATE-COLLAB-ROLE":
-           if(data.workspaceId&&data.collaboratorId&&data.role){
-            return this.spaceRepository.updateCollaboratorsRole(data.workspaceId,data.collaboratorId,data.role)
-           }
+      case "UPDATE-COLLAB-ROLE":
+        if (data.workspaceId && data.collaboratorId && data.role) {
+          return this.spaceRepository.updateCollaboratorsRole(
+            data.workspaceId,
+            data.collaboratorId,
+            data.role
+          );
+        }
     }
 
     return false;

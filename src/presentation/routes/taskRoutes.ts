@@ -53,6 +53,10 @@ const taskRoutes = (router: Router) => {
     .route("/add_link/task/:taskId")
     .patch(controller.onAddLinkToTask.bind(controller));
 
+      router
+    .route("/task-developer-add/:taskId")
+    .patch(controller.onAddTaskCollaborator.bind(controller));
+
   router
     .route("/delete-link-task/:taskId")
     .delete(controller.onDeleteLinkTask.bind(controller));

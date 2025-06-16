@@ -18,8 +18,9 @@ export interface ListDataType {
 
 
 export interface ListCollaboratorType {
+ assignee_name?:string;
   assignee: string; 
-  role:"listManager"|"spaceOwner"|"viewer";
+  role:"manager"|"owner"|"viewer";
 }
 
 
@@ -28,12 +29,12 @@ export interface ListCollaboratorDetailType {
   fullName: string; 
   email:string;
   imageUrl:string;
-  role:"listManager"|"spaceOwner"|"viewer";
+  role:"manager"|"owner"|"viewer";
 }
 
 
 export interface listCollabRole {
-  role:"listManager"|"spaceOwner"|"viewer";
+  role:"manager"|"owner"|"viewer";
 }
 
 

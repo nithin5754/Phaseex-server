@@ -1,10 +1,31 @@
 import { ListDataType } from "../../../../Entities/List";
 import { IListRepository } from "../../../../interfaces/IListRepository";
-
 import { List as ListModal } from "../models/ListModal";
 import moment from "moment";
 
 export class ListRepository implements IListRepository {
+  async addManagerViewerList(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    memberId: string,
+    role: "manager" | "viewer"
+  ): Promise<boolean> {
+    let response = await ListModal.updateOne(
+      { workspaceId, folderId, _id: listId },
+      {
+        $addToSet: {
+          list_collaborators: {
+            assignee: memberId,
+            role,
+          },
+        },
+      }
+    );
+
+    return !!response;
+  }
+
   async deleteListWithWspace(workspaceId: string): Promise<boolean> {
     let response = await ListModal.deleteMany({ workspaceId });
 
@@ -64,7 +85,10 @@ export class ListRepository implements IListRepository {
       workspaceId,
       folderId,
       _id: listId,
-    });
+    })
+      .populate("list_collaborators.assignee")
+      .lean()
+      .exec();
 
     if (response) {
       let responseData: ListDataType = {
@@ -81,7 +105,8 @@ export class ListRepository implements IListRepository {
         list_due_date: response.list_due_date!,
         list_collaborators: response.list_collaborators.map(
           (collaborator: any) => ({
-            assignee: collaborator?.assignee?.toString(),
+            assignee: collaborator?.assignee?._id?.toString(),
+            assignee_name: collaborator?.assignee?.userName,
             role: collaborator.role,
           })
         ),
@@ -137,9 +162,12 @@ export class ListRepository implements IListRepository {
     const startIndex: number = (Number(page) - 1) * LIMIT;
 
     const response = await ListModal.find({ workspaceId, folderId })
+      .populate("list_collaborators.assignee")
+      .lean()
       .sort({ createdAt: -1 })
       .limit(LIMIT)
-      .skip(startIndex);
+      .skip(startIndex)
+      .exec();
 
     if (response) {
       let responseData: ListDataType[] = response.map((list) => ({
@@ -156,7 +184,8 @@ export class ListRepository implements IListRepository {
         list_due_date: list.list_due_date!,
         list_collaborators: list.list_collaborators.map(
           (collaborator: any) => ({
-            assignee: collaborator?.assignee?.toString(),
+            assignee: collaborator?.assignee?._id?.toString(),
+            assignee_name: collaborator?.assignee?.userName,
             role: collaborator.role,
           })
         ),
@@ -172,7 +201,10 @@ export class ListRepository implements IListRepository {
     workspaceId: string,
     folderId: string
   ): Promise<ListDataType[] | null> {
-    let response = await ListModal.find({ workspaceId, folderId });
+    let response = await ListModal.find({ workspaceId, folderId })
+      .populate("list_collaborators.assignee")
+      .lean()
+      .exec();
 
     if (response) {
       let responseData = response.map((list) => ({
@@ -189,7 +221,8 @@ export class ListRepository implements IListRepository {
         list_due_date: list?.list_due_date!,
         list_collaborators: list.list_collaborators.map(
           (collaborator: any) => ({
-            assignee: collaborator?.assignee?.toString(),
+            assignee: collaborator?.assignee?._id?.toString(),
+            assignee_name: collaborator?.assignee?.userName,
             role: collaborator.role,
           })
         ),
@@ -220,12 +253,15 @@ export class ListRepository implements IListRepository {
   async createNewList(
     workspaceId: string,
     folderId: string,
+    userId: string,
+
     listData: Partial<ListDataType>
   ): Promise<ListDataType | null> {
     let data: Partial<ListDataType> = {
       ...listData,
       workspaceId: workspaceId,
       folderId: folderId,
+      list_collaborators: [{ assignee: userId, role: "owner" }],
     };
 
     let newList = await ListModal.create(data);

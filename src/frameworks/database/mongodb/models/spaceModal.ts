@@ -18,7 +18,7 @@ const WorkspaceSchema = new Schema(
       },
       role: {
         type: String,
-        enum:['developer','manager','viewer'],
+        enum:['developer','manager','viewer','owner'],
         default:'developer'
       },
       verified:{

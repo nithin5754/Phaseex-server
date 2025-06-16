@@ -26,6 +26,21 @@ export class TaskService implements ITaskService {
     this.progressBar = progressBar;
     this.todoRepository = todoRepository;
   }
+  addDevelopers(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    memberId: string
+  ): Promise<boolean> {
+    return this.taskRepository.addMDeveloperToTask(
+      workspaceId,
+      folderId,
+      listId,
+      taskId,
+      memberId
+    );
+  }
   getDeleteTaskLink(
     workspaceId: string,
     folderId: string,
@@ -59,7 +74,6 @@ export class TaskService implements ITaskService {
     );
   }
 
-
   async getUpdateDescription(
     workspaceId: string,
     folderId: string,
@@ -77,23 +91,47 @@ export class TaskService implements ITaskService {
 
     return response;
   }
-  async getSingleTask(
-    workspaceId: string,
-    folderId: string,
-    listId: string,
-    taskId: string
-  ): Promise<TaskType | null> {
-    let response = await this.taskRepository.singleTask(
-      workspaceId,
-      folderId,
-      listId,
-      taskId
+async getSingleTask(
+  workspaceId: string,
+  folderId: string,
+  listId: string,
+  taskId: string
+): Promise<TaskType | null> {
+  const task = await this.taskRepository.singleTask(workspaceId, folderId, listId, taskId);
+  const list = await this.listRepository.singleList(workspaceId, folderId, listId);
+
+  if (!task) return null;
+
+  task.task_collaborators ??= [];
+
+  if (list?.list_collaborators) {
+    const listManagers = list.list_collaborators.filter(
+      (collab) => collab.role === "manager"
     );
-    if (response) {
-      return response;
+
+    for (const manager of listManagers) {
+      const index = task.task_collaborators.findIndex(
+        (collab) => collab.assignee === manager.assignee && collab.role === "developer"
+      );
+
+      if (index !== -1) {
+        await this.taskRepository.deleteTaskMember(
+          workspaceId,
+          folderId,
+          listId,
+          task.id,
+          manager.assignee
+        );
+        task.task_collaborators.splice(index, 1);
+      }
     }
-    return null;
+
+    task.task_collaborators.push(...list.list_collaborators);
   }
+
+  return task;
+}
+
   async getTaskStatusWiseCount(
     workspaceId: string,
     folderId: string,
@@ -209,21 +247,59 @@ export class TaskService implements ITaskService {
 
     return response;
   }
+
   async getAllTask(
     workspaceId: string,
     folderId: string,
     listId: string
   ): Promise<TaskType[] | null> {
-    let response = await this.taskRepository.allTask(
+    const response = await this.taskRepository.allTask(
       workspaceId,
       folderId,
       listId
     );
-    if (response && response.length > 0) {
-      return response;
+    const singleListDetails: ListDataType | null =
+      await this.listRepository.singleList(workspaceId, folderId, listId);
+
+    if (singleListDetails?.list_collaborators && response) {
+      response.forEach(async (task: TaskType) => {
+        if (!task.task_collaborators) {
+          task.task_collaborators = [];
+        }
+
+        const listMangers = singleListDetails.list_collaborators.filter(
+          (listCollab) => listCollab.role === "manager"
+        );
+
+        for (const manager of listMangers) {
+          const conflictDeveloper = task.task_collaborators.find(
+            (collab) =>
+              collab.assignee === manager.assignee &&
+              collab.role === "developer"
+          );
+
+          if (conflictDeveloper) {
+            await this.taskRepository.deleteTaskMember(
+              workspaceId,
+              folderId,
+              listId,
+              task.id,
+              conflictDeveloper.assignee
+            );
+
+            task.task_collaborators = task.task_collaborators.filter(
+              (collab) => collab.assignee !== conflictDeveloper.assignee
+            );
+          }
+        }
+
+        task.task_collaborators.push(...singleListDetails.list_collaborators);
+      });
     }
-    return null;
+
+    return response && response.length > 0 ? response : null;
   }
+
   async getDuplicateTask(
     workspaceId: string,
     folderId: string,

@@ -1,4 +1,4 @@
-import { TaskCollaboratorDetailType, TaskType } from "../Entities/Task";
+import { TaskType } from "../Entities/Task";
 
 export interface ITaskRepository {
   createTask(taskData: Partial<TaskType>): Promise<TaskType | null>;
@@ -80,5 +80,21 @@ export interface ITaskRepository {
     listId: string,
     taskId: string,
     linkId: string
+  ): Promise<boolean>;
+
+  addMDeveloperToTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    memberId: string
+  ): Promise<boolean>;
+
+  deleteTaskMember(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string,
+    memberId: string
   ): Promise<boolean>;
 }

@@ -1,6 +1,7 @@
 // `/invite?workspace=${getSingleWorkSpace.id}&username=${userId}&notificationId=12345&senderId`;
 
 import { WorkspaceDataType } from "../Entities/WorkspaceDataType";
+import { Role } from "../presentation/utils/rolesPermission";
 
 interface ISpaceRepository {
   create(workspaceData: Partial<WorkspaceDataType>): Promise<WorkspaceDataType>;
@@ -45,7 +46,7 @@ interface ISpaceRepository {
 
   updateCollaboratorsVerified(workspaceId: string, collaboratorId: string): Promise<boolean>
 
-  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: string): Promise<boolean>
+  updateCollaboratorsRole(workspaceId: string, collaboratorId: string, role: Role): Promise<boolean>
 }
 
 export default ISpaceRepository;
