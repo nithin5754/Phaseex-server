@@ -1,5 +1,5 @@
 import { ListDataType } from "../Entities/List";
-import { TaskCollaboratorDetailType, TaskType } from "../Entities/Task";
+import {  TaskType } from "../Entities/Task";
 import { IDueDate } from "../interfaces/IDueDate";
 import { IListRepository } from "../interfaces/IListRepository";
 import { IProgressBar } from "../interfaces/IProgressBar";
@@ -91,46 +91,27 @@ export class TaskService implements ITaskService {
 
     return response;
   }
-async getSingleTask(
-  workspaceId: string,
-  folderId: string,
-  listId: string,
-  taskId: string
-): Promise<TaskType | null> {
-  const task = await this.taskRepository.singleTask(workspaceId, folderId, listId, taskId);
-  const list = await this.listRepository.singleList(workspaceId, folderId, listId);
+  async getSingleTask(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    taskId: string
+  ): Promise<TaskType | null> {
+    const [task, list] = await Promise.all([
+      this.taskRepository.singleTask(workspaceId, folderId, listId, taskId),
+      this.listRepository.singleList(workspaceId, folderId, listId),
+    ]);
 
-  if (!task) return null;
+    if (!task) return null;
 
-  task.task_collaborators ??= [];
+    task.task_collaborators ??= [];
 
-  if (list?.list_collaborators) {
-    const listManagers = list.list_collaborators.filter(
-      (collab) => collab.role === "manager"
-    );
+    list &&
+      list.list_collaborators &&
+      task.task_collaborators.push(...list.list_collaborators);
 
-    for (const manager of listManagers) {
-      const index = task.task_collaborators.findIndex(
-        (collab) => collab.assignee === manager.assignee && collab.role === "developer"
-      );
-
-      if (index !== -1) {
-        await this.taskRepository.deleteTaskMember(
-          workspaceId,
-          folderId,
-          listId,
-          task.id,
-          manager.assignee
-        );
-        task.task_collaborators.splice(index, 1);
-      }
-    }
-
-    task.task_collaborators.push(...list.list_collaborators);
+    return task;
   }
-
-  return task;
-}
 
   async getTaskStatusWiseCount(
     workspaceId: string,
@@ -253,44 +234,15 @@ async getSingleTask(
     folderId: string,
     listId: string
   ): Promise<TaskType[] | null> {
-    const response = await this.taskRepository.allTask(
-      workspaceId,
-      folderId,
-      listId
-    );
-    const singleListDetails: ListDataType | null =
-      await this.listRepository.singleList(workspaceId, folderId, listId);
+    const [singleListDetails, response] = await Promise.all([
+      await this.listRepository.singleList(workspaceId, folderId, listId),
+      this.taskRepository.allTask(workspaceId, folderId, listId),
+    ]);
 
     if (singleListDetails?.list_collaborators && response) {
       response.forEach(async (task: TaskType) => {
         if (!task.task_collaborators) {
           task.task_collaborators = [];
-        }
-
-        const listMangers = singleListDetails.list_collaborators.filter(
-          (listCollab) => listCollab.role === "manager"
-        );
-
-        for (const manager of listMangers) {
-          const conflictDeveloper = task.task_collaborators.find(
-            (collab) =>
-              collab.assignee === manager.assignee &&
-              collab.role === "developer"
-          );
-
-          if (conflictDeveloper) {
-            await this.taskRepository.deleteTaskMember(
-              workspaceId,
-              folderId,
-              listId,
-              task.id,
-              conflictDeveloper.assignee
-            );
-
-            task.task_collaborators = task.task_collaborators.filter(
-              (collab) => collab.assignee !== conflictDeveloper.assignee
-            );
-          }
         }
 
         task.task_collaborators.push(...singleListDetails.list_collaborators);
@@ -330,11 +282,28 @@ async getSingleTask(
     return false;
   }
   async createTask(taskData: Partial<TaskType>): Promise<TaskType | null> {
-    let response = await this.taskRepository.createTask(taskData);
+    const singleListDetails: ListDataType | null =
+      await this.listRepository.singleList(
+        taskData.workspaceId as string,
+        taskData.folderId!,
+        taskData.listId!
+      );
+
+    const listManagers =
+      singleListDetails?.list_collaborators?.filter(
+        (collab) => collab.role === "manager"
+      ) ?? [];
+
+    if (listManagers.length === 0) {
+      return null;
+    }
+
+    const response = await this.taskRepository.createTask(taskData);
 
     if (!response) {
       return null;
     }
+
     return response;
   }
 }
