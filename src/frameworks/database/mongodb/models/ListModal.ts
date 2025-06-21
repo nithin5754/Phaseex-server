@@ -1,73 +1,72 @@
-
-
-
-
-
-
-
-import mongoose, {Schema} from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
 const ListSchema = new Schema(
   {
-   workspaceId:{
+    workspaceId: {
       type: Schema.Types.ObjectId,
-      ref: "Workspace",  
+      ref: "Workspace",
     },
-    folderId:{
+    folderId: {
       type: Schema.Types.ObjectId,
-      ref: "Folder",  
+      ref: "Folder",
     },
     priority_list: {
       type: String,
-      enum: ["high", "medium","low"],
+      enum: ["high", "medium", "low"],
       default: "low",
-    
     },
-    list_collaborators: [{
-      assignee: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+    status: {
+      type: String,
+      enum: [
+        "cancelled",
+        "pending",
+        "verified",
+        "complete",
+        "rejected",
+        "onGoing",
+      ],
+      default: "onGoing",
+    },
+    list_collaborators: [
+      {
+        assignee: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        role: {
+          type: String,
+          enum: ["manager", "viewer", "owner"],
+          default: "manager",
+        },
       },
-      role: {
-        type: String,
-        enum: ["manager","viewer",'owner'],
-        default:'manager'
-      },
-    }],
-    list_start_date: { type: String  },
-   progressTask: { type: Number,default:0  },
-    list_due_date: { type: String  },
-    list_title: { type: String  },
-    list_description:{ type: String },
+    ],
+    list_start_date: { type: String },
+    progressTask: { type: Number, default: 0 },
+    list_due_date: { type: String },
+    list_title: { type: String },
+    list_description: { type: String },
     createdAt: {
-              type: Date,
-              default: Date.now,
-          },
-          updatedAt: {
-              type: Date,
-              default: Date.now
-          }
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
 
-
-
-
-
-ListSchema.pre('save', function (next) {
-    this.updatedAt = new Date();
-    next();
+ListSchema.pre("save", function (next) {
+  this.updatedAt = new Date();
+  next();
 });
 
-ListSchema.set('toJSON', {
-    transform: function (doc, ret) {
-        delete ret.password;
-        delete ret.__v;
-    },
+ListSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    delete ret.password;
+    delete ret.__v;
+  },
 });
 
-
-
-
-export const List =mongoose.model("List", ListSchema);
+export const List = mongoose.model("List", ListSchema);

@@ -25,7 +25,6 @@ export class TaskRepository implements ITaskRepository {
       }
     );
 
-    console.log;
     return !!response;
   }
 

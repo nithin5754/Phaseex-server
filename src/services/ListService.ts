@@ -1,4 +1,4 @@
-import { ListDataType } from "../Entities/List";
+import { ListDataType, ListStatus } from "../Entities/List";
 import {
   IListRepository,
   ListDataTypePage,
@@ -11,12 +11,25 @@ export class ListService implements IListService {
   constructor(listRepository: IListRepository) {
     this.listRepository = listRepository;
   }
+  updateListStatus(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    status: ListStatus
+  ): Promise<boolean> {
+    return this.listRepository.updateListStatus(
+      workspaceId,
+      folderId,
+      listId,
+      status
+    );
+  }
   addManagerViewerList(
     workspaceId: string,
     folderId: string,
     listId: string,
     memberId: string,
-    role:'manager'|'viewer'
+    role: "manager" | "viewer"
   ): Promise<boolean> {
     return this.listRepository.addManagerViewerList(
       workspaceId,
@@ -139,7 +152,7 @@ export class ListService implements IListService {
     workspaceId: string,
     folderId: string,
     userId: string,
-   
+
     listData: Partial<ListDataType>
   ): Promise<ListDataType | null> {
     let response = await this.listRepository.createNewList(

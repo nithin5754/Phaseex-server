@@ -1,4 +1,4 @@
-import { ListDataType } from "../Entities/List";
+import { ListDataType, ListStatus } from "../Entities/List";
 
 export interface ListDataTypePage {
   lists: ListDataType[] | null;
@@ -77,5 +77,13 @@ export interface IListRepository {
     listId: string,
     memberId: string,
     role: "manager" | "viewer"
+  ): Promise<boolean>;
+
+
+  updateListStatus(
+    workspaceId: string,
+    folderId: string,
+    listId: string,
+    status:ListStatus
   ): Promise<boolean>;
 }

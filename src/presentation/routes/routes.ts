@@ -17,6 +17,7 @@ import commentRoutes from "./commentRoutes";
 import UploadRoutes from "./uploadRoutes";
 import gptRoutes from "./gptRoutes";
 import chatRoutes from "./chatRoutes";
+import featureReviewRoutes from "./featureReview";
 
 export const routes = (app: Application, router: Router) => {
   app.use("/api/v1/auth", authRouter(router));
@@ -36,6 +37,11 @@ export const routes = (app: Application, router: Router) => {
   app.use("/api/v1/upload", UploadRoutes(router));
   app.use("/api/v1/gpt", gptRoutes(router));
   app.use("/api/v1/chat", chatRoutes(router));
+  app.use("/api/v1/feature-review", featureReviewRoutes(router));
 };
 
 export default routes;
+
+
+
+
