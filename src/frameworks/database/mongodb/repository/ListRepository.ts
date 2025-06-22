@@ -69,7 +69,7 @@ export class ListRepository implements IListRepository {
       { $set: { status } }
     );
 
-    console.log('update list status',response)
+
 
     return !!response;
   }

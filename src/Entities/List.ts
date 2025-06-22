@@ -14,7 +14,13 @@ export interface ListDataType {
   updatedAt: string;
 }
 
-export type ListStatus = "cancelled" | "pending" | "verified" | "complete" | 'rejected'|'onGoing';
+export type ListStatus =
+  | "cancelled"
+  | "pending"
+  | "verified"
+  | "complete"
+  | "rejected"
+  | "onGoing";
 
 export interface ListCollaboratorType {
   assignee_name?: string;

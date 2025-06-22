@@ -39,7 +39,7 @@ const projectReviewSchema = new Schema(
     },
     attempt: {
       type: Number,
-      default: 0,
+      default: 1,
     },
     assignee: {
       type: Schema.Types.ObjectId,

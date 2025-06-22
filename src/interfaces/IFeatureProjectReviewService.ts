@@ -1,3 +1,4 @@
+import { IFeatureUpdateReviewerSubmitDTO } from "../services/FeatureReviewService";
 import { IFeatureProjectReview } from "./IProjectReview";
 
 export interface IFeatureProjectReviewService {
@@ -12,11 +13,14 @@ export interface IFeatureProjectReviewService {
     listId: string;
   }): Promise<IFeatureProjectReview | null>;
 
-updateReviewByListIdByManager(data: {
+ReSendReviewByListIdByManager(data: {
     message: string;
     workspaceId: string;
     folderId: string;
     listId: string;
-    reviewId: string;
   }): Promise<boolean>
+
+
+  
+    updateReviewerReviewSubmit(data:IFeatureUpdateReviewerSubmitDTO):Promise<boolean>
 }

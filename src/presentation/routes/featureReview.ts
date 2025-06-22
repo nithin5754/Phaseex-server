@@ -32,10 +32,18 @@ const featureReviewRoutes = (router: Router) => {
     );
   router
     .route(
-      "/update-list-manager/:workspaceId/:folderId/:listId/:reviewId/review"
+      "/update-resend-list-manager/:workspaceId/:folderId/:listId/review"
     )
     .patch(
-      featureReviewController.onUpdateReviewByListIdByManager.bind(
+      featureReviewController.onReSendReviewByListIdByManager.bind(
+        featureReviewController
+      )
+    );
+
+  router
+    .route("/reviewer-submit/:workspaceId/:folderId/:listId/:reviewId/review")
+    .patch(
+      featureReviewController.onUpdateReviewerReviewSubmit.bind(
         featureReviewController
       )
     );

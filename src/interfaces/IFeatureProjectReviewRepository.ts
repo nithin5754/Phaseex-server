@@ -1,4 +1,8 @@
-import { IFeatureReviewCreateDTO, IFeatureReviewUpdateDTO } from "../services/FeatureReviewService";
+import {
+  IFeatureReviewCreateDTO,
+  IFeatureReviewUpdateDTO,
+  IFeatureUpdateReviewerSubmitDTO,
+} from "../services/FeatureReviewService";
 import { IFeatureProjectReview } from "./IProjectReview";
 
 export interface IFeatureProjectReviewRepository {
@@ -11,5 +15,10 @@ export interface IFeatureProjectReviewRepository {
     data: Partial<IFeatureProjectReview>
   ): Promise<IFeatureProjectReview | null>;
 
-  updateReviewByListIdByManager(data: IFeatureReviewUpdateDTO): Promise<boolean>;
+  ReSendReviewByListIdByManager(
+    data: IFeatureReviewUpdateDTO
+  ): Promise<boolean>;
+  updateReviewerReviewSubmit(
+    data: IFeatureUpdateReviewerSubmitDTO
+  ): Promise<boolean>;
 }

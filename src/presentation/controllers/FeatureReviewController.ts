@@ -53,7 +53,7 @@ export class FeatureReviewController {
       if (!response) {
         res.status(400).json({ message: "not found" });
       }
-      console.log("response", response);
+
       return res.status(200).json(response);
     } catch (error) {
       next(error);
@@ -74,7 +74,29 @@ export class FeatureReviewController {
         listId,
       });
 
-      console.log('resose single folder',response)
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async onReSendReviewByListIdByManager(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { workspaceId, folderId, listId } = req.params;
+
+      const { message } = req.body;
+
+      const response: boolean =
+        await this.featureReview.ReSendReviewByListIdByManager({
+          message,
+          folderId,
+          listId,
+          workspaceId,
+        });
 
       return res.status(200).json(response);
     } catch (error) {
@@ -82,24 +104,29 @@ export class FeatureReviewController {
     }
   }
 
-  async onUpdateReviewByListIdByManager(
+  async onUpdateReviewerReviewSubmit(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const { workspaceId, folderId, listId,reviewId } = req.params;
+      const { workspaceId, folderId, listId, reviewId } = req.params;
 
-      const { message } = req.body;
+      const { suggestion, approvalStatus, approved } = req.body;
 
-      const response:boolean = await this.featureReview.updateReviewByListIdByManager({
-        message,
-        folderId,
-        listId,
-        reviewId,
-        workspaceId,
-      });
+      const userId = req.userId;
 
+      const response: boolean =
+        await this.featureReview.updateReviewerReviewSubmit({
+          approvalStatus,
+          folderId,
+          listId,
+          reviewerId: userId,
+          reviewId,
+          suggestion,
+          workspaceId,
+          approved,
+        });
       return res.status(200).json(response);
     } catch (error) {
       next(error);

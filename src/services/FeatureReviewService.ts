@@ -4,11 +4,12 @@ import { IFeatureProjectReviewService } from "../interfaces/IFeatureProjectRevie
 import { IFeatureProjectReview } from "../interfaces/IProjectReview";
 import ISpaceRepository from "../interfaces/ISpaceRepository";
 import { IListRepository } from "../interfaces/IListRepository";
+import { ListStatus } from "../Entities/List";
 
 export interface IFeatureReviewCreateDTO {
   title: string;
   description: string;
-  attempt: number;
+  attempt?: number;
   status: "Approved" | "Rejected" | "Pending" | "Completed";
   featureCreatedAt: Date;
   listId: string;
@@ -25,9 +26,19 @@ export interface IFeatureReviewUpdateDTO {
   workspaceId: string;
   folderId: string;
   listId: string;
-  reviewId: string;
   status: "Approved" | "Rejected" | "Pending" | "Completed";
   attempt: number;
+}
+
+export interface IFeatureUpdateReviewerSubmitDTO {
+  suggestion: string;
+  reviewerId: string;
+  workspaceId: string;
+  folderId: string;
+  listId: string;
+  reviewId: string;
+  approvalStatus: "Approved" | "Rejected" | "Pending" | "Completed";
+  approved:boolean
 }
 
 export class FeatureReviewService implements IFeatureProjectReviewService {
@@ -36,21 +47,64 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
     private readonly workspaceRepo: ISpaceRepository,
     private readonly listRepository: IListRepository
   ) {}
-  async updateReviewByListIdByManager(data: {
+
+  async updateReviewerReviewSubmit(
+    data: IFeatureUpdateReviewerSubmitDTO
+  ): Promise<boolean> {
+    const {
+      approvalStatus,
+      workspaceId,
+      folderId,
+      listId,
+      reviewId,
+      reviewerId,
+      suggestion,
+      approved
+    } = data;
+
+    const isValid =
+      approvalStatus !== undefined &&
+      workspaceId &&
+      folderId &&
+      listId &&
+      reviewId &&
+      reviewerId &&
+      suggestion&&typeof approved === 'boolean'
+
+    if (!isValid) return false;
+
+    let status: ListStatus = "pending";
+
+    const response = this.IFPRRepository.updateReviewerReviewSubmit(data);
+
+    if (approvalStatus === "Approved") {
+      status = "verified";
+    } else if (approvalStatus === "Rejected") {
+      status = "rejected";
+    }
+
+    this.listRepository.updateListStatus(workspaceId, folderId, listId, status);
+
+    if (!response) {
+      return false;
+    }
+
+    return response;
+  }
+
+  async ReSendReviewByListIdByManager(data: {
     message: string;
     workspaceId: string;
     folderId: string;
     listId: string;
-    reviewId: string;
   }): Promise<boolean> {
     const updateData: IFeatureReviewUpdateDTO = {
       message: data.message,
       workspaceId: data.workspaceId,
       folderId: data.folderId,
       listId: data.listId,
-      reviewId: data.reviewId,
       status: "Pending",
-      attempt: 0,
+      attempt: 1,
     };
 
     const reviewDetails = await this.IFPRRepository.getReviewByList({
@@ -59,14 +113,28 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
       folderId: updateData.folderId,
     });
 
-    if (reviewDetails) {
-      updateData.attempt = reviewDetails.attempt + 1;
+    if(!reviewDetails||reviewDetails.status!=='Rejected'){
+      return false
     }
 
-    const response = await this.IFPRRepository.updateReviewByListIdByManager(
+    if (reviewDetails) {
+      updateData.attempt = reviewDetails.attempt + 1;
+
+        const response = await this.IFPRRepository.ReSendReviewByListIdByManager(
       updateData
     );
+
+    this.listRepository.updateListStatus(
+      updateData.workspaceId,
+      updateData.folderId,
+      updateData.listId,
+      "pending"
+    );
+
     return response;
+    }
+
+  return false
   }
   getReviewByList(data: {
     workspaceId: string;
@@ -92,7 +160,6 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
     const {
       title,
       description,
-      attempt,
       status,
       featureCreatedAt,
       featureDueDate,
@@ -108,7 +175,6 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
       title !== null &&
       description !== undefined &&
       description !== null &&
-      typeof attempt === "number" &&
       status &&
       featureCreatedAt &&
       featureDueDate &&
@@ -134,7 +200,6 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
       const dto: IFeatureReviewCreateDTO = {
         title,
         description,
-        attempt,
         status,
         featureCreatedAt: parse(
           featureCreatedAt,
@@ -148,6 +213,7 @@ export class FeatureReviewService implements IFeatureProjectReviewService {
         ),
         listId,
         folderId,
+        attempt: 1,
         workspaceId,
         message,
         assignee: assignee.id,

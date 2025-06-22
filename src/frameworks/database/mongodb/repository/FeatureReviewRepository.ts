@@ -3,6 +3,7 @@ import { IFeatureProjectReview } from "../../../../interfaces/IProjectReview";
 import {
   IFeatureReviewCreateDTO,
   IFeatureReviewUpdateDTO,
+  IFeatureUpdateReviewerSubmitDTO,
 } from "../../../../services/FeatureReviewService";
 import { ProjectReview } from "../models/project-review/ProjectReviewerModal";
 
@@ -101,7 +102,7 @@ export class FeatureReviewRepository
     return res;
   }
 
-  async updateReviewByListIdByManager(
+  async ReSendReviewByListIdByManager(
     data: IFeatureReviewUpdateDTO
   ): Promise<boolean> {
     const result = await ProjectReview.updateOne(
@@ -109,7 +110,6 @@ export class FeatureReviewRepository
         workspaceId: data.workspaceId,
         folderId: data.folderId,
         listId: data.listId,
-        _id: data.reviewId,
       },
       {
         $set: {
@@ -123,9 +123,28 @@ export class FeatureReviewRepository
     return !!result;
   }
 
-  async updateStatusByReviewer(
-    data: IFeatureReviewUpdateDTO
+  async updateReviewerReviewSubmit(
+    data: IFeatureUpdateReviewerSubmitDTO
   ): Promise<boolean> {
-    return true;
+    const response = await ProjectReview.updateOne(
+      {
+        _id: data.reviewId,
+        workspaceId: data.workspaceId,
+        listId: data.listId,
+        folderId: data.folderId,
+      },
+      {
+        $set: { status: data.approvalStatus, approved: data.approved },
+        $addToSet: {
+          reviewerLogs: {
+            reviewer: data.reviewerId,
+            suggestion: data.suggestion,
+            approvalStatus: data.approvalStatus,
+          },
+        },
+      }
+    );
+
+    return !!response;
   }
 }
